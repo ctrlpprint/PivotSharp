@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotSharp", "src\PivotSharp\PivotSharp.csproj", "{13B128D1-FE4A-4B9F-A60A-B90A027F1A28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotSharp.Tests", "tests\PivotSharp.Tests\PivotSharp.Tests.csproj", "{2469A63B-7A62-470C-A097-EC88C4E567AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotSharp.Web", "samples\PivotSharp.Web\PivotSharp.Web.csproj", "{A9016157-1914-4D3C-8210-4C5BB6ED73F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13B128D1-FE4A-4B9F-A60A-B90A027F1A28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13B128D1-FE4A-4B9F-A60A-B90A027F1A28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13B128D1-FE4A-4B9F-A60A-B90A027F1A28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13B128D1-FE4A-4B9F-A60A-B90A027F1A28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9016157-1914-4D3C-8210-4C5BB6ED73F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9016157-1914-4D3C-8210-4C5BB6ED73F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9016157-1914-4D3C-8210-4C5BB6ED73F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9016157-1914-4D3C-8210-4C5BB6ED73F9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

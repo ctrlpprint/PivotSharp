@@ -1,0 +1,18 @@
+﻿@model PivotSharp.Web.Controllers.PivotTableViewModel
+@{
+	ViewBag.Title = "Home Page";
+}
+
+
+<div class="row" style="margin-top: 20px;">
+	@Html.Partial("Table", Model.PivotTable)
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".data-cell").on('click', function () {
+			window.open('/Data' +
+				'/DrillDown/' + @Model.Id + '?rowKeys=' + $(this).data('row-key') + '&colKeys=' + $(this).data('col-key'), '_blank');
+		});
+	});
+</script>

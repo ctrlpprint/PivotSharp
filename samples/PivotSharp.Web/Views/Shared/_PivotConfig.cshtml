@@ -1,0 +1,24 @@
+﻿@model PivotSharp.Web.Controllers.PivotConfigViewModel
+
+<table class="table table-condensed table-bordered">
+	<thead>
+		@foreach (var col in Model.Config.Cols) {
+			<tr>
+				@if (Model.Config.Cols.IndexOf(col) == 0) {
+					<th rowspan="@Model.Config.Cols.Count">@Model.Config.Aggregator().SqlFunctionName</th>
+				}
+				<th>@col</th>
+			</tr>
+		}
+	</thead>
+	<tbody>
+		@foreach (var row in Model.Config.Rows) {
+			<tr>
+				<th>@row</th>
+				@if (Model.Config.Rows.IndexOf(row) == 0) {
+					<td rowspan="@Model.Config.Rows.Count">@Model.Config.Aggregator().ColumnName</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>

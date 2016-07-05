@@ -1,0 +1,66 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace PivotSharp
+{
+	public class PivotValues : Dictionary<PivotKey, IAggregator>
+	{
+		public IAggregator FindOrAdd(string flattenedRowKey, string flattenedColKey, IAggregator aggregator) {
+
+			var existing = this[flattenedRowKey, flattenedColKey];
+			if (existing != null) {
+				return existing;
+			}
+
+			return Add(flattenedRowKey, flattenedColKey, aggregator);
+		}
+
+
+		public IAggregator Add(string flattenedRowKey, string flattenedColKey, IAggregator aggregator) {
+			
+			base.Add(
+				key: new PivotKey{FlattenedColKey = flattenedColKey, FlattenedRowKey = flattenedRowKey},
+				value: aggregator
+				);
+
+			return aggregator;
+		}
+
+		public 	IDictionary<string, Dictionary<string, IAggregator>> Rows {
+			get {
+				return this
+					.GroupBy(kpv => kpv.Key.FlattenedRowKey)
+					.ToDictionary(
+						keySelector: gp => gp.Key,
+						elementSelector: gp => gp
+							.Select(x => new KeyValuePair<string, IAggregator> (
+								key: x.Key.FlattenedColKey,
+								value: x.Value))
+							.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+					);
+			}
+		}
+
+		public IAggregator this[string key1, string key2] {
+			get {
+				var value = this.SingleOrDefault(v => v.Key.FlattenedRowKey == key1 && v.Key.FlattenedColKey == key2);
+				// TODO: What to do if no match?
+				// ??? Cannot compare KVP to null...
+				// if(value == null) return null;
+				return value.Value;
+			}
+		}
+
+		/// <summary>
+		/// Accept a row indexer and return a dictionary of values for that row, keyed on the flattened column keys
+		/// </summary>
+		public IDictionary<string, IAggregator> this[string key1] {
+			get {
+				// TODO: What to do if no match?
+				return this
+					.Where(v => v.Key.FlattenedRowKey == key1)
+					.ToDictionary(kvp => kvp.Key.FlattenedColKey, kvp => kvp.Value);
+			}			
+		}
+	}
+}
