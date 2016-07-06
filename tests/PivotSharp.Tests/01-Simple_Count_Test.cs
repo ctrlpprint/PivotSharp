@@ -89,16 +89,10 @@ namespace PivotSharp.Tests
 		public void Can_Generate_Row_Counts() {
 			Assert.AreEqual(2, pivot.Rows.Single(r => r.FlattenedKey == "circle").Value);
 			Assert.AreEqual(1, pivot.Rows.Single(r => r.FlattenedKey == "triangle").Value);
-
-			Assert.AreEqual(2, pivot.Rows.Single(r => r.FlattenedKey == "circle").Value);
-			Assert.AreEqual(1, pivot.Rows.Single(r => r.FlattenedKey == "triangle").Value);
 		}
 
 		[Test]
 		public void Can_Generate_Col_Counts() {
-			Assert.AreEqual(2, pivot.Cols.Single(r => r.FlattenedKey == "blue").Value);
-			Assert.AreEqual(1, pivot.Cols.Single(r => r.FlattenedKey == "red").Value);
-
 			Assert.AreEqual(2, pivot.Cols.Single(r => r.FlattenedKey == "blue").Value);
 			Assert.AreEqual(1, pivot.Cols.Single(r => r.FlattenedKey == "red").Value);
 		}
