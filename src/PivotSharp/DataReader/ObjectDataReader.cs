@@ -5,7 +5,7 @@
 // </copyright> 
 // <version>1.0</version>
 // Source: http://spikes.codeplex.com/SourceControl/latest#Salient.Data/Salient.Data/ObjectDataReader.cs
-
+// Adapted: David, 2017-07-06 to make GetSchemaTable consistent with the method exposed by DbDataReaders
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -408,6 +408,9 @@ namespace PivotSharp.DataReader
 
 		/// <summary>
 		/// Returns a <see cref="T:System.Data.DataTable"/> that describes the column metadata of the <see cref="T:System.Data.IDataReader"/>.
+		/// Columns included:
+		/// - ColumnName:string
+		/// - DataType:Type
 		/// </summary>
 		/// <returns>
 		/// A <see cref="T:System.Data.DataTable"/> that describes the column metadata.
@@ -416,6 +419,9 @@ namespace PivotSharp.DataReader
 		/// </exception><filterpriority>2</filterpriority>
 		public virtual DataTable GetSchemaTable() {
 			var dt = new DataTable();
+			dt.Columns.Add("ColumnName", typeof(string));
+			dt.Columns.Add("DataType", typeof(Type));
+
 			foreach (DynamicProperties.Property field in Fields) {
 				Type colType;
 				bool nullable = false;
@@ -427,8 +433,7 @@ namespace PivotSharp.DataReader
 					colType = field.Info.PropertyType;
 				}
 
-				var col = new DataColumn(field.Info.Name, colType) { AllowDBNull = nullable };
-				dt.Columns.Add(col);
+				dt.Rows.Add(field.Info.Name, colType);
 			}
 			return dt;
 		}

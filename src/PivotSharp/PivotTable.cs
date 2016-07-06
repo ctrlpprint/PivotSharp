@@ -91,13 +91,7 @@ namespace PivotSharp
 		public IAggregator GrandTotal { get; set; }
 		public Func<IAggregator> Aggregator { get; set; }
 
-		// PivotTable.js uses a 2D name-indexed array.
-		//	@tree[flatRowKey][flatColKey] = {
-		//		count: 0,
-		//		push : function() {@count++';}
-		//	}
 		public PivotValues Values { get; private set; }
-		//public IDictionary<string, IDictionary<string, IAggregator>> Values { get; private set; }
 
 		public PivotConfig Config { get; private set; }
 
@@ -112,7 +106,6 @@ namespace PivotSharp
 			Rows = new RowOrColumns(fields: Config.Rows, aggregator: Aggregator);
 			Cols = new RowOrColumns(fields: Config.Cols, aggregator: Aggregator);
 			Values = new PivotValues();
-			//Values = new Dictionary<string, IDictionary<string, IAggregator>>();
 			
 		}
 
@@ -120,19 +113,21 @@ namespace PivotSharp
 		public IAggregator GetValue(string rowHeader, string colHeader) {
 
 			return Values[rowHeader, colHeader];
-			
-			//if (!Values.ContainsKey(rowHeader)) return null;
-			//if (!Values[rowHeader].ContainsKey(colHeader)) return null;
-			//return Values[rowHeader][colHeader];
 		}
 
 
 		public void Pivot(IDataReader source) {
 			Init();
 
+			var columnList = source.GetSchemaTable()
+				.Rows.Cast<DataRow>()
+				.Select(row => row.Field<string>("ColumnName")).ToList();
+
+			var filters = Config.Filters.Where(f => columnList.Contains(f.FieldName));
+
 			while(source.Read()){
 
-				if(Config.Filters.Any(f => !f.Apply(source)))
+				if(filters.Any(f => !f.Apply(source)))
 					continue;
 				
 				GrandTotal.Push(source); // Update the Grand Total
@@ -145,14 +140,6 @@ namespace PivotSharp
 				if (row != null && col != null) {
 					var flatRowKey = row.FlattenedKey;
 					var flatColKey = col.FlattenedKey;
-
-					//if (!Values.ContainsKey(flatRowKey)) {
-					//	Values.Add(flatRowKey, new Dictionary<string, IAggregator>());
-					//}
-					//if (!Values[flatRowKey].ContainsKey(flatColKey)) {
-					//	Values[flatRowKey].Add(flatColKey, Aggregator());
-					//}
-					//Values[flatRowKey][flatColKey].Push(source);
 
 					var aggregator = Values.FindOrAdd(flatRowKey, flatColKey, Aggregator());
 					aggregator.Push(source);
@@ -188,23 +175,11 @@ namespace PivotSharp
 			var schemaTable = source.GetSchemaTable();
 			var data = new DataTable();
 
-			// ObjectDataReader doesn't implement schema table as per the DB equivalents.
-			if (source is ObjectDataReader) {
-				foreach (DataColumn column in schemaTable.Columns) {
-					var colName = column.ColumnName;
-					var t = column.DataType;
-					data.Columns.Add(colName, t);
-				}
+			foreach (DataRow row in schemaTable.Rows) {
+				string colName = row.Field<string>("ColumnName");
+				Type t = row.Field<Type>("DataType");
+				data.Columns.Add(colName, t);
 			}
-			else {
-				foreach (DataRow row in schemaTable.Rows) {
-					string colName = row.Field<string>("ColumnName");
-					Type t = row.Field<Type>("DataType");
-					data.Columns.Add(colName, t);
-				}
-			}
-
-
 
 
 			while(source.Read()) {

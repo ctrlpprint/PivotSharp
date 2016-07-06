@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using PivotSharp.Aggregators;
+using PivotSharp.Filters;
 
 namespace PivotSharp.Web.Controllers
 {
@@ -22,6 +23,18 @@ namespace PivotSharp.Web.Controllers
 					Rows = new[] { "Region", "Country" },
 					Cols = new[] { "Year", "Month" },
 					Aggregator = () => new Count()
+
+				}},
+			{
+				3, new PivotConfig() {
+					Rows = new[] { "Region", "Country" },
+					Cols = new[] { "Year", "Month" },
+					Aggregator = () => new Count(),
+					Filters = new IFilter[] {
+						new Equals<string>("OrderType", "Club")
+					}
+
+
 
 				}}
 		};

@@ -47,19 +47,9 @@ namespace PivotSharp
 
 		public string GetPivotSql(PivotConfig config, string tableName) {
 
+			var sqlString = new PivotSqlString(config, tableName);
 
-			var aggregator = config.Aggregator();
-
-			var groupingColumns = string.Join(",", config.Rows.Union(config.Cols));
-			var sql = string.Format("select {0}, {1}({2}) as {5} from {3} group by {4}",
-				groupingColumns,
-				aggregator.SqlFunctionName,
-				string.IsNullOrEmpty(aggregator.ColumnName) ? "*" : aggregator.ColumnName,
-				tableName,
-				groupingColumns,
-				string.IsNullOrEmpty(aggregator.ColumnName) ? aggregator.SqlFunctionName : aggregator.ColumnName
-				);
-			return sql;
+			return sqlString.ToString();
 		}
 
 		public IDataReader GetPivotData(PivotConfig config, string tableName) {
@@ -80,6 +70,10 @@ namespace PivotSharp
 			// IDataReader is closed.
 			// https://msdn.microsoft.com/en-us/library/system.data.sqlclient.sqlcommand(v=vs.110).aspx
 			using (var command = new SqlCommand(query, connection)) {
+				foreach (var filter in config.Filters) {
+					command.Parameters.AddWithValue("param" + config.Filters.IndexOf(filter), filter.ParameterValue);
+				}
+
 				connection.Open();
 				return command.ExecuteReader(CommandBehavior.CloseConnection);				
 			}

@@ -46,7 +46,10 @@
     <Compile Include="03-Multi_Layer_Test.cs" />
     <Compile Include="02-Simple_Sum_Test.cs" />
     <Compile Include="01-Simple_Count_Test.cs" />
+    <Compile Include="05-Date_Filter_Tests.cs" />
+    <Compile Include="04-String_Filter_Tests.cs" />
     <Compile Include="PivotKeyTests.cs" />
+    <Compile Include="PivotSqlStringTests.cs" />
     <Compile Include="PivotValuesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObscureShape.cs" />

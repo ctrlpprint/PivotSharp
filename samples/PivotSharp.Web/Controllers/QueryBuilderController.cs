@@ -47,7 +47,7 @@ namespace PivotSharp.Web.Controllers
 				}
 			}, {
 				5, new PivotConfig() {
-					Rows = new[] {"Region"},
+					Rows = new[] {"Region", "Country"},
 					Cols = new[] {"Year", "Month"},
 					Aggregator = () => new Sum("Revenue"),
 					FillTable = true,

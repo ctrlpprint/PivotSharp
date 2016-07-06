@@ -1,5 +1,5 @@
 ﻿@using PivotSharp.Web.Controllers
-@model System.Collections.Generic.IDictionary<int, PivotSharp.PivotConfig>
+@model IDictionary<int, PivotSharp.PivotConfig>
 
 <div class="row">
 	@foreach (var kvp in Model) {
@@ -11,6 +11,7 @@
 					<h3 class="panel-title">@kvp.Key</h3>
 				</div>
 				<div class="panel-body">
+					<p>@string.Join(", ", kvp.Value.Filters.Select(f => f.Description))</p>
 					@Html.Partial("_PivotConfig", new PivotConfigViewModel { Id = kvp.Key, Config = kvp.Value })
 					<a class="btn btn-raised btn-info pull-right" style="margin-top:0; margin-bottom: 0;" href="@Url.Action("View", new { Id = kvp.Key})">View</a>
 				</div>
