@@ -18,6 +18,7 @@ namespace PivotSharp
 		}
 
 		public IList<string> FieldNames() {
+			if (!this.Any()) return new List<string>();
 			return this.First().Headers.Select(h => h.FieldName).ToList();
 		}
 

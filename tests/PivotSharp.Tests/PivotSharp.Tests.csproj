@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="00-Empty_Data_Tests.cs" />
     <Compile Include="03-Multi_Layer_Test.cs" />
     <Compile Include="02-Simple_Sum_Test.cs" />
     <Compile Include="01-Simple_Count_Test.cs" />
