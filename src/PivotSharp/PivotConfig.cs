@@ -28,58 +28,15 @@ namespace PivotSharp
 			} 
 		}
 
-
-		//protected dynamic[] FilterNames {
-		//	get {
-		//		var ret = new dynamic[Filters.Count];
-		//		foreach (var filter in Filters) {
-		//			ret[Filters.IndexOf(filter)] = new {
-		//				Op = filter.Op,
-		//				Value = filter.ParameterValue,
-		//				FieldName = filter.FieldName
-		//			};
-		//		}
-		//		return ret;
-		//	}
-		//	set {
-		//		Filters = new List<Filter>();
-		//		foreach (var details in value) {
-		//			((List<Filter>)Filters).Add(FromString(details)); // Cast to List to fix a dynamic binding issue: http://stackoverflow.com/questions/15920844/system-collections-generic-ilistobject-does-not-contain-a-definition-for-ad
-		//		}
-		//	}
-		//}
-
-
-		//private Filter FromString(dynamic details) {
-
-		//	return new Filter(
-		//		fieldName: details.FieldName.Value,
-		//		op: details.
-		//		);
-
-		//	var type = details.ParameterValue.Value.GetType();
-			
-
-		//	if (details.Name == "Equals") {
-		//		var constructedClass = typeof (Equals<>).MakeGenericType(type);
-		//		return (Filter)Activator.CreateInstance(constructedClass, new object[]{ details.FieldName.Value, details.ParameterValue.Value});
-				
-		//	}
-		//	if (details.Name == "GreaterThan") {
-		//		var constructedClass = typeof(GreaterThan<>).MakeGenericType(type);
-		//		return (Filter)Activator.CreateInstance(constructedClass, new object[] { details.FieldName.Value, details.ParameterValue.Value });
-
-		//	}
-		//	throw new NotImplementedException();
-		//}
-
 		private Func<IAggregator> FromString(string name, string columnName) {
 
 			switch (name) {
-				case "Count":
-					return () => new Count();
-				case "Sum":
-					return () => new Sum(columnName);
+				case "Count":	return () => new Count();
+				case "Sum":		return () => new Sum(columnName);
+				case "Ave":
+				case "Avg":		return () => new Ave(columnName);
+				case "Min":		return () => new Min(columnName);
+				case "Max":		return () => new Max(columnName);
 			}
 			throw new NotImplementedException();
 		}
@@ -89,7 +46,6 @@ namespace PivotSharp
 
 		[JsonProperty()]
 		public IList<Filter> Filters { get; set; }
-
 
 
 		public PivotConfig() {
