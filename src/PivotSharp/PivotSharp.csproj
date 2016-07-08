@@ -60,12 +60,11 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\IDataReaderExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Filters\Equals.cs" />
     <Compile Include="Filters\Filter.cs" />
-    <Compile Include="Filters\GreaterThan.cs" />
+    <Compile Include="Filters\FilterOperator.cs" />
+    <Compile Include="Filters\Filters.cs" />
     <Compile Include="Header.cs" />
     <Compile Include="IAggregator.cs" />
-    <Compile Include="IFilter.cs" />
     <Compile Include="PivotConfig.cs" />
     <Compile Include="PivotSqlString.cs" />
     <Compile Include="PivotTable.cs" />

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
+using Filter = PivotSharp.Filters.Filter;
 
 namespace PivotSharp.Web.Controllers
 {
@@ -30,8 +31,8 @@ namespace PivotSharp.Web.Controllers
 					Rows = new[] { "Region", "Country" },
 					Cols = new[] { "Year", "Month" },
 					Aggregator = () => new Count(),
-					Filters = new IFilter[] {
-						new Equals<string>("OrderType", "Club")
+					Filters = new Filter[] {
+						new Filter("OrderType", "=", "Club"), 
 					}
 
 

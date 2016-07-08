@@ -35,8 +35,8 @@ namespace PivotSharp.Tests
 				Rows = new[] {"Category"},
 				Cols = new[] {"Country"},
 				Aggregator = () => new SumInt("Value"),
-				Filters = new IFilter[] {
-					new Equals<DateTime>("Date", new DateTime(2016,02,01))
+				Filters = new Filter[] {
+					new Filter("Date", "=", new DateTime(2016,02,01))
 				}
 			};
 

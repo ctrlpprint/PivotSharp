@@ -41,8 +41,8 @@ namespace PivotSharp.Tests
 				Rows = new[] {"Shape"},
 				Cols = new[] {"Color"},
 				Aggregator = () => new SumInt("Lines"),
-				Filters = new IFilter[] {
-					new Equals<string>("Color", "blue")
+				Filters = new Filter[] {
+					new Filter("Color", "=", "blue"), 
 				}
 			};
 

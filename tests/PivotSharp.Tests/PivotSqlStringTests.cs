@@ -43,8 +43,8 @@ namespace PivotSharp.Tests
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
 				Aggregator = () => new Sum("Value"),
-				Filters = new IFilter[] {
-					new Equals<string>(fieldName: "Border", value: "dotted")
+				Filters = new Filter[] {
+					new Filter("Border", "=", "dotted"), 
 				}
 			};
 
