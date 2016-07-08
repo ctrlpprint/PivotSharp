@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aggregators\Count.cs" />
+    <Compile Include="Aggregators\Max.cs" />
+    <Compile Include="Aggregators\Min.cs" />
+    <Compile Include="Aggregators\Ave.cs" />
     <Compile Include="Aggregators\SumInt.cs" />
     <Compile Include="Aggregators\Sum.cs" />
     <Compile Include="DataReader\DynamicProperties.cs" />
