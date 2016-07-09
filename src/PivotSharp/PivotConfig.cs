@@ -13,7 +13,11 @@ namespace PivotSharp
 		public IList<string> Rows { get; set; }
 		[JsonProperty]
 		public IList<string> Cols { get; set; }
+
 		public Func<IAggregator> Aggregator { get; set; }
+
+		[JsonProperty()]
+		public IList<Filter> Filters { get; set; }
 
 		[JsonProperty]
 		protected string[] AggregatorName {
@@ -28,6 +32,12 @@ namespace PivotSharp
 			} 
 		}
 
+		[JsonProperty]
+		public bool FillTable { get; set; }
+
+		[JsonProperty]
+		public ConfigurationErrorHandlingMode ErrorMode { get; set; }
+
 		private Func<IAggregator> FromString(string name, string columnName) {
 
 			switch (name) {
@@ -41,11 +51,6 @@ namespace PivotSharp
 			throw new NotImplementedException();
 		}
 
-		[JsonProperty]
-		public bool FillTable { get; set; }
-
-		[JsonProperty()]
-		public IList<Filter> Filters { get; set; }
 
 
 		public PivotConfig() {

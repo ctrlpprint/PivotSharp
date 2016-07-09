@@ -55,6 +55,7 @@
     <Compile Include="AggregatorTests.cs" />
     <Compile Include="04-String_Filter_Tests.cs" />
     <Compile Include="ConfigSerializationTests.cs" />
+    <Compile Include="MisConfiguration_Tests.cs" />
     <Compile Include="PivotKeyTests.cs" />
     <Compile Include="PivotSqlStringTests.cs" />
     <Compile Include="PivotValuesTests.cs" />
