@@ -64,7 +64,7 @@ namespace PivotSharp.Web.Controllers
 			return View(configs);
 		}
 
-		public ActionResult View(int id = 1) {
+		public ActionResult View(int? id) {
 
 			var config = configs.Single(c => c.Key == id).Value;
 			var connector = new PivotDbConnector(connectionString);
@@ -73,7 +73,20 @@ namespace PivotSharp.Web.Controllers
 			pivot.Pivot(reader);
 
 
-			return View(new PivotTableViewModel(){ Id = id, PivotTable = pivot});
+			return View(new PivotTableViewModel(){ Id = id, Config = config, PivotTable = pivot});
+		}
+
+		// eg: /QueryBuilder/ViewByConfig/?AggregatorName=Sum&AggregatorName=Revenue&Rows=Category&Rows=Product&Cols=Year&Cols=Month&FillTable=true
+		// eg: /QueryBuilder/ViewByConfig/?AggregatorName[0]=Sum&AggregatorName[1]=Revenue&Rows[0]=Category&Rows[1]=Product&Cols[0]=Year&Cols[1]=Month&FillTable=true&Filters[0].ColumnName=Year&Filters[0].ParameterValue=2016&Filters[0].Op=%3C
+		public ActionResult ViewByConfig(PivotConfig config) {
+
+			var connector = new PivotDbConnector(connectionString);
+			var reader = connector.GetPivotData(config, "OrderLinesRevenueReport");
+			var pivot = PivotTable.Create(config);
+			pivot.Pivot(reader);
+
+
+			return View("View", new PivotTableViewModel() { Config = config, PivotTable = pivot });
 		}
 
 	

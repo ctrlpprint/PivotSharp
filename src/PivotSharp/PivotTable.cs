@@ -122,12 +122,13 @@ namespace PivotSharp
 
 
 		private void ValidateConfigAgainst(IDataReader source) {
+			var schema = source.GetSchemaTable()
+				.Rows.Cast<DataRow>();
 
-			var columnList = source.GetSchemaTable()
-				.Rows.Cast<DataRow>()
+			var columnList = schema
 				.Select(row => row.Field<string>("ColumnName")).ToList();
 
-			InvalidColumns = Config.Filters.Select(c => c.FieldName)
+			InvalidColumns = Config.Filters.Select(c => c.ColumnName)
 				.Union(Config.Rows)
 				.Union(Config.Cols)
 				.Union(new List<string> {Config.Aggregator().ColumnName})
@@ -145,10 +146,28 @@ namespace PivotSharp
 					Cols = Config.Cols.Intersect(columnList).ToList(),
 					Rows = Config.Rows.Intersect(columnList).ToList(),
 					FillTable = Config.FillTable,
-					Filters = Config.Filters.Where(f => columnList.Contains(f.FieldName)).ToList()
+					Filters = Config.Filters.Where(f => columnList.Contains(f.ColumnName)).ToList()
 				};
 
 			}
+
+			// Fix broken db types
+			foreach (var filter in Config.Filters.Where(f => f.DbType == DbType.Object)) {
+
+				var columnType = schema
+					.Single(row => row.Field<string>("ColumnName") == filter.ColumnName)
+					.Field<Type>("DataType");
+
+				var parameterValue = filter.ParameterValue.GetType() == typeof (string[]) // Model Binding
+					? ((string[]) filter.ParameterValue)[0]
+					: filter.ParameterValue;
+
+				filter.ParameterValue = Convert.ChangeType(
+					value: parameterValue,
+					conversionType: columnType);
+
+			}
+
 		}
 
 		public IList<string> InvalidColumns { get; set; }

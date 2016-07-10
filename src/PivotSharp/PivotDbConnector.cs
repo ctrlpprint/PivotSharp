@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Web.UI.WebControls;
 using PivotSharp.Aggregators;
 
 namespace PivotSharp
@@ -23,7 +25,7 @@ namespace PivotSharp
 
 			using (var connection = new SqlConnection(ConnectionString)) {
 
-				var query = "select Ordinal_Position, Name, Data_Type from INFORMATION_SCHEMA.Columns where Table_Name = @TableName";
+				var query = "select Ordinal_Position, Column_Name, Data_Type from INFORMATION_SCHEMA.Columns where Table_Name = @TableName";
 
 				var command = new SqlCommand(query, connection);
 				command.Parameters.AddWithValue("@TableName", tableName);
@@ -45,7 +47,33 @@ namespace PivotSharp
 			return columns;
 		}
 
+		private void FixConfig(PivotConfig config, string tableName) {
+
+			// If the config has been generated from strings, we may not have the correct db type on the filters.
+			// Mvc Model Binding in particular will bind a property of type object as a string[].
+
+			foreach (var filter in config.Filters.Where(f => f.DbType == DbType.Object)) {
+
+				var column = GetTableStructure(tableName).Single(c => c.Name == filter.ColumnName);
+
+
+				var parameterValue = filter.ParameterValue.GetType() == typeof(string[]) // Model Binding
+					? ((string[])filter.ParameterValue)[0]
+					: filter.ParameterValue;
+
+				var dbType = DbTypeMap.DbTypeFor(column.DataType);
+
+				filter.ParameterValue = Convert.ChangeType(
+					value: parameterValue,
+					conversionType: DbTypeMap.TypeFor(dbType));
+
+			}
+
+		}
+
 		public string GetPivotSql(PivotConfig config, string tableName) {
+
+			FixConfig(config, tableName);
 
 			var sqlString = new PivotSqlString(config, tableName);
 
@@ -54,6 +82,7 @@ namespace PivotSharp
 
 		public IDataReader GetPivotData(PivotConfig config, string tableName) {
 
+			FixConfig(config, tableName);
 
 			var connection = new SqlConnection(ConnectionString);
 
