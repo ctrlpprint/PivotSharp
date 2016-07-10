@@ -78,7 +78,7 @@
 	<tfoot>
 		<tr>
 			<th colspan="@Model.Rows.Fields.Count()">Grand Total</th>
-			@foreach (var col in Model.Cols) {
+			@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
 				<th>@col.Aggregator.FormattedValue</th>
 			}
 			<th>@Model.GrandTotal.FormattedValue</th>
