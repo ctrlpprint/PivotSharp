@@ -11,19 +11,24 @@ namespace PivotSharp.Filters
 		public string Op { get; set; }
 
 		[JsonProperty]
-		public string FieldName { get; private set; }
+		public string ColumnName { get; set; }
 
+		// The problem with a property of type object (or dynamic) is the asp.net mvc model binder will always bind a value 
+		// as a string[]. See eg http://stackoverflow.com/questions/15886757/mvc-model-binding-subclass-object-property-filled-with-a-string-array 
 		[JsonProperty]
-		public object ParameterValue { get; private set; }
+		public object ParameterValue { get; set; }
 
-		public Filter(string fieldName, string op, object parameterValue) {
+		// For Model Binding
+		public Filter() { }
+
+		public Filter(string columnName, string op, object parameterValue) {
 			Op = op;
-			FieldName = fieldName;
+			ColumnName = columnName;
 			ParameterValue = parameterValue;
 		}
 
 		public bool Apply(IDataReader source) {
-			return Compare(Op, (IComparable) source[FieldName], (IComparable) ParameterValue);
+			return Compare(Op, (IComparable) source[ColumnName], (IComparable) ParameterValue);
 		}
 
 		public static bool Compare(string op, IComparable left, IComparable right) {
@@ -37,13 +42,18 @@ namespace PivotSharp.Filters
 		}
 
 		public string SqlClause(string paramName) {
-			return string.Format("[{0}] {1} @{2}", FieldName, Op, paramName.Replace("@", ""));
+			return string.Format("[{0}] {1} @{2}", ColumnName, Op, paramName.Replace("@", ""));
 		}
 
 		public DbType DbType {
-			get { return DbTypeMap.DbTypeFor(ParameterValue.GetType()); }
+			get {
+				// MVC Model Binding will fill ParameterValue with a string[] and then try to read this property so we need to return something.
+				return ParameterValue == null || ParameterValue.GetType() == typeof(string[])
+					? DbType.Object
+					: DbTypeMap.DbTypeFor(ParameterValue.GetType());
+			}
 		}
 
-		public string Description { get { return string.Format("{0} {1} {2}", FieldName, Op, ParameterValue); } }
+		public string Description { get { return string.Format("{0} {1} {2}", ColumnName, Op, ParameterValue); } }
 	}
 }

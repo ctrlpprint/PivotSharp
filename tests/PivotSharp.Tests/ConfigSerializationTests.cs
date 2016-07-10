@@ -32,8 +32,8 @@ namespace PivotSharp.Tests
 					'AggregatorName':['Sum','Revenue'],
 					'FillTable':true,
 					'Filters':[
-						{ Op: '>', FieldName: 'Year', ParameterValue: 2015 },
-						{ Op: '=', FieldName: 'Category', ParameterValue: 'Web' }
+						{ Op: '>', ColumnName: 'Year', ParameterValue: 2015 },
+						{ Op: '=', ColumnName: 'Category', ParameterValue: 'Web' }
 					]
 				}
 ";
@@ -59,12 +59,12 @@ namespace PivotSharp.Tests
 			Assert.AreEqual(2, deserialized.Filters.Count);
 
 			Assert.AreEqual(typeof(Filter), deserialized.Filters[0].GetType());
-			Assert.AreEqual("Year", deserialized.Filters[0].FieldName);
+			Assert.AreEqual("Year", deserialized.Filters[0].ColumnName);
 			Assert.AreEqual(">", deserialized.Filters[0].Op);
 			Assert.AreEqual(2015, deserialized.Filters[0].ParameterValue);
 
 			Assert.AreEqual(typeof(Filter), deserialized.Filters[1].GetType());
-			Assert.AreEqual("Category", deserialized.Filters[1].FieldName);
+			Assert.AreEqual("Category", deserialized.Filters[1].ColumnName);
 			Assert.AreEqual("=", deserialized.Filters[1].Op);
 			Assert.AreEqual("Web", deserialized.Filters[1].ParameterValue);
 
