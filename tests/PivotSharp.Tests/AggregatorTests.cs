@@ -38,7 +38,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Category"},
 				Cols = new[] {"Country"},
-				Aggregator = () => new Count(),
+				Aggregator = new AggregatorDef(){FunctionName = "Count"},
 			};
 
 			pivot = PivotTable.Create(config);
@@ -53,7 +53,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = () => new Sum("Value"),
+				Aggregator = new AggregatorDef() { FunctionName = "Sum", ColumnName = "Value" }
 			};
 
 			pivot = PivotTable.Create(config);
@@ -68,7 +68,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = () => new Ave("Value"),
+				Aggregator = new AggregatorDef() { FunctionName = "Ave", ColumnName = "Value" }
 			};
 
 			pivot = PivotTable.Create(config);
@@ -83,7 +83,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = () => new Min("Value"),
+				Aggregator = new AggregatorDef() { FunctionName = "Min", ColumnName = "Value" }
 			};
 
 			pivot = PivotTable.Create(config);
@@ -98,7 +98,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = () => new Max("Value"),
+				Aggregator = new AggregatorDef() { FunctionName = "Max", ColumnName = "Value" }
 			};
 
 			pivot = PivotTable.Create(config);

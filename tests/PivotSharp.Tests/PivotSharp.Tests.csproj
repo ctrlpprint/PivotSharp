@@ -59,6 +59,7 @@
     <Compile Include="PivotKeyTests.cs" />
     <Compile Include="PivotSqlStringTests.cs" />
     <Compile Include="PivotValuesTests.cs" />
+    <Compile Include="PivotWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObscureShape.cs" />
     <Compile Include="Sale.cs" />

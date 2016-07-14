@@ -20,13 +20,13 @@ namespace PivotSharp.Web.Controllers
 				1 , new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = () => new SumInt("Lines")
+				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "Lines"},
 			}},
 			{
 				2, new PivotConfig() {
 				Rows = new[] { "Color", "Shape" },
 				Cols = new[] { "Border", "Shadow" },
-				Aggregator = () => new Count()
+				Aggregator = new AggregatorDef { FunctionName = "Count"}
 
 			}}
 		};

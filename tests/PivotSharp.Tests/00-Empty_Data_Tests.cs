@@ -27,7 +27,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = () => new Count()
+				Aggregator = new AggregatorDef { FunctionName = "Count" }
 
 			};
 			pivot = PivotTable.Create(config);
@@ -43,7 +43,7 @@ namespace PivotSharp.Tests
 		public void Can_Handle_Empty_RowSet() {
 			var config = new PivotConfig() {
 				Cols = new[] { "Color" },
-				Aggregator = () => new Count()
+				Aggregator = new AggregatorDef { FunctionName = "Count" }
 
 			};
 			pivot = PivotTable.Create(config);
@@ -61,7 +61,7 @@ namespace PivotSharp.Tests
 		public void Can_Handle_Empty_ColSet() {
 			var config = new PivotConfig() {
 				Rows = new[] { "Color" },
-				Aggregator = () => new Count()
+				Aggregator = new AggregatorDef { FunctionName = "Count" }
 
 			};
 			pivot = PivotTable.Create(config);

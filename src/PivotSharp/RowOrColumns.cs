@@ -2,19 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using PivotSharp.Aggregators;
 using PivotSharp.Extensions;
 
 namespace PivotSharp
 {
+
+
+
 	public class RowOrColumns : List<RowOrColumn>
 	{
-		public Func<IAggregator> Aggregator { get; set; }
+		public AggregatorDef AggregatorDef { get; set; }
 
 		public IList<string> Fields { get; set; }
 
-		public RowOrColumns(IList<string> fields, Func<IAggregator> aggregator) {
+		public RowOrColumns(IList<string> fields, AggregatorDef aggregator) {
 			Fields = fields;
-			Aggregator = aggregator;
+			AggregatorDef = aggregator;
 		}
 
 		public IList<string> FieldNames() {
@@ -36,7 +40,7 @@ namespace PivotSharp
 						FieldName = fieldName,
 						Name = (source[fieldName] ?? "null").ToString()
 					}).ToList(),
-					Aggregator = Aggregator()
+					Aggregator = AggregatorDef.Create()
 				};
 				Add(row);
 			}

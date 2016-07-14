@@ -17,20 +17,20 @@ namespace PivotSharp.Web.Controllers
 				1 , new PivotConfig() {
 					Rows = new[] { "Region" },
 					Cols = new[] { "CustomerClubType" },
-					Aggregator = () => new Count()
+					Aggregator = new AggregatorDef { FunctionName = "Count"}
 				}},
 			{
 				2, new PivotConfig() {
 					Rows = new[] { "Region", "Country" },
 					Cols = new[] { "Year", "Month" },
-					Aggregator = () => new Count()
+					Aggregator = new AggregatorDef { FunctionName = "Count"}
 
 				}},
 			{
 				3, new PivotConfig() {
 					Rows = new[] { "Region", "Country" },
 					Cols = new[] { "Year", "Month" },
-					Aggregator = () => new Count(),
+					Aggregator = new AggregatorDef { FunctionName = "Count"},
 					Filters = new Filter[] {
 						new Filter("OrderType", "=", "Club"), 
 					}

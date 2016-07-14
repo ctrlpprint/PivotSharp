@@ -9,7 +9,7 @@ namespace PivotSharp
 		private string groupingColumns;
 
 		public string SelectList {
-			get { return string.Format("{0}, {1}", groupingColumns, AggregateFunction(config.Aggregator())); }
+			get { return string.Format("{0}, {1}", groupingColumns, AggregateFunction(config.Aggregator.Create())); }
 		}
 
 		private string AggregateFunction(IAggregator aggregator) {
@@ -40,7 +40,7 @@ namespace PivotSharp
 			this.config = config;
 			this.tableName = tableName;
 
-			var aggregator = config.Aggregator();
+			var aggregator = config.Aggregator.Create();
 
 			// select {groupingColumns},{aggregateColumns} from {tableName} where {whereClause} group by {groupingColumns}
 

@@ -38,7 +38,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Shape"},
 				Cols = new[] {"Color"},
-				Aggregator = () => new Count()
+				Aggregator = new AggregatorDef { FunctionName = "Count"}
 
 			};
 			pivot = PivotTable.Create(config);

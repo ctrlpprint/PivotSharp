@@ -41,8 +41,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Color", "Shape"},
 				Cols = new[] {"Border", "Shadow"},
-				Aggregator = () => new Count()
-
+				Aggregator = new AggregatorDef { FunctionName = "Count" }
 			};
 
 			reader = new EnumerableDataReader(source);

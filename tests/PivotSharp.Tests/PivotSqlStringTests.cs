@@ -13,7 +13,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = () => new Count()
+				Aggregator = new AggregatorDef { FunctionName = "Count"}
 
 			};
 
@@ -27,7 +27,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = () => new Sum("Value")
+				Aggregator = new AggregatorDef{FunctionName = "Sum", ColumnName = "Value"}
 
 			};
 
@@ -42,7 +42,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = () => new Sum("Value"),
+				Aggregator = new AggregatorDef{FunctionName = "Sum", ColumnName = "Value"},
 				Filters = new Filter[] {
 					new Filter("Border", "=", "dotted"), 
 				}

@@ -34,7 +34,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Category"},
 				Cols = new[] {"Country"},
-				Aggregator = () => new SumInt("Value"),
+				Aggregator = new AggregatorDef(){ FunctionName = "SumInt", ColumnName = "Value"},
 				Filters = new Filter[] {
 					new Filter("Date", "=", new DateTime(2016,02,01))
 				}

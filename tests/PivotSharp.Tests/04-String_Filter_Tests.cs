@@ -40,7 +40,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Shape"},
 				Cols = new[] {"Color"},
-				Aggregator = () => new SumInt("Lines"),
+				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "Lines"},
 				Filters = new Filter[] {
 					new Filter("Color", "=", "blue"), 
 				}

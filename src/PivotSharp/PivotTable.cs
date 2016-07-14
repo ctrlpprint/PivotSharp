@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Web.UI.WebControls.WebParts;
 using PivotSharp.Aggregators;
-using PivotSharp.Filters;
 
 namespace PivotSharp
 {
@@ -94,7 +89,7 @@ namespace PivotSharp
 		public RowOrColumns Cols { get; set; }
 
 		public IAggregator GrandTotal { get; set; }
-		public Func<IAggregator> Aggregator { get; set; }
+		public AggregatorDef Aggregator { get; set; }
 
 		public PivotValues Values { get; private set; }
 
@@ -106,7 +101,7 @@ namespace PivotSharp
 
 		private void Init() {
 			Aggregator = Config.Aggregator;
-			GrandTotal = Aggregator();
+			GrandTotal = Aggregator.Create();
 
 			Rows = new RowOrColumns(fields: Config.Rows, aggregator: Aggregator);
 			Cols = new RowOrColumns(fields: Config.Cols, aggregator: Aggregator);
@@ -131,7 +126,7 @@ namespace PivotSharp
 			InvalidColumns = Config.Filters.Select(c => c.ColumnName)
 				.Union(Config.Rows)
 				.Union(Config.Cols)
-				.Union(new List<string> {Config.Aggregator().ColumnName})
+				.Union(new List<string> {Config.Aggregator.Create().ColumnName})
 				.Except(new List<string> { null, ""})
 				.Except(columnList)
 				.ToList();
@@ -142,7 +137,7 @@ namespace PivotSharp
 					throw new PivotConfigurationException(message: "Referenced ", invalidColumns: InvalidColumns);
 				}
 				Config = new PivotConfig {
-					Aggregator = columnList.Contains(Config.Aggregator().ColumnName) ? Config.Aggregator : () => new Count(),
+					Aggregator = columnList.Contains(Config.Aggregator.ColumnName) ? Config.Aggregator : new AggregatorDef(){ FunctionName = "Count"},
 					Cols = Config.Cols.Intersect(columnList).ToList(),
 					Rows = Config.Rows.Intersect(columnList).ToList(),
 					FillTable = Config.FillTable,
@@ -191,7 +186,7 @@ namespace PivotSharp
 					var flatRowKey = row.FlattenedKey;
 					var flatColKey = col.FlattenedKey;
 
-					var aggregator = Values.FindOrAdd(flatRowKey, flatColKey, Aggregator());
+					var aggregator = Values.FindOrAdd(flatRowKey, flatColKey, Aggregator.Create());
 					aggregator.Push(source);
 				}
 
@@ -202,7 +197,7 @@ namespace PivotSharp
 			if (Config.FillTable) {
 				foreach (var row in Rows) {
 					foreach (var col in Cols) {
-						Values.FindOrAdd(row.FlattenedKey, col.FlattenedKey, Aggregator());
+						Values.FindOrAdd(row.FlattenedKey, col.FlattenedKey, Aggregator.Create());
 					}
 				}
 			}
