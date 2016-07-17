@@ -67,11 +67,11 @@ namespace PivotSharp.Tests
 
 		[Test]
 		public void Can_Generate_Sums() {
-			Assert.AreEqual(3, pivot.Values["circle"]["blue"].Value);
-			Assert.AreEqual(1, pivot.Values["circle"]["red"].Value);
-			Assert.AreEqual(3, pivot.Values["triangle"]["red"].Value);
+			Assert.AreEqual(3, pivot.Values["circle"]["blue"][0].Value);
+			Assert.AreEqual(1, pivot.Values["circle"]["red"][0].Value);
+			Assert.AreEqual(3, pivot.Values["triangle"]["red"][0].Value);
 
-			Assert.AreEqual(7, pivot.GrandTotal.Value);
+			Assert.AreEqual(7, pivot.GrandTotal[0].Value);
 		}
 	}
 

@@ -6,10 +6,11 @@ namespace PivotSharp
 	{
 		private readonly PivotConfig config;
 		private readonly string tableName;
-		private string groupingColumns;
+		private readonly string groupingColumns;
+		private readonly string aggregations;
 
 		public string SelectList {
-			get { return string.Format("{0}, {1}", groupingColumns, AggregateFunction(config.Aggregator.Create())); }
+			get { return string.Format("{0}, {1}", groupingColumns, aggregations); }
 		}
 
 		private string AggregateFunction(IAggregator aggregator) {
@@ -20,6 +21,7 @@ namespace PivotSharp
 				: string.Format(template,	aggregator.SqlFunctionName,		Bracket(aggregator.ColumnName),	Bracket(aggregator.ColumnName));
 		}
 
+		// select {groupingColumns},{aggregateColumns} from {tableName} where {whereClause} group by {groupingColumns}
 		public override string ToString() {
 			return 
 				"select " + SelectList
@@ -40,19 +42,8 @@ namespace PivotSharp
 			this.config = config;
 			this.tableName = tableName;
 
-			var aggregator = config.Aggregator.Create();
-
-			// select {groupingColumns},{aggregateColumns} from {tableName} where {whereClause} group by {groupingColumns}
-
 			groupingColumns = string.Join(", ", config.Rows.Union(config.Cols).Select(Bracket));
-			var sql = string.Format("select {0}, {1}({2}) as {5} from {3} group by {4}",
-				groupingColumns,
-				aggregator.SqlFunctionName,
-				string.IsNullOrEmpty(aggregator.ColumnName) ? "*" : aggregator.ColumnName,
-				tableName,
-				groupingColumns,
-				string.IsNullOrEmpty(aggregator.ColumnName) ? aggregator.SqlFunctionName : aggregator.ColumnName
-				);
+			aggregations = string.Join(", ", config.Aggregators.Select(a => AggregateFunction(a.Create())));
 		}
 	}
 }

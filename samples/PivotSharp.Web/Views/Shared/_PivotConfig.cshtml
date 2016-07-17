@@ -5,7 +5,7 @@
 		@foreach (var col in Model.Config.Cols) {
 			<tr>
 				@if (Model.Config.Cols.IndexOf(col) == 0) {
-					<th rowspan="@Model.Config.Cols.Count">@Model.Config.Aggregator().SqlFunctionName</th>
+					<th rowspan="@Model.Config.Cols.Count">@Model.Config.Aggregators().SqlFunctionName</th>
 				}
 				<th>@col</th>
 			</tr>
@@ -16,7 +16,7 @@
 			<tr>
 				<th>@row</th>
 				@if (Model.Config.Rows.IndexOf(row) == 0) {
-					<td rowspan="@Model.Config.Rows.Count">@Model.Config.Aggregator().ColumnName</td>
+					<td rowspan="@Model.Config.Rows.Count">@Model.Config.Aggregators().ColumnName</td>
 				}
 			</tr>
 		}

@@ -34,7 +34,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Category"},
 				Cols = new[] {"Country"},
-				Aggregator = new AggregatorDef(){ FunctionName = "SumInt", ColumnName = "Value"},
+				Aggregators = new List<AggregatorDef>{ new AggregatorDef { FunctionName = "SumInt", ColumnName = "Value"}},
 				Filters = new Filter[] {
 					new Filter("Date", "=", new DateTime(2016,02,01))
 				}
@@ -46,7 +46,7 @@ namespace PivotSharp.Tests
 			pivot.Pivot(reader);
 
 
-			Assert.AreEqual(60M, pivot.Values["Books"]["USA"].Value);
+			Assert.AreEqual(60M, pivot.Values["Books"]["USA"][0].Value);
 		}
 
 	}

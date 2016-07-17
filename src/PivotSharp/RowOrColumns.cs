@@ -12,13 +12,13 @@ namespace PivotSharp
 
 	public class RowOrColumns : List<RowOrColumn>
 	{
-		public AggregatorDef AggregatorDef { get; set; }
+		public IList<AggregatorDef> AggregatorsDefs { get; set; }
 
 		public IList<string> Fields { get; set; }
 
-		public RowOrColumns(IList<string> fields, AggregatorDef aggregator) {
+		public RowOrColumns(IList<string> fields, IList<AggregatorDef> aggregators) {
 			Fields = fields;
-			AggregatorDef = aggregator;
+			AggregatorsDefs = aggregators;
 		}
 
 		public IList<string> FieldNames() {
@@ -40,12 +40,12 @@ namespace PivotSharp
 						FieldName = fieldName,
 						Name = (source[fieldName] ?? "null").ToString()
 					}).ToList(),
-					Aggregator = AggregatorDef.Create()
+					Aggregators = AggregatorsDefs.Select(a => a.Create()).ToList()
 				};
 				Add(row);
 			}
 
-			row.Aggregator.Push(source);
+			row.Aggregators.ForEach(a => a.Push(source));
 			return row;
 		}
 

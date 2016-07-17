@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
 
@@ -13,7 +14,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = new AggregatorDef { FunctionName = "Count"}
+				Aggregators = new List<AggregatorDef>{new AggregatorDef { FunctionName = "Count"}}
 
 			};
 
@@ -27,8 +28,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = new AggregatorDef{FunctionName = "Sum", ColumnName = "Value"}
-
+				Aggregators = new List<AggregatorDef>{new AggregatorDef{FunctionName = "Sum", ColumnName = "Value"}}
 			};
 
 			var sqlString = new PivotSqlString(config, "ObscureShapes");
@@ -42,7 +42,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = new AggregatorDef{FunctionName = "Sum", ColumnName = "Value"},
+				Aggregators = new List<AggregatorDef>{new AggregatorDef{FunctionName = "Sum", ColumnName = "Value"}},
 				Filters = new Filter[] {
 					new Filter("Border", "=", "dotted"), 
 				}

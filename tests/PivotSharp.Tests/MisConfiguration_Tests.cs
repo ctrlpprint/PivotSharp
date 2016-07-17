@@ -35,7 +35,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" },
+				Aggregators = new List<AggregatorDef>(){ new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" }},
 				ErrorMode = ConfigurationErrorHandlingMode.Throw,
 				Filters = new Filter[] {
 					new Filter("ThisIsntAColumnName", "=", new DateTime(2016,02,01))
@@ -56,7 +56,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef{ FunctionName = "SumInt", ColumnName = "Value"},
+				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
 				ErrorMode = ConfigurationErrorHandlingMode.Ignore,
 				Filters = new Filter[] {
 					new Filter("ThisIsntAColumnName", "=", new DateTime(2016,02,01))
@@ -69,7 +69,7 @@ namespace PivotSharp.Tests
 
 			Assert.AreEqual(1, pivot.InvalidColumns.Count());
 			Assert.AreEqual("ThisIsntAColumnName", pivot.InvalidColumns.First());
-			Assert.AreEqual(275M, pivot.GrandTotal.Value); // Sum of all rows
+			Assert.AreEqual(275M, pivot.GrandTotal[0].Value); // Sum of all rows
 
 		}
 
@@ -78,7 +78,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category", "ThisIsntAColumnName" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "Value" },
+				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
 				ErrorMode = ConfigurationErrorHandlingMode.Throw,
 				Filters = new Filter[] {
 					new Filter("Date", "=", new DateTime(2016,02,01))
@@ -99,7 +99,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category", "ThisIsntAColumnName" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "Value" },
+				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
 				ErrorMode = ConfigurationErrorHandlingMode.Ignore,
 				Filters = new Filter[] {
 					new Filter("Date", "=", new DateTime(2016,02,01))
@@ -112,7 +112,7 @@ namespace PivotSharp.Tests
 
 			Assert.AreEqual(1, pivot.InvalidColumns.Count());
 			Assert.AreEqual("ThisIsntAColumnName", pivot.InvalidColumns.First());
-			Assert.AreEqual(60M, pivot.GrandTotal.Value); // Sum of filtered rows
+			Assert.AreEqual(60M, pivot.GrandTotal[0].Value); // Sum of filtered rows
 
 		}
 
@@ -121,7 +121,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country", "ThisIsntAColumnName" },
-				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "Value" },
+				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
 				ErrorMode = ConfigurationErrorHandlingMode.Throw,
 				Filters = new Filter[] {
 					new Filter("Date", "=", new DateTime(2016,02,01))
@@ -142,7 +142,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country", "ThisIsntAColumnName" },
-				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "Value" },
+				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
 				ErrorMode = ConfigurationErrorHandlingMode.Ignore,
 				Filters = new Filter[] {
 					new Filter("Date", "=", new DateTime(2016,02,01))
@@ -155,7 +155,7 @@ namespace PivotSharp.Tests
 
 			Assert.AreEqual(1, pivot.InvalidColumns.Count());
 			Assert.AreEqual("ThisIsntAColumnName", pivot.InvalidColumns.First());
-			Assert.AreEqual(60M, pivot.GrandTotal.Value); // Sum of filtered rows
+			Assert.AreEqual(60M, pivot.GrandTotal[0].Value); // Sum of filtered rows
 
 		}
 
@@ -164,7 +164,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "ThisIsntAColumnName" },
+				Aggregators = new List<AggregatorDef>(){ new AggregatorDef() { FunctionName = "SumInt", ColumnName = "ThisIsntAColumnName" }},
 				ErrorMode = ConfigurationErrorHandlingMode.Throw,
 				Filters = new Filter[] {
 					new Filter("Date", "=", new DateTime(2016,02,01))
@@ -185,7 +185,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "ThisIsntAColumnName" },
+				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "ThisIsntAColumnName" } },
 				ErrorMode = ConfigurationErrorHandlingMode.Ignore,
 				Filters = new Filter[] {
 					new Filter("Date", "=", new DateTime(2016,02,01))
@@ -198,8 +198,8 @@ namespace PivotSharp.Tests
 
 			Assert.AreEqual(1, pivot.InvalidColumns.Count());
 			Assert.AreEqual("ThisIsntAColumnName", pivot.InvalidColumns.First());
-			Assert.AreEqual("Count", pivot.Aggregator.Create().SqlFunctionName);
-			Assert.AreEqual(2, pivot.GrandTotal.Value); // Count of filtered rows
+			Assert.AreEqual("Count", pivot.AggregatorDefs[0].Create().SqlFunctionName);
+			Assert.AreEqual(2, pivot.GrandTotal[0].Value); // Count of filtered rows
 
 		}
 

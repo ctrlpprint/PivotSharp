@@ -27,14 +27,14 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Shape" },
 				Cols = new[] { "Color" },
-				Aggregator = new AggregatorDef { FunctionName = "Count" }
+				Aggregators = new List<AggregatorDef>{ new AggregatorDef { FunctionName = "Count"}}
 
 			};
 			pivot = PivotTable.Create(config);
 			reader = new EnumerableDataReader(new List<ObscureShape>());
 
 			pivot.Pivot(reader);
-			Assert.AreEqual(0, pivot.GrandTotal.Value);
+			Assert.AreEqual(0, pivot.GrandTotal[0].Value);
 			Assert.AreEqual(0, pivot.Rows.Count());
 			Assert.AreEqual(0, pivot.Cols.Count());
 		}
@@ -43,14 +43,14 @@ namespace PivotSharp.Tests
 		public void Can_Handle_Empty_RowSet() {
 			var config = new PivotConfig() {
 				Cols = new[] { "Color" },
-				Aggregator = new AggregatorDef { FunctionName = "Count" }
+				Aggregators = new List<AggregatorDef> { new AggregatorDef { FunctionName = "Count" } }
 
 			};
 			pivot = PivotTable.Create(config);
 			reader = new EnumerableDataReader(source);
 
 			pivot.Pivot(reader);
-			Assert.AreEqual(3, pivot.GrandTotal.Value);
+			Assert.AreEqual(3, pivot.GrandTotal[0].Value);
 			Assert.AreEqual(0, pivot.Rows.Count());
 			Assert.AreEqual(2, pivot.Cols.Count());
 			Assert.AreEqual(2, pivot.Cols.Single(r => r.FlattenedKey == "blue").Value);
@@ -61,14 +61,14 @@ namespace PivotSharp.Tests
 		public void Can_Handle_Empty_ColSet() {
 			var config = new PivotConfig() {
 				Rows = new[] { "Color" },
-				Aggregator = new AggregatorDef { FunctionName = "Count" }
+				Aggregators = new List<AggregatorDef> { new AggregatorDef { FunctionName = "Count" } }
 
 			};
 			pivot = PivotTable.Create(config);
 			reader = new EnumerableDataReader(source);
 
 			pivot.Pivot(reader);
-			Assert.AreEqual(3, pivot.GrandTotal.Value);
+			Assert.AreEqual(3, pivot.GrandTotal[0].Value);
 			Assert.AreEqual(2, pivot.Rows.Count());
 			Assert.AreEqual(2, pivot.Rows.Single(r => r.FlattenedKey == "blue").Value);
 			Assert.AreEqual(1, pivot.Rows.Single(r => r.FlattenedKey == "red").Value);

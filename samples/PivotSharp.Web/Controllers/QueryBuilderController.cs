@@ -19,14 +19,14 @@ namespace PivotSharp.Web.Controllers
 				1, new PivotConfig() {
 					Rows = new[] {"Region"},
 					Cols = new[] {"CustomerClubType"},
-					Aggregator = new AggregatorDef { FunctionName = "Count"},
+					Aggregators = new []{new AggregatorDef { FunctionName = "Count"}},
 					FillTable = true
 				}
 			}, {
 				2, new PivotConfig() {
 					Rows = new[] {"Region", "Country"},
 					Cols = new[] {"Year", "Month"},
-					Aggregator = new AggregatorDef { FunctionName = "Count"},
+					Aggregators = new []{new AggregatorDef { FunctionName = "Count"}},
 					FillTable = true
 
 				}
@@ -34,7 +34,7 @@ namespace PivotSharp.Web.Controllers
 				3, new PivotConfig() {
 					Rows = new[] {"Region", "Country"},
 					Cols = new[] {"Year", "Month"},
-					Aggregator = new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
+					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"}},
 					FillTable = true
 
 				}
@@ -42,7 +42,7 @@ namespace PivotSharp.Web.Controllers
 				4, new PivotConfig() {
 					Rows = new[] {"Category", "Product"},
 					Cols = new[] {"Year", "Month"},
-					Aggregator = new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
+					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"}},
 					FillTable = true
 
 				}
@@ -50,7 +50,7 @@ namespace PivotSharp.Web.Controllers
 				5, new PivotConfig() {
 					Rows = new[] {"Region", "Country"},
 					Cols = new[] {"Year", "Month"},
-					Aggregator = new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
+					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"}},
 					FillTable = true,
 					Filters = new Filter[] {
 						new Filter("OrderType", "=", "Club"), 

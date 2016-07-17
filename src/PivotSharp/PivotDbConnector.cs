@@ -91,8 +91,9 @@ namespace PivotSharp
 			// HACK: If we're using sql generation, we basically need Sum rather than Count.
 			// Trouble with doing it this way is the config no longer represents the user's selection.
 			// This won't work in general: SumInt => int, SumDecimal => decimal are incompatible.
-			if (config.Aggregator.Create().SqlFunctionName == "Count") {
-				config.Aggregator = new AggregatorDef {ColumnName = "Count", FunctionName = "SumInt"};
+			foreach (var aggregatorDef in config.Aggregators.Where(a => a.FunctionName == "Count")) {
+				aggregatorDef.ColumnName = "Count";
+				aggregatorDef.FunctionName = "SumInt";
 			}
 
 			// When using CommandBehavior.CloseConnection, the connection will be closed when the 

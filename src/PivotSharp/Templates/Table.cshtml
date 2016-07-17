@@ -63,9 +63,9 @@
 				<!--  Cells -->
 				@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
 					var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
-					if (cellValue != null && cellValue.HasEntries) {
+					if (cellValue != null && cellValue[0].HasEntries) {
 						<td class="data-cell" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey">
-							@Model.GetValue(row.FlattenedKey, col.FlattenedKey).FormattedValue
+							@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[0].FormattedValue
 						</td>
 					}
 					else {
@@ -73,7 +73,7 @@
 					}
 				}
 				<!-- Row Totals -->
-				<th>@row.Aggregator.FormattedValue</th>
+				<th>@row.Aggregators[0].FormattedValue</th>
 			</tr>
 		}
 	</tbody>
@@ -81,9 +81,9 @@
 		<tr>
 			<th colspan="@Model.Rows.Fields.Count()">Grand Total</th>
 			@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
-				<th>@col.Aggregator.FormattedValue</th>
+				<th>@col.Aggregators[0].FormattedValue</th>
 			}
-			<th>@Model.GrandTotal.FormattedValue</th>
+			<th>@Model.GrandTotal[0].FormattedValue</th>
 
 		</tr>
 	</tfoot>

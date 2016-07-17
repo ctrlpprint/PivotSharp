@@ -38,14 +38,14 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Category"},
 				Cols = new[] {"Country"},
-				Aggregator = new AggregatorDef(){FunctionName = "Count"},
+				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "Count"} },
 			};
 
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(5, pivot.Values["Books"]["USA"].Value);
-			Assert.AreEqual(11, pivot.GrandTotal.Value);
+			Assert.AreEqual(5, pivot.Values["Books"]["USA"][0].Value);
+			Assert.AreEqual(11, pivot.GrandTotal[0].Value);
 		}
 
 		[Test]
@@ -53,14 +53,14 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef() { FunctionName = "Sum", ColumnName = "Value" }
+				Aggregator = new AggregatorDef() { FunctionName = "Sum", ColumnName = "Value" },
 			};
 
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(115M, pivot.Values["Books"]["USA"].Value);
-			Assert.AreEqual(295M, pivot.GrandTotal.Value);
+			Assert.AreEqual(115M, pivot.Values["Books"]["USA"][0].Value);
+			Assert.AreEqual(295M, pivot.GrandTotal[0].Value);
 		}
 
 		[Test]
@@ -68,14 +68,14 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef() { FunctionName = "Ave", ColumnName = "Value" }
+				Aggregator = new AggregatorDef() { FunctionName = "Ave", ColumnName = "Value" },
 			};
 
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(23.0M, pivot.Values["Books"]["USA"].Value);
-			Assert.AreEqual(26.82M, Math.Round(pivot.GrandTotal.Value,2));
+			Assert.AreEqual(23.0M, pivot.Values["Books"]["USA"][0].Value);
+			Assert.AreEqual(26.82M, Math.Round(pivot.GrandTotal[0].Value,2));
 		}
 
 		[Test]
@@ -83,14 +83,14 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef() { FunctionName = "Min", ColumnName = "Value" }
+				Aggregator = new AggregatorDef() { FunctionName = "Min", ColumnName = "Value" },
 			};
 
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(10M, pivot.Values["Books"]["USA"].Value);
-			Assert.AreEqual(10M, pivot.GrandTotal.Value);
+			Assert.AreEqual(10M, pivot.Values["Books"]["USA"][0].Value);
+			Assert.AreEqual(10M, pivot.GrandTotal[0].Value);
 		}
 
 		[Test]
@@ -98,15 +98,36 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] { "Category" },
 				Cols = new[] { "Country" },
-				Aggregator = new AggregatorDef() { FunctionName = "Max", ColumnName = "Value" }
+				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "Max", ColumnName = "Value" } },
 			};
 
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(30M, pivot.Values["Books"]["USA"].Value);
-			Assert.AreEqual(50M, pivot.GrandTotal.Value);
+			Assert.AreEqual(30M, pivot.Values["Books"]["USA"][0].Value);
+			Assert.AreEqual(50M, pivot.GrandTotal[0].Value);
 		}
+
+		[Test]
+		public void Can_Combine() {
+			var config = new PivotConfig() {
+				Rows = new[] { "Category" },
+				Cols = new[] { "Country" },
+				Aggregators = new List<AggregatorDef>() {
+					new AggregatorDef() { FunctionName = "Min", ColumnName = "Value" },
+					new AggregatorDef() { FunctionName = "Max", ColumnName = "Value" }
+				},
+			};
+
+			pivot = PivotTable.Create(config);
+			pivot.Pivot(reader);
+
+			Assert.AreEqual(10M, pivot.Values["Books"]["USA"][0].Value);
+			Assert.AreEqual(10M, pivot.GrandTotal[0].Value);
+			Assert.AreEqual(30M, pivot.Values["Books"]["USA"][1].Value);
+			Assert.AreEqual(50M, pivot.GrandTotal[1].Value);
+		}
+
 
 	}
 }

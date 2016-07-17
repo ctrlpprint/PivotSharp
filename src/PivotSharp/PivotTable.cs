@@ -88,8 +88,8 @@ namespace PivotSharp
 		public RowOrColumns Rows { get; set; }
 		public RowOrColumns Cols { get; set; }
 
-		public IAggregator GrandTotal { get; set; }
-		public AggregatorDef Aggregator { get; set; }
+		public IList<IAggregator> GrandTotal { get; set; }
+		public IList<AggregatorDef> AggregatorDefs { get; set; }
 
 		public PivotValues Values { get; private set; }
 
@@ -100,17 +100,17 @@ namespace PivotSharp
 		}
 
 		private void Init() {
-			Aggregator = Config.Aggregator;
-			GrandTotal = Aggregator.Create();
+			AggregatorDefs = Config.Aggregators;
+			GrandTotal = AggregatorDefs.Select(a => a.Create()).ToList();
 
-			Rows = new RowOrColumns(fields: Config.Rows, aggregator: Aggregator);
-			Cols = new RowOrColumns(fields: Config.Cols, aggregator: Aggregator);
+			Rows = new RowOrColumns(fields: Config.Rows, aggregators: AggregatorDefs);
+			Cols = new RowOrColumns(fields: Config.Cols, aggregators: AggregatorDefs);
 			Values = new PivotValues();
 			
 		}
 
 
-		public IAggregator GetValue(string rowHeader, string colHeader) {
+		public IList<IAggregator> GetValue(string rowHeader, string colHeader) {
 
 			return Values[rowHeader, colHeader];
 		}
@@ -126,7 +126,7 @@ namespace PivotSharp
 			InvalidColumns = Config.Filters.Select(c => c.ColumnName)
 				.Union(Config.Rows)
 				.Union(Config.Cols)
-				.Union(new List<string> {Config.Aggregator.Create().ColumnName})
+				.Union(Config.Aggregators.Select(a => a.ColumnName))
 				.Except(new List<string> { null, ""})
 				.Except(columnList)
 				.ToList();
@@ -137,7 +137,9 @@ namespace PivotSharp
 					throw new PivotConfigurationException(message: "Referenced ", invalidColumns: InvalidColumns);
 				}
 				Config = new PivotConfig {
-					Aggregator = columnList.Contains(Config.Aggregator.ColumnName) ? Config.Aggregator : new AggregatorDef(){ FunctionName = "Count"},
+					Aggregators = Config.Aggregators.Any(a => columnList.Contains(a.ColumnName))
+						? Config.Aggregators.Where(a => columnList.Contains(a.ColumnName)).ToList()
+						: new List<AggregatorDef>{ new AggregatorDef{ FunctionName = "Count"}},
 					Cols = Config.Cols.Intersect(columnList).ToList(),
 					Rows = Config.Rows.Intersect(columnList).ToList(),
 					FillTable = Config.FillTable,
@@ -175,8 +177,11 @@ namespace PivotSharp
 
 				if(Config.Filters.Any(f => !f.Apply(source)))
 					continue;
-				
-				GrandTotal.Push(source); // Update the Grand Total
+
+				// Update the Grand Totals
+				foreach (var aggregator in GrandTotal) {
+					aggregator .Push(source);
+				}
 
 				var row = Rows.AddRow(source);
 				var col = Cols.AddRow(source);
@@ -186,8 +191,14 @@ namespace PivotSharp
 					var flatRowKey = row.FlattenedKey;
 					var flatColKey = col.FlattenedKey;
 
-					var aggregator = Values.FindOrAdd(flatRowKey, flatColKey, Aggregator.Create());
-					aggregator.Push(source);
+					var aggregators = Values.FindOrAdd(
+						flattenedRowKey: flatRowKey,
+						flattenedColKey: flatColKey,
+						aggregators: AggregatorDefs.Select(a => a.Create()).ToList());
+
+					foreach (var aggregator in aggregators) {
+						aggregator.Push(source);
+					}
 				}
 
 			}
@@ -197,7 +208,10 @@ namespace PivotSharp
 			if (Config.FillTable) {
 				foreach (var row in Rows) {
 					foreach (var col in Cols) {
-						Values.FindOrAdd(row.FlattenedKey, col.FlattenedKey, Aggregator.Create());
+						Values.FindOrAdd(
+							flattenedRowKey: row.FlattenedKey,
+							flattenedColKey: col.FlattenedKey,
+							aggregators: AggregatorDefs.Select(a => a.Create()).ToList());
 					}
 				}
 			}

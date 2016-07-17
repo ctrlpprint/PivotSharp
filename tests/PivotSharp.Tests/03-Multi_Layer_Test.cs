@@ -41,7 +41,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Color", "Shape"},
 				Cols = new[] {"Border", "Shadow"},
-				Aggregator = new AggregatorDef { FunctionName = "Count" }
+				Aggregators = new []{ new AggregatorDef { FunctionName = "Count" }}
 			};
 
 			reader = new EnumerableDataReader(source);
@@ -71,11 +71,11 @@ namespace PivotSharp.Tests
 
 		[Test]
 		public void Can_Generate_Counts() {
-			Assert.AreEqual(2, pivot.Values["blue,circle"]["dotted,outside"].Value);
-			Assert.AreEqual(1, pivot.Values["blue,circle"]["dashed,outside"].Value);
-			Assert.AreEqual(1, pivot.Values["red,triangle"]["dotted,inside"].Value);
+			Assert.AreEqual(2, pivot.Values["blue,circle"]["dotted,outside"][0].Value);
+			Assert.AreEqual(1, pivot.Values["blue,circle"]["dashed,outside"][0].Value);
+			Assert.AreEqual(1, pivot.Values["red,triangle"]["dotted,inside"][0].Value);
 
-			Assert.AreEqual(4, pivot.GrandTotal.Value);
+			Assert.AreEqual(4, pivot.GrandTotal[0].Value);
 		}
 	}
 }

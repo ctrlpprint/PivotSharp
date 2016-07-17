@@ -40,7 +40,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Shape"},
 				Cols = new[] {"Color"},
-				Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "Lines"},
+				Aggregators = new List<AggregatorDef>{ new AggregatorDef { FunctionName = "SumInt", ColumnName = "Lines"}},
 				Filters = new Filter[] {
 					new Filter("Color", "=", "blue"), 
 				}
@@ -55,10 +55,10 @@ namespace PivotSharp.Tests
 
 		[Test]
 		public void Can_Filter_On_String_Equality() {
-			Assert.AreEqual(3, pivot.Values["circle"]["blue"].Value);
-			Assert.AreEqual(3, pivot.Values["triangle"]["blue"].Value);
+			Assert.AreEqual(3, pivot.Values["circle"]["blue"][0].Value);
+			Assert.AreEqual(3, pivot.Values["triangle"]["blue"][0].Value);
 
-			Assert.AreEqual(6, pivot.GrandTotal.Value);			
+			Assert.AreEqual(6, pivot.GrandTotal[0].Value);
 		}
 
 		[Ignore("Not implemented yet")]

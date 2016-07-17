@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
@@ -14,7 +15,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Region", "Country"},
 				Cols = new[] {"Source"},
-				Aggregator = new AggregatorDef{FunctionName = "Sum", ColumnName = "Revenue"},
+				Aggregators = new List<AggregatorDef>{new AggregatorDef{FunctionName = "Sum", ColumnName = "Value"}},
 				Filters = new Filter[] {
 					new Filter("Year", ">", 2015), 
 					new Filter("Category", "=", "Web"), 
@@ -29,7 +30,9 @@ namespace PivotSharp.Tests
 				{
 					'Rows':['Region','Country'],
 					'Cols':['Category'],
-					'Aggregator':{FunctionName:'Sum', FieldName:'Revenue'},
+					'Aggregators':[
+						{FunctionName:'Sum', ColumnName:'Revenue'}
+					],
 					'FillTable':true,
 					'Filters':[
 						{ Op: '>', ColumnName: 'Year', ParameterValue: 2015 },
@@ -52,9 +55,9 @@ namespace PivotSharp.Tests
 	
 			Assert.AreEqual(true, deserialized.FillTable);
 
-			Assert.AreEqual("Sum", deserialized.Aggregator.Create().SqlFunctionName);
-			Assert.AreEqual("Revenue", deserialized.Aggregator.Create().ColumnName);
-			Assert.AreEqual(0, deserialized.Aggregator.Create().Value);
+			Assert.AreEqual("Sum", deserialized.Aggregators[0].Create().SqlFunctionName);
+			Assert.AreEqual("Revenue", deserialized.Aggregators[0].Create().ColumnName);
+			Assert.AreEqual(0, deserialized.Aggregators[0].Create().Value);
 
 			Assert.AreEqual(2, deserialized.Filters.Count);
 

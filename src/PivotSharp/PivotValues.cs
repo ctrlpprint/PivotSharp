@@ -3,37 +3,37 @@ using System.Linq;
 
 namespace PivotSharp
 {
-	public class PivotValues : Dictionary<PivotKey, IAggregator>
+	public class PivotValues : Dictionary<PivotKey, IList<IAggregator>>
 	{
-		public IAggregator FindOrAdd(string flattenedRowKey, string flattenedColKey, IAggregator aggregator) {
+		public IList<IAggregator> FindOrAdd(string flattenedRowKey, string flattenedColKey, IList<IAggregator> aggregators) {
 
 			var existing = this[flattenedRowKey, flattenedColKey];
 			if (existing != null) {
 				return existing;
 			}
 
-			return Add(flattenedRowKey, flattenedColKey, aggregator);
+			return Add(flattenedRowKey, flattenedColKey, aggregators);
 		}
 
 
-		public IAggregator Add(string flattenedRowKey, string flattenedColKey, IAggregator aggregator) {
+		public IList<IAggregator> Add(string flattenedRowKey, string flattenedColKey, IList<IAggregator> aggregators) {
 			
 			base.Add(
 				key: new PivotKey{FlattenedColKey = flattenedColKey, FlattenedRowKey = flattenedRowKey},
-				value: aggregator
+				value: aggregators
 				);
 
-			return aggregator;
+			return aggregators;
 		}
 
-		public 	IDictionary<string, Dictionary<string, IAggregator>> Rows {
+		public 	IDictionary<string, Dictionary<string, IList<IAggregator>>> Rows {
 			get {
 				return this
 					.GroupBy(kpv => kpv.Key.FlattenedRowKey)
 					.ToDictionary(
 						keySelector: gp => gp.Key,
 						elementSelector: gp => gp
-							.Select(x => new KeyValuePair<string, IAggregator> (
+							.Select(x => new KeyValuePair<string, IList<IAggregator>> (
 								key: x.Key.FlattenedColKey,
 								value: x.Value))
 							.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
@@ -41,7 +41,7 @@ namespace PivotSharp
 			}
 		}
 
-		public IAggregator this[string key1, string key2] {
+		public IList<IAggregator> this[string key1, string key2] {
 			get {
 				var value = this.SingleOrDefault(v => v.Key.FlattenedRowKey == key1 && v.Key.FlattenedColKey == key2);
 				// TODO: What to do if no match?
@@ -54,7 +54,7 @@ namespace PivotSharp
 		/// <summary>
 		/// Accept a row indexer and return a dictionary of values for that row, keyed on the flattened column keys
 		/// </summary>
-		public IDictionary<string, IAggregator> this[string key1] {
+		public IDictionary<string, IList<IAggregator>> this[string key1] {
 			get {
 				// TODO: What to do if no match?
 				return this

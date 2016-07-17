@@ -10,8 +10,9 @@ namespace PivotSharp
 		}
 
 		public IList<Header> Headers { get; set; }
-		public IAggregator Aggregator { get; set; }
-		public decimal Value { get { return Aggregator.Value; } }
+		public List<IAggregator> Aggregators { get; set; }
+		public IEnumerable<decimal> Values { get { return Aggregators.Select(a => a.Value); } }
+		public decimal Value { get { return Values.FirstOrDefault(); } }
 
 		public RowOrColumn() {
 			Headers = new List<Header>();

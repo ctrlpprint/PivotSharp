@@ -38,7 +38,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = new[] {"Shape"},
 				Cols = new[] {"Color"},
-				Aggregator = new AggregatorDef { FunctionName = "Count"}
+				Aggregators = new List<AggregatorDef> {new AggregatorDef {FunctionName = "Count"}}
 
 			};
 			pivot = PivotTable.Create(config);
@@ -79,10 +79,10 @@ namespace PivotSharp.Tests
 		[Test]
 		public void Can_Generate_Cell_Counts() {
 			
-			Assert.AreEqual(2, pivot.Values["circle"]["blue"].Value);
-			Assert.AreEqual(1, pivot.Values["triangle"]["red"].Value);
+			Assert.AreEqual(2, pivot.Values["circle"]["blue"][0].Value);
+			Assert.AreEqual(1, pivot.Values["triangle"]["red"][0].Value);
 
-			Assert.AreEqual(3, pivot.GrandTotal.Value);
+			Assert.AreEqual(3, pivot.GrandTotal[0].Value);
 		}
 
 		[Test]

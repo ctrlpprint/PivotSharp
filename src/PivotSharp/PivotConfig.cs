@@ -14,7 +14,12 @@ namespace PivotSharp
 
 		public IList<Filter> Filters { get; set; }
 
-		public AggregatorDef Aggregator { get; set; }
+		public IList<AggregatorDef> Aggregators { get; set; }
+
+		public AggregatorDef Aggregator {
+			get { return Aggregators[0]; }
+			set { Aggregators = new List<AggregatorDef> {value}; }
+		}
 
 		public bool FillTable { get; set; }
 
