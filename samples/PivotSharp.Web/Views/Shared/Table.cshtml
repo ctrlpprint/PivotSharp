@@ -4,9 +4,9 @@
 
 <style scoped>
 	/* Be good to have a way to only hover where non-empty. Css can't detect empty content. May need an attribute '*/
-	table {
+	/*table {
 		width: auto !important;
-	}
+	}*/
 	.table>tbody>tr>td:hover
 	{
 		background-color: #eee;
@@ -18,35 +18,57 @@
 	thead th {
 		text-align: center;
 	}
-	tbody td, tfoot td, tbody th:last-child, tfoot tr:last-child th {
-		text-align: right;
-	}
 </style>
 
-<table class="table table-bordered">
+<table class="table table-bordered table-responsive">
 	<thead>
 		<tr>
 			<!-- Field Names -->
-			<td colspan="@Model.Rows.Fields.Count()" rowspan="@(Model.Cols.Fields.Count() + 1)" style="vertical-align: bottom">
+			<td colspan="@Model.Rows.Fields.Count()" rowspan="@(Model.Cols.Fields.Count() + (Model.AggregatorDefs.Count > 1 ? 2 : 1))" style="vertical-align: bottom">
 				@string.Join(" // ", Model.Rows.Fields)
 			</td>
-			<td colspan="@(Model.Cols.Count() + 1)">@string.Join(" // ", Model.Cols.Fields)</td>
+			<td colspan="@((Model.Cols.Count() + 1)* Model.AggregatorDefs.Count)">@string.Join(" // ", Model.Cols.Fields)</td>
 		</tr>
-		<!-- One row for each column field -->
-		@foreach (var colField in Model.Cols.Fields) {
+		<!-- One row per column field-->
+		@if (Model.Cols.Any()) {
+			foreach (var colField in Model.Cols.Fields) {
+				<tr>
+					<!-- Col Headers -->
+					@foreach (var header in Model.Cols.GetHeaderGroupsForField(colField)) {
+						<th colspan="@(header.Count()* Model.AggregatorDefs.Count)">
+							@header.First().Headers.First(h => h.FieldName == colField).Name
+						</th>
+					}
+					<!-- Row Totals Header -->
+					@* On the top row, add a Total cell which spans the header rows *@
+					@if (Model.Cols.Fields.IndexOf(colField) == 0) {
+						foreach (var aggregation in Model.AggregatorDefs) {
+							<th rowspan="@(Model.Cols.Fields.Count()+1)">@aggregation.ToString()</th>
+						}
+					}
+				</tr>
+			}
+			if (Model.AggregatorDefs.Count > 1) {
+				var lowestColField = Model.Cols.Fields[Model.Cols.Fields.Count - 1];
+				<tr>
+					<!-- Aggregator Headers -->
+					@foreach (var header in Model.Cols.GetHeaderGroupsForField(lowestColField)) {
+						foreach (var aggregation in Model.AggregatorDefs) {
+							<th>@aggregation.ToString()</th>
+						}
+					}
+				</tr>
+			}
+		}
+		else {
 			<tr>
-				<!-- Col Headers -->
-				@foreach (var header in Model.Cols.GetHeaderGroupsForField(colField)) {
-					<th colspan="@header.Count()">@header.First().Headers.First(h => h.FieldName == colField).Name</th>
-				}
-				<!-- Row Totals Header -->
-				@* On the top row, add a Total cell which spans the header rows *@
-				@if (Model.Cols.Fields.IndexOf(colField) == 0) {
-					<th rowspan="@(Model.Cols.Fields.Count())">Total</th>
+				@foreach (var aggregation in Model.AggregatorDefs) {
+					<th>@aggregation.ToString()</th>
 				}
 			</tr>
 		}
 	</thead>
+
 	<tbody>
 		<!-- One row for each row header -->
 		@foreach (var row in Model.Rows.NaturalSort(r => r.FlattenedKey)) {
@@ -60,28 +82,37 @@
 				}
 				<!--  Cells -->
 				@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
-					var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
-					if (cellValue != null && cellValue[0].HasEntries) {
-						<td class="data-cell" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey">
-							@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[0].FormattedValue
-						</td>
-					}
-					else {
-						<td class="empty"></td>
+					for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+
+						var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
+						if (cellValue != null && cellValue[aggregatorIndex].HasEntries) {
+							<td class="data-cell text-right" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey">
+								@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].FormattedValue
+							</td>
+						}
+						else {
+							<td class="empty"></td>
+						}
 					}
 				}
 				<!-- Row Totals -->
-				<th>@row.Aggregators[0].FormattedValue</th>
+				@for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+					<th class="text-right">@row.Aggregators[aggregatorIndex].FormattedValue</th>
+				}
 			</tr>
 		}
 	</tbody>
 	<tfoot>
 		<tr>
-			<th colspan="@Model.Rows.Fields.Count()">Grand Total</th>
+			<th colspan="@Model.Rows.Fields.Count()" class="text-right">Grand Total</th>
 			@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
-				<th>@col.Aggregators[0].FormattedValue</th>
+				for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+					<th class="text-right">@col.Aggregators[aggregatorIndex].FormattedValue</th>
+				}
 			}
-			<th>@Model.GrandTotal[0].FormattedValue</th>
+			@for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+				<th class="text-right">@Model.GrandTotal[aggregatorIndex].FormattedValue</th>
+			}
 			
 		</tr>
 	</tfoot>

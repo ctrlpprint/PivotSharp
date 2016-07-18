@@ -12,7 +12,7 @@
 
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-				@Model.PivotTable.Config.Aggregators.ColumnName
+				@Model.PivotTable.Config.Aggregators[0].ColumnName
 				pivoted by
 				@string.Join(",", Model.PivotTable.Config.Rows)
 				and

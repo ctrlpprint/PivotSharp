@@ -23,7 +23,7 @@
 	var legends = @(Html.Raw(JsonConvert.SerializeObject(top10.Select(r => r.FlattenedKey))));
 
 	// Issues with gaps in data...
-	var series = @(Html.Raw(JsonConvert.SerializeObject(top10.Select(row => row.Row.Select(v => v.Value.Value)))));
+	var series = @(Html.Raw(JsonConvert.SerializeObject(top10.Select(row => row.Row.Select(v => v.Value[0].Value)))));
 
 
 	var data = {

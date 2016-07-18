@@ -48,6 +48,29 @@ namespace PivotSharp.Web.Controllers
 				}
 			}, {
 				5, new PivotConfig() {
+					Rows = new[] {"Category", "Product"},
+					Cols = new[] {"Year"},
+					Aggregators = new [] {
+						new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
+						new AggregatorDef { FunctionName = "Count", ColumnName = ""}
+					},
+					FillTable = true
+
+				}
+			}, {
+				6, new PivotConfig() {
+					Rows = new[] {"Category", "Product"},
+					Cols = new List<string>() ,
+					Aggregators = new [] {
+						new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
+						new AggregatorDef { FunctionName = "Ave", ColumnName = "Revenue"},
+						new AggregatorDef { FunctionName = "Count", ColumnName = ""}
+					},
+					FillTable = true
+
+				}
+			}, {
+				7, new PivotConfig() {
 					Rows = new[] {"Region", "Country"},
 					Cols = new[] {"Year", "Month"},
 					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"}},
@@ -55,7 +78,6 @@ namespace PivotSharp.Web.Controllers
 					Filters = new Filter[] {
 						new Filter("OrderType", "=", "Club"), 
 					}
-
 				}
 			}
 		};

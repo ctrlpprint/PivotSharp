@@ -9,6 +9,7 @@ namespace PivotSharp.Aggregators
 		public decimal SumTotal { get; private set; }
 		public int Count { get; private set; }
 
+		// TODO: This won't work for grouped and totalled pivots. Need WITH ROLLUP or similar, or to collage Sum and Count and then divide.
 		public string SqlFunctionName { get { return "Avg"; } }
 
 

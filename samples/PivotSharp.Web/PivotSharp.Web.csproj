@@ -164,6 +164,7 @@
     <Content Include="Views\QueryBuilder\Index.cshtml" />
     <Content Include="Views\Shared\_PivotConfig.cshtml" />
     <Content Include="Views\Shared\_Chart.cshtml" />
+    <Content Include="Views\Shared\TableSingleAggregation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
