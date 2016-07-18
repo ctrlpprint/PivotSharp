@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace System.Data
 {
@@ -8,6 +9,10 @@ namespace System.Data
 			// http://stackoverflow.com/a/2738741/424788
 			for (var i = 0; i < reader.FieldCount; i++)
 				yield return reader.GetName(i);
-		} 
+		}
+
+		public static bool ContainsKey(this IDataReader reader, string name) {
+			return GetColumnNames(reader).Any(c => c == name);
+		}
 	}
 }

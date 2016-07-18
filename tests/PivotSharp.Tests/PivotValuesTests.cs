@@ -40,6 +40,7 @@ namespace PivotSharp.Tests
 
 			public decimal Value { get; set; }
 			public string FormattedValue { get; private set; }
+			public int Count { get; private set; }
 			public bool HasEntries { get; private set; }
 
 			public TestAggregator(int value) {

@@ -49,11 +49,19 @@ namespace PivotSharp.Web.Controllers
 			}, {
 				5, new PivotConfig() {
 					Rows = new[] {"Category", "Product"},
-					Cols = new[] {"Year"},
+					Cols = new[] {"Year", "Month"},
 					Aggregators = new [] {
 						new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
+						new AggregatorDef { FunctionName = "Ave", ColumnName = "Revenue"},
 						new AggregatorDef { FunctionName = "Count", ColumnName = ""}
 					},
+					Filters = new Filter[] {
+						new Filter("OrderType", "=", "Club"), 
+						new Filter("Year", "=", "2013"), 
+						new Filter("Month", ">=", "1"), 
+						new Filter("Month", "<=", "2"), 
+					},
+					ErrorMode = ConfigurationErrorHandlingMode.Ignore, // HACK: Filters will break validation because they don't come through in the resultset.
 					FillTable = true
 
 				}
@@ -75,6 +83,7 @@ namespace PivotSharp.Web.Controllers
 					Cols = new[] {"Year", "Month"},
 					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"}},
 					FillTable = true,
+					ErrorMode = ConfigurationErrorHandlingMode.Ignore, // HACK: Filters will break validation because they don't come through in the resultset.
 					Filters = new Filter[] {
 						new Filter("OrderType", "=", "Club"), 
 					}

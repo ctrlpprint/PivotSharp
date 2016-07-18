@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregators\AggregatorBase.cs" />
     <Compile Include="Aggregators\AggregatorDef.cs" />
     <Compile Include="Aggregators\Count.cs" />
     <Compile Include="Aggregators\Max.cs" />

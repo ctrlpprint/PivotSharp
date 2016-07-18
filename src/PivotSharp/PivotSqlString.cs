@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using PivotSharp.Aggregators;
 
 namespace PivotSharp
 {
@@ -35,7 +36,7 @@ namespace PivotSharp
 		}
 
 		public string WhereClause {
-			get { return string.Join(", ", config.Filters.Select(f => f.SqlClause("param" + config.Filters.IndexOf(f)))); }
+			get { return string.Join(" and ", config.Filters.Select(f => f.SqlClause("param" + config.Filters.IndexOf(f)))); }
 		}
 
 		public PivotSqlString(PivotConfig config, string tableName) {
@@ -43,7 +44,12 @@ namespace PivotSharp
 			this.tableName = tableName;
 
 			groupingColumns = string.Join(", ", config.Rows.Union(config.Cols).Select(Bracket));
-			aggregations = string.Join(", ", config.Aggregators.Select(a => AggregateFunction(a.Create())));
+
+			var aggregationFunctions = config.Aggregators.ToList();
+			if(!aggregationFunctions.Any(a => a.FunctionName == "Count" && string.IsNullOrEmpty(a.ColumnName)))
+				aggregationFunctions.Add(new AggregatorDef{FunctionName = "Count"});
+
+			aggregations = string.Join(", ", aggregationFunctions.Select(a => AggregateFunction(a.Create())));
 		}
 	}
 }

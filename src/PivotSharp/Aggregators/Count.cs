@@ -3,29 +3,18 @@ using System.Data;
 
 namespace PivotSharp.Aggregators
 {
-	public class Count : IAggregator
+	public class Count : AggregatorBase
 	{
-		public Type ReturnedType = typeof (int);
+		public override string SqlFunctionName { get { return "Count"; } }
 
-		public string SqlFunctionName { get { return "Count"; } }
-		public string ColumnName { get; set; }
+		public Count() { }
 
-		public int RunningCount { get; private set; }
+		public override void UpdateFor(IDataReader record) { }
 
-		public Count() {
-			RunningCount = 0;
-		}
-
-		public void Push(IDataReader row) {
-			RunningCount++;
-			HasEntries = true;
-		}
-
-		public decimal Value {
-			get { return RunningCount; }
+		public override decimal Value {
+			get { return Count; }
 		}
 
 		public string FormattedValue { get { return Value.ToString("N0"); } }
-		public bool HasEntries { get; private set; }
 	}
 }

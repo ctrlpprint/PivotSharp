@@ -7,5 +7,11 @@
 			decimal dec;
 			return decimal.TryParse(value, out dec) ? dec : defaultValue;
 		}
+
+		public static int ToInt(this string value, int defaultValue = 0) {
+
+			int val;
+			return int.TryParse(value, out val) ? val : defaultValue;
+		}
 	}
 }

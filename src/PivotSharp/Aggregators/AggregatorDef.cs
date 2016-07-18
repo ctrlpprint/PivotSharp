@@ -38,5 +38,36 @@ namespace PivotSharp.Aggregators
 
 			return string.Format("{0} {1}", FunctionName, ColumnName);
 		}
+
+		#region Comparators
+		public bool Equals(AggregatorDef other) {
+
+			if (!(FunctionName == null && other.FunctionName == null) && FunctionName != other.FunctionName) return false;
+			if (!(ColumnName == null && other.ColumnName == null) && ColumnName != other.ColumnName) return false;
+			return true;
+		}
+
+		public override bool Equals(object obj) {
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != this.GetType()) return false;
+			return Equals((AggregatorDef)obj);
+		}
+
+		public static bool operator ==(AggregatorDef key1, AggregatorDef key2) {
+			return !ReferenceEquals(key1, null) && key1.Equals(key2);
+		}
+
+		public static bool operator !=(AggregatorDef key1, AggregatorDef key2) {
+			return !(key1 == key2);
+		}
+
+		public override int GetHashCode() {
+			unchecked {
+				return (ToString().GetHashCode() * 397);
+			}
+		}
+		#endregion
+
 	}
 }

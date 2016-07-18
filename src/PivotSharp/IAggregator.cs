@@ -9,6 +9,7 @@ namespace PivotSharp
 		void Push(IDataReader record);
 		decimal Value { get; }
 		string FormattedValue { get; }
+		int Count { get; }
 		bool HasEntries { get; }
 	}
 }

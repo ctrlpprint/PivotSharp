@@ -31,30 +31,35 @@ namespace PivotSharp.Filters
 			return All().SingleOrDefault(o => o.Op == op);
 		}
 
+		// Need to convert to the right IComparable. Parameters can be deserialized/bound as strings whilst actually representing ints, dates, etc.
+		private static int Compare(IComparable left, IComparable right) {
+			return left.CompareTo(Convert.ChangeType(right, left.GetType()));
+		}
+
 		public static FilterOperator Equals = new FilterOperator() {
 			Op = "=",
-			Compare = (left, right) => left.CompareTo(right) == 0
+			Compare = (left, right) => Compare(left, right) == 0
 		};
 
 		public static FilterOperator GreaterThan = new FilterOperator() {
 			Op = ">",
-			Compare = (left, right) => left.CompareTo(right) > 0
+			Compare = (left, right) => Compare(left, right) > 0
 		};
 		public static FilterOperator LessThan = new FilterOperator() {
 			Op = "<",
-			Compare = (left, right) => left.CompareTo(right) < 0
+			Compare = (left, right) => Compare(left, right) < 0
 		};
 		public static FilterOperator GreaterThanOrEqualTo = new FilterOperator() {
 			Op = ">=",
-			Compare = (left, right) => left.CompareTo(right) >= 0
+			Compare = (left, right) => Compare(left, right) >= 0
 		};
 		public static FilterOperator LessThanOrEqualTo = new FilterOperator() {
 			Op = "<=",
-			Compare = (left, right) => left.CompareTo(right) <= 0
+			Compare = (left, right) => Compare(left, right) <= 0
 		};
 		public static FilterOperator NotEqualTo = new FilterOperator() {
 			Op = "<>",
-			Compare = (left, right) => left.CompareTo(right) != 0
+			Compare = (left, right) => Compare(left, right) != 0
 		};
 
 	}
