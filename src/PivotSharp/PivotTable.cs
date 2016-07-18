@@ -180,7 +180,7 @@ namespace PivotSharp
 
 				// Update the Grand Totals
 				foreach (var aggregator in GrandTotal) {
-					aggregator .Push(source);
+					aggregator.Push(source);
 				}
 
 				var row = Rows.AddRow(source);
