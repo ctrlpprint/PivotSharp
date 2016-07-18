@@ -29,5 +29,14 @@ namespace PivotSharp.Aggregators
 			throw new NotImplementedException();
 		}
 
+		public override string ToString() {
+
+			// HACK: Needs tidy up.
+			if (ColumnName == "Count") return "Count";
+			if (FunctionName == "Sum" || FunctionName == "SumInt")
+				return string.Format("Total {0}", ColumnName);
+
+			return string.Format("{0} {1}", FunctionName, ColumnName);
+		}
 	}
 }
