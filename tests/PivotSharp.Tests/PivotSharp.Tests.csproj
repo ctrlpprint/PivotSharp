@@ -57,6 +57,7 @@
     <Compile Include="ConfigSerializationTests.cs" />
     <Compile Include="MisConfiguration_Tests.cs" />
     <Compile Include="PivotKeyTests.cs" />
+    <Compile Include="SqlPivotTests.cs" />
     <Compile Include="PivotSqlStringTests.cs" />
     <Compile Include="PivotValuesTests.cs" />
     <Compile Include="PivotWriterTests.cs" />

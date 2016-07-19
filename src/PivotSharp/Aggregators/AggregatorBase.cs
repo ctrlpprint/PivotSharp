@@ -6,12 +6,14 @@ namespace PivotSharp.Aggregators
 {
 	public abstract class AggregatorBase : IAggregator
 	{
+		public const string AliasDelimter = "_";
+
 		public abstract string SqlFunction { get; }
 		public abstract string SqlFunctionName { get; }
 		public virtual string ColumnName { get; set; }
 
 		public virtual string Alias {
-			get { return string.Join("@", new[] {SqlFunctionName, ColumnName}.Where(s => !string.IsNullOrEmpty(s))); }
+			get { return string.Join(AliasDelimter, new[] {SqlFunctionName, ColumnName}.Where(s => !string.IsNullOrEmpty(s))); }
 		}
 
 		public abstract void UpdateFor(IDataReader record);
