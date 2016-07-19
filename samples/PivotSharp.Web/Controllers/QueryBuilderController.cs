@@ -67,13 +67,15 @@ namespace PivotSharp.Web.Controllers
 				}
 			}, {
 				6, new PivotConfig() {
-					Rows = new[] {"Category", "Product"},
+					Rows = new[] {"Year", "Month"},
 					Cols = new List<string>() ,
 					Aggregators = new [] {
 						new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
 						new AggregatorDef { FunctionName = "Ave", ColumnName = "Revenue"},
+						new AggregatorDef { FunctionName = "CountDistinct", ColumnName = "OrderID"},
 						new AggregatorDef { FunctionName = "Count", ColumnName = ""}
 					},
+					ErrorMode = ConfigurationErrorHandlingMode.Ignore, // HACK: Aggregators will now break validation because they don't come through in the resultset.
 					FillTable = true
 
 				}

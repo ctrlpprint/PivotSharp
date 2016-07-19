@@ -5,6 +5,9 @@ namespace PivotSharp.Aggregators
 {
 	public class Count : AggregatorBase
 	{
+		public override string SqlFunction {
+			get { return string.Format("count({0})", string.IsNullOrEmpty(ColumnName) ? "*": ColumnName); }
+		}
 		public override string SqlFunctionName { get { return "Count"; } }
 
 		public Count() { }
@@ -15,6 +18,6 @@ namespace PivotSharp.Aggregators
 			get { return Count; }
 		}
 
-		public string FormattedValue { get { return Value.ToString("N0"); } }
+		public override string FormattedValue { get { return Value.ToString("N0"); } }
 	}
 }

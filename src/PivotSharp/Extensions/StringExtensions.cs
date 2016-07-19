@@ -13,5 +13,6 @@
 			int val;
 			return int.TryParse(value, out val) ? val : defaultValue;
 		}
+
 	}
 }

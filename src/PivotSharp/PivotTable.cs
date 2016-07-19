@@ -127,7 +127,7 @@ namespace PivotSharp
 				.Union(Config.Rows)
 				.Union(Config.Cols)
 				.Union(Config.Aggregators.Select(a => a.ColumnName))
-				.Except(new List<string> { null, ""})
+				.Except(new List<string> { null, "" })
 				.Except(columnList)
 				.ToList();
 
@@ -137,14 +137,18 @@ namespace PivotSharp
 					throw new PivotConfigurationException(message: "Referenced ", invalidColumns: InvalidColumns);
 				}
 				Config = new PivotConfig {
-					Aggregators = Config.Aggregators.Any(a => columnList.Contains(a.ColumnName))
-						? Config.Aggregators.Where(a => columnList.Contains(a.ColumnName)).ToList()
-						: new List<AggregatorDef>{ new AggregatorDef{ FunctionName = "Count"}},
+					Aggregators = Config.Aggregators.Where(a => columnList.Contains(a.ColumnName))
+						.Union(Config.Aggregators.Where(a => columnList.Contains(a.Create().Alias)))
+						.Distinct()
+						.ToList(),
 					Cols = Config.Cols.Intersect(columnList).ToList(),
 					Rows = Config.Rows.Intersect(columnList).ToList(),
 					FillTable = Config.FillTable,
 					Filters = Config.Filters.Where(f => columnList.Contains(f.ColumnName)).ToList()
 				};
+
+				if (!Config.Aggregators.Any())
+					Config.Aggregators.Add(new AggregatorDef {FunctionName = "Count"});
 
 			}
 

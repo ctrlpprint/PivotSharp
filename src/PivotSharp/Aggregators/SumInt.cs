@@ -5,6 +5,10 @@ namespace PivotSharp.Aggregators
 {
 	public class SumInt : AggregatorBase
 	{
+		public override string SqlFunction {
+			get { return string.Format("sum({0})", ColumnName); }
+		}
+
 		public decimal SumTotal { get; private set; }
 		public override string SqlFunctionName { get { return "Sum"; } }
 
@@ -14,8 +18,7 @@ namespace PivotSharp.Aggregators
 		}
 
 		public override void UpdateFor(IDataReader record) {
-			var val = record[ColumnName].ToString().ToInt();
-			SumTotal += val;
+			SumTotal += GetValue(record).ToString().ToDecimal();
 		}
 
 		public override decimal Value { get { return SumTotal; } }

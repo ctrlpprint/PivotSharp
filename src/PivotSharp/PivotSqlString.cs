@@ -15,24 +15,20 @@ namespace PivotSharp
 		}
 
 		private string AggregateFunction(IAggregator aggregator) {
-			const string template = "{0}({1}) as {2}";
 
-			return (string.IsNullOrEmpty(aggregator.ColumnName))
-				? string.Format(template,	aggregator.SqlFunctionName,		"*",							Bracket(aggregator.SqlFunctionName))
-				: string.Format(template,	aggregator.SqlFunctionName,		Bracket(aggregator.ColumnName),	Bracket(aggregator.ColumnName));
+			return string.Format("{0} as {1}",
+				aggregator.SqlFunction,
+				aggregator.Alias
+				);
 		}
 
 		// select {groupingColumns},{aggregateColumns} from {tableName} where {whereClause} group by {groupingColumns}
 		public override string ToString() {
 			return 
 				"select " + SelectList
-				+ " from " + Bracket(tableName)
+				+ " from " + tableName
 				+ (config.Filters.Any() ? " where " + WhereClause : "")
 				+ " group by " + groupingColumns;
-		}
-
-		private string Bracket(string str) {
-			return "[" + str + "]";
 		}
 
 		public string WhereClause {
@@ -43,9 +39,11 @@ namespace PivotSharp
 			this.config = config;
 			this.tableName = tableName;
 
-			groupingColumns = string.Join(", ", config.Rows.Union(config.Cols).Select(Bracket));
+			groupingColumns = string.Join(", ", config.Rows.Union(config.Cols));
 
 			var aggregationFunctions = config.Aggregators.ToList();
+
+			// Make sure we always have a Count(*). We'll use this for identifing length of drilldowns, as well as support for Avg.
 			if(!aggregationFunctions.Any(a => a.FunctionName == "Count" && string.IsNullOrEmpty(a.ColumnName)))
 				aggregationFunctions.Add(new AggregatorDef{FunctionName = "Count"});
 

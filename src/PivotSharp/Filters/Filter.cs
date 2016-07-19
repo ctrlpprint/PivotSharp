@@ -42,7 +42,7 @@ namespace PivotSharp.Filters
 		}
 
 		public string SqlClause(string paramName) {
-			return string.Format("[{0}] {1} @{2}", ColumnName, Op, paramName.Replace("@", ""));
+			return string.Format("{0} {1} @{2}", ColumnName, Op, paramName.Replace("@", ""));
 		}
 
 		public DbType DbType {

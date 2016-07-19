@@ -3,6 +3,20 @@ using Newtonsoft.Json;
 
 namespace PivotSharp.Aggregators
 {
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <remarks>
+	/// Aggregators and their behaviours:
+	/// 
+	/// --------------------------------------------------------------------
+	/// Aggregator			In-Memory					SQL
+	/// --------------------------------------------------------------------
+	/// Count				++							Sum of count(*)
+	/// Sum(Column)			+= value of column			sum(Column)
+	/// Avg(Column)			
+	/// 
+	/// </remarks>
 	[JsonObject(MemberSerialization.OptIn)]
 	public class AggregatorDef
 	{
@@ -19,12 +33,14 @@ namespace PivotSharp.Aggregators
 
 			switch (name) {
 				case "Count": return () => new Count();
-				case "SumInt": return() => new SumInt(columnName);
+				case "CountDistinct": return () => new CountDistinct(columnName);
+				case "SumInt": return () => new SumInt(columnName);
 				case "Sum": return () => new Sum(columnName);
 				case "Ave":
 				case "Avg": return () => new Ave(columnName);
 				case "Min": return () => new Min(columnName);
 				case "Max": return () => new Max(columnName);
+				
 			}
 			throw new NotImplementedException();
 		}

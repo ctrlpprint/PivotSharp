@@ -4,6 +4,8 @@ namespace PivotSharp
 {
 	public interface IAggregator
 	{
+		string SqlFunction { get; }
+		string Alias { get; }
 		string SqlFunctionName { get; }
 		string ColumnName { get; set; }
 		void Push(IDataReader record);

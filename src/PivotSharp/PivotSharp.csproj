@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Aggregators\AggregatorBase.cs" />
     <Compile Include="Aggregators\AggregatorDef.cs" />
+    <Compile Include="Aggregators\CountDistinct.cs" />
     <Compile Include="Aggregators\Count.cs" />
     <Compile Include="Aggregators\Max.cs" />
     <Compile Include="Aggregators\Min.cs" />

@@ -34,6 +34,11 @@ namespace PivotSharp.Tests
 		}
 
 		private class TestAggregator : IAggregator  {
+			public string SqlFunction {
+				get { return string.Format("Sum({0})", ColumnName); }
+			}
+
+			public string Alias { get; private set; }
 			public string SqlFunctionName { get; private set; }
 			public string ColumnName { get; set; }
 			public void Push(IDataReader record) { }

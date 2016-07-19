@@ -5,6 +5,11 @@ namespace PivotSharp.Aggregators
 {
 	public class Ave : AggregatorBase
 	{
+		public override string SqlFunction {
+			// Collate the Sum then divide by Count
+			get { return string.Format("sum({0})", ColumnName); }
+		}
+
 		public decimal SumTotal { get; private set; }
 
 		// Collate the Sum, and then divide by Count.
@@ -16,8 +21,7 @@ namespace PivotSharp.Aggregators
 		}
 
 		public override void UpdateFor(IDataReader record) {
-			var val = record[ColumnName].ToString().ToDecimal();
-			SumTotal += val;			
+			SumTotal += GetValue(record).ToString().ToDecimal();
 		}
 
 		public override decimal Value { get { return Count > 0 ? Decimal.Divide(SumTotal, (decimal)Count) : 0; } }

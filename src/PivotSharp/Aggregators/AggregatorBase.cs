@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 
 namespace PivotSharp.Aggregators
 {
 	public abstract class AggregatorBase : IAggregator
 	{
+		public abstract string SqlFunction { get; }
 		public abstract string SqlFunctionName { get; }
 		public virtual string ColumnName { get; set; }
+
+		public virtual string Alias {
+			get { return string.Join("@", new[] {SqlFunctionName, ColumnName}.Where(s => !string.IsNullOrEmpty(s))); }
+		}
 
 		public abstract void UpdateFor(IDataReader record);
 
@@ -15,6 +21,12 @@ namespace PivotSharp.Aggregators
 				? record["Count"].ToString().ToInt() 
 				: 1;
 			UpdateFor(record);
+		}
+
+		protected object GetValue(IDataReader record) {
+			if (record.ContainsKey(Alias))
+				return record[Alias];
+			return record[ColumnName];
 		}
 
 		public abstract decimal Value { get; }
