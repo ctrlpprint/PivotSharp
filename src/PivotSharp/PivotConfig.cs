@@ -29,7 +29,7 @@ namespace PivotSharp
 			Rows = new List<string>();
 			Cols = new List<string>();
 			Filters = new List<Filter>();
-
+			ErrorMode = ConfigurationErrorHandlingMode.Ignore;
 		}
 	}
 }

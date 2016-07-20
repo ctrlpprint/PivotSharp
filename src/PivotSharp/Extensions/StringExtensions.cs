@@ -14,5 +14,14 @@
 			return int.TryParse(value, out val) ? val : defaultValue;
 		}
 
+		public static bool IsDateField(this string value) {
+			var lower = value.ToLower();
+			return lower == "year"
+					|| lower == "quarter"
+					|| lower == "month"
+					|| lower == "week"
+					|| lower == "day";
+
+		}
 	}
 }

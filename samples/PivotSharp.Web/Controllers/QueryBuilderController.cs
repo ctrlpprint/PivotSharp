@@ -32,17 +32,17 @@ namespace PivotSharp.Web.Controllers
 				}
 			}, {
 				3, new PivotConfig() {
-					Rows = new[] {"Region", "Country"},
-					Cols = new[] {"Year", "Month"},
-					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"}},
+					Rows = new[] {"Country"},
+					Cols = new[] {"Year"},
+					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "RevenueNZ"}},
 					FillTable = true
 
 				}
 			}, {
 				4, new PivotConfig() {
 					Rows = new[] {"Category", "Product"},
-					Cols = new[] {"Year", "Month"},
-					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"}},
+					Cols = new[] {"Year"},
+					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "RevenueNZ"}},
 					FillTable = true
 
 				}
@@ -51,15 +51,10 @@ namespace PivotSharp.Web.Controllers
 					Rows = new[] {"Category", "Product"},
 					Cols = new[] {"Year", "Month"},
 					Aggregators = new [] {
-						new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
-						new AggregatorDef { FunctionName = "Ave", ColumnName = "Revenue"},
-						new AggregatorDef { FunctionName = "Count", ColumnName = ""}
+						new AggregatorDef { FunctionName = "Sum", ColumnName = "RevenueNZ"},
 					},
 					Filters = new Filter[] {
-						new Filter("OrderType", "=", "Club"), 
-						new Filter("Year", "=", "2013"), 
-						new Filter("Month", ">=", "1"), 
-						new Filter("Month", "<=", "2"), 
+						new Filter("Year", ">=", "2015"), 
 					},
 					ErrorMode = ConfigurationErrorHandlingMode.Ignore, // HACK: Filters will break validation because they don't come through in the resultset.
 					FillTable = true
@@ -70,8 +65,8 @@ namespace PivotSharp.Web.Controllers
 					Rows = new[] {"Year", "Month"},
 					Cols = new List<string>() ,
 					Aggregators = new [] {
-						new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"},
-						new AggregatorDef { FunctionName = "Ave", ColumnName = "Revenue"},
+						new AggregatorDef { FunctionName = "Sum", ColumnName = "RevenueNZ"},
+						new AggregatorDef { FunctionName = "Ave", ColumnName = "RevenueNZ"},
 						new AggregatorDef { FunctionName = "CountDistinct", ColumnName = "OrderID"},
 						new AggregatorDef { FunctionName = "Count", ColumnName = ""}
 					},
@@ -81,13 +76,27 @@ namespace PivotSharp.Web.Controllers
 				}
 			}, {
 				7, new PivotConfig() {
+					Rows = new[] {"Year"},
+					Cols = new[] {"Week"},
+					Aggregators = new [] {
+						new AggregatorDef { FunctionName = "Sum", ColumnName = "RevenueNZ"},
+					},
+					Filters = new Filter[] {
+						new Filter("Year", ">=", "2015"), 
+					},
+					ErrorMode = ConfigurationErrorHandlingMode.Ignore, // HACK: Aggregators will now break validation because they don't come through in the resultset.
+					FillTable = true
+
+				}
+			}, {
+				8, new PivotConfig() {
 					Rows = new[] {"Region", "Country"},
 					Cols = new[] {"Year", "Month"},
-					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "Revenue"}},
+					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "RevenueNZ"}},
 					FillTable = true,
 					ErrorMode = ConfigurationErrorHandlingMode.Ignore, // HACK: Filters will break validation because they don't come through in the resultset.
 					Filters = new Filter[] {
-						new Filter("OrderType", "=", "Club"), 
+						new Filter("CustomerClubType", "=", "Auto-Ship"), 
 					}
 				}
 			}
@@ -101,7 +110,7 @@ namespace PivotSharp.Web.Controllers
 
 			var config = configs.Single(c => c.Key == id).Value;
 			var connector = new PivotDbConnector(connectionString);
-			var reader = connector.GetPivotData(config, "OrderLinesRevenueReport");
+			var reader = connector.GetPivotData(config, "OrderLinesRevenueNZReport");
 			var pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
@@ -109,12 +118,12 @@ namespace PivotSharp.Web.Controllers
 			return View(new PivotTableViewModel(){ Id = id, Config = config, PivotTable = pivot});
 		}
 
-		// eg: /QueryBuilder/ViewByConfig/?AggregatorName=Sum&AggregatorName=Revenue&Rows=Category&Rows=Product&Cols=Year&Cols=Month&FillTable=true
-		// eg: /QueryBuilder/ViewByConfig/?AggregatorName[0]=Sum&AggregatorName[1]=Revenue&Rows[0]=Category&Rows[1]=Product&Cols[0]=Year&Cols[1]=Month&FillTable=true&Filters[0].ColumnName=Year&Filters[0].ParameterValue=2016&Filters[0].Op=%3C
+		// eg: /QueryBuilder/ViewByConfig/?AggregatorName=Sum&AggregatorName=RevenueNZ&Rows=Category&Rows=Product&Cols=Year&Cols=Month&FillTable=true
+		// eg: /QueryBuilder/ViewByConfig/?AggregatorName[0]=Sum&AggregatorName[1]=RevenueNZ&Rows[0]=Category&Rows[1]=Product&Cols[0]=Year&Cols[1]=Month&FillTable=true&Filters[0].ColumnName=Year&Filters[0].ParameterValue=2016&Filters[0].Op=%3C
 		public ActionResult ViewByConfig(PivotConfig config) {
 
 			var connector = new PivotDbConnector(connectionString);
-			var reader = connector.GetPivotData(config, "OrderLinesRevenueReport");
+			var reader = connector.GetPivotData(config, "OrderLinesRevenueNZReport");
 			var pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
@@ -127,7 +136,7 @@ namespace PivotSharp.Web.Controllers
 
 			var config = configs.Single(c => c.Key == id).Value;
 			var connector = new PivotDbConnector(connectionString);
-			var table = connector.GetDrillDownData(config, "OrderLinesRevenueReport", rowKeys, colKeys);
+			var table = connector.GetDrillDownData(config, "OrderLinesRevenueNZReport", rowKeys, colKeys);
 
 			return View(table);
 

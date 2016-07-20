@@ -41,6 +41,21 @@ namespace PivotSharp
 			}
 		}
 
+		public IDictionary<string, Dictionary<string, IList<IAggregator>>> Cols {
+			get {
+				return this
+					.GroupBy(kpv => kpv.Key.FlattenedColKey)
+					.ToDictionary(
+						keySelector: gp => gp.Key,
+						elementSelector: gp => gp
+							.Select(x => new KeyValuePair<string, IList<IAggregator>>(
+								key: x.Key.FlattenedRowKey,
+								value: x.Value))
+							.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+					);
+			}
+		}
+
 		public IList<IAggregator> this[string key1, string key2] {
 			get {
 				var value = this.SingleOrDefault(v => v.Key.FlattenedRowKey == key1 && v.Key.FlattenedColKey == key2);

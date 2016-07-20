@@ -20,6 +20,7 @@
 	}
 </style>
 
+
 <table class="table table-bordered table-responsive">
 	<thead>
 		<tr>
@@ -86,7 +87,7 @@
 
 						var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
 						if (cellValue != null && cellValue[aggregatorIndex].HasEntries) {
-							<td class="data-cell text-right" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey">
+							<td class="data-cell text-right" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey" data-cell-count="@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].Count">
 								@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].FormattedValue
 							</td>
 						}
@@ -117,3 +118,21 @@
 		</tr>
 	</tfoot>
 </table>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.data-cell').qtip({
+			content: {
+				text: function(event, api) {
+					// Retrieve content from custom attribute of the $('.selector') elements.
+					return $(this).data('row-key') + ', ' + $(this).data('col-key') + ' (' + $(this).data('cell-count') + ' rows)';
+				}
+			},
+			
+			show: { delay: 1000 },
+			style: { classes: 'qtip-youtube' }
+		});
+
+	});
+
+</script>

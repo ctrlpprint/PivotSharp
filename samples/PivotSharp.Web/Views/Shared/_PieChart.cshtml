@@ -1,0 +1,28 @@
+﻿@using Newtonsoft.Json
+@model PivotSharp.Web.Models.PieChartViewModel
+
+@* aspect ratios listed at http://gionkunz.github.io/chartist-js/getting-started.html#creating-a-chart-using-aspect-ratios *@
+
+<div class="ct-pie-@Model.Index ct-double-octave chart"></div>
+
+<script type="text/javascript">
+	(function(){
+		var labels = @(Html.Raw(JsonConvert.SerializeObject(Model.Labels)));
+		var series = @(Html.Raw(JsonConvert.SerializeObject(Model.Series)));
+
+		var data = {
+			// A labels array that can contain any sort of values
+			labels: labels,
+			// Our series array that contains series objects or in this case series data arrays
+			series: series
+		};
+
+		// Create a new pie chart object where as first parameter we pass in a selector
+		// that is resolving to our chart container element. The Second parameter
+		// is the actual data object.
+		var chart = new Chartist.Pie('.ct-pie-@Model.Index', data, {
+			donut: true
+		});
+	})();
+
+</script>

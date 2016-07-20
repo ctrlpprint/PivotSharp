@@ -119,6 +119,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\IChartViewModel.cs" />
+    <Compile Include="Models\PieChartViewModel.cs" />
+    <Compile Include="Models\LineChartViewModel.cs" />
+    <Compile Include="Models\PivotChartsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -163,12 +167,13 @@
     <Content Include="Views\QueryBuilder\View.cshtml" />
     <Content Include="Views\QueryBuilder\Index.cshtml" />
     <Content Include="Views\Shared\_PivotConfig.cshtml" />
-    <Content Include="Views\Shared\_Chart.cshtml" />
+    <Content Include="Views\Shared\_LineChart.cshtml" />
     <Content Include="Views\Shared\TableSingleAggregation.cshtml" />
+    <Content Include="Views\Shared\_PieChart.cshtml" />
+    <Content Include="Views\Shared\_Chart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

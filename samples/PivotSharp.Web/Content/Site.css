@@ -99,3 +99,8 @@ textarea {
 .ct-legend .ct-series-10:before {
 	color: #eacf7d;
 }
+
+
+.ct-label {
+	font-size: 1.2rem !important;
+}
