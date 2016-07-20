@@ -90,6 +90,16 @@ namespace PivotSharp.Web.Controllers
 				}
 			}, {
 				8, new PivotConfig() {
+					Rows = new[] {"Country"},
+					Cols = new[] {"Category"},
+					Aggregators = new [] {
+						new AggregatorDef { FunctionName = "Sum", ColumnName = "RevenueNZ"},
+					},
+					FillTable = true
+
+				}
+			}, {
+				9, new PivotConfig() {
 					Rows = new[] {"Region", "Country"},
 					Cols = new[] {"Year", "Month"},
 					Aggregators = new []{new AggregatorDef { FunctionName = "Sum", ColumnName = "RevenueNZ"}},

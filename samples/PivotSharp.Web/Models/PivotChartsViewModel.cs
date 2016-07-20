@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PivotSharp.Aggregators;
 
 namespace PivotSharp.Web.Models
 {
@@ -19,9 +20,15 @@ namespace PivotSharp.Web.Models
 					if (table.Config.Cols.Any(c => c.IsDateField())) {
 						Add(LineChartViewModel.TopRows(table, maxLines, aggregatorIndex));
 					}
-
 					else if (table.Config.Rows.Any(c => c.IsDateField())) {
 						Add(LineChartViewModel.TopCols(table, maxLines, aggregatorIndex));
+					}
+					else {
+						// With Bar charts, we need both rows and columns to be a manageable size.
+						if(table.Cols.Count <= maxLines)
+							Add(BarChartViewModel.TopRows(table, maxLines, aggregatorIndex));
+						if(table.Rows.Count <= maxLines)
+							Add(BarChartViewModel.TopCols(table, maxLines, aggregatorIndex));
 					}
 				}
 				if (table.Rows.Any()) {

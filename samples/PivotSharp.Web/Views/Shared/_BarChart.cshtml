@@ -1,0 +1,59 @@
+﻿@using Newtonsoft.Json
+@model PivotSharp.Web.Models.BarChartViewModel
+
+@* aspect ratios listed at http://gionkunz.github.io/chartist-js/getting-started.html#creating-a-chart-using-aspect-ratios *@
+<div class="ct-chart-@Model.Index ct-double-octave chart"></div>
+
+<script type="text/javascript">
+
+	var labels = @(Html.Raw(JsonConvert.SerializeObject(Model.Labels)));
+	var legends = @(Html.Raw(JsonConvert.SerializeObject(Model.Legends)));
+	var series = @(Html.Raw(JsonConvert.SerializeObject(Model.Series)));
+
+
+	var data = {
+		// A labels array that can contain any sort of values
+		labels: labels,
+		// Our series array that contains series objects or in this case series data arrays
+		series: series
+	};
+
+	// Create a new line chart object where as first parameter we pass in a selector
+	// that is resolving to our chart container element. The Second parameter
+	// is the actual data object.
+	var chart = new Chartist.Bar('.ct-chart-@Model.Index', data, {
+		plugins: [
+			Chartist.plugins.legend({
+				legendNames: legends,
+				clickable: true,
+				onClick: function(chart, e) {
+				}
+			})
+		]
+	});
+
+	var isFirstRun = true;
+
+	// Hide All. Actually hides all but the last one, because of the way the legend plugin works.
+	chart.on('created', function() {
+		if (!isFirstRun) return;
+		isFirstRun = false;
+		$('.ct-legend').append("<li class='toggle'>Hide All</li>");
+		$('.ct-legend .toggle').on('click', function() {
+			var $this = $(this);
+			if ($this.text() == "Hide All") {
+				$(".ct-legend li:not(.toggle,.inactive)").each(function(index) {
+						$(this).trigger('click');
+					});
+				$this.text("Show All");
+			} else {
+				$(".ct-legend li.inactive:not(.toggle)").each(function(index) {
+					$(this).trigger('click');
+				});
+				$this.text("Hide All");
+			}
+		});
+
+	});
+
+</script>
