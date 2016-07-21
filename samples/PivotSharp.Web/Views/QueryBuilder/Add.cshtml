@@ -1,0 +1,147 @@
+﻿@model PivotSharp.Web.Models.EditPivotConfigViewModel
+
+<style scoped>
+	.field-list {
+		min-height: 30px; /* Drop zone for sortable */
+	}
+	.field-list:not(.filters) .filter-input  {
+		display: none;
+	}
+
+	.field-list:not(.aggregators) .aggregator-select {
+		display: none;
+	}
+
+</style>
+
+
+<div class="row">
+
+	<div class="col-md-4">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">Field List</h3>
+			</div>
+			<div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
+				<div style="padding-left: 0;" id="fieldList" class="source field-list">
+					@foreach (var column in Model.TableStructure) {
+						<div class="list-group-item">
+							<!-- Grab Handle -->
+							<span class="glyphicon glyphicon-move" aria-hidden="true"></span>
+							
+							<!-- Aggregation -->
+							<select class="aggregator-select">
+								@foreach (var aggregator in Model.Aggregators) {
+									<option value="@aggregator">@aggregator</option>
+								}
+							</select>
+
+							<span>@column.Name (@column.DataType)</span>
+							
+							<!-- Filter Operator -->
+							<select class="operator-select filter-input">
+								@foreach (var filter in Model.FilterOperators) {
+									<option value="@filter.Op">@filter.Op</option>
+								}
+							</select>
+							
+							<!-- Value -->
+							<input type="@column.HtmlInputType" class="parameter filter-input" />
+
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="col-md-8">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">Config</h3>
+			</div>
+			<div class="panel-body">
+
+				<table class="table table-condensed table-bordered">
+					<thead>
+						<tr>
+							<th colspan="2">
+								<div class="list-group-item active">Filters</div>
+								<div id="filterList" class="field-list filters">
+								</div>
+							</th>
+						</tr>
+						<tr>
+							<th></th>
+							<th>
+								<div class="list-group-item active">Cols</div>
+								<div id="colList" class="field-list">
+								</div>
+
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					<th>
+						<div class="list-group-item active">Rows</div>
+						<div id="rowList" class="field-list">
+						</div>
+
+					</th>
+					<td>
+						<div class="list-group-item active">Aggregators</div>
+						<div id="aggregatorList" class="field-list aggregators"></div>
+					</td>
+					</tbody>
+				</table>
+
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+
+	$(document).ready(function () {
+		Sortable.create(fieldList, {
+			handle: '.glyphicon-move',
+			group: 'fields',
+			filter: '.active',
+			animation: 150
+		});
+
+		Sortable.create(filterList, {
+			handle: '.glyphicon-move',
+			group: 'fields',
+			filter: '.active',
+			animation: 150
+		});
+
+		Sortable.create(colList, {
+			handle: '.glyphicon-move',
+			group: 'fields',
+			filter: '.active',
+			animation: 150
+		});
+
+		Sortable.create(rowList, {
+			handle: '.glyphicon-move',
+			group: 'fields',
+			filter: '.active',
+			animation: 150
+		});
+
+		Sortable.create(aggregatorList, {
+			handle: '.glyphicon-move',
+			group: 'fields',
+			filter: '.active',
+			animation: 150
+		});
+
+	});
+</script>

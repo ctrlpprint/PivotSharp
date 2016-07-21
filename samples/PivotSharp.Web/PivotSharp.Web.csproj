@@ -119,6 +119,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\EditPivotConfigViewModel.cs" />
     <Compile Include="Models\IChartViewModel.cs" />
     <Compile Include="Models\BarChartViewModel.cs" />
     <Compile Include="Models\PieChartViewModel.cs" />
@@ -173,6 +174,7 @@
     <Content Include="Views\Shared\_PieChart.cshtml" />
     <Content Include="Views\Shared\_Chart.cshtml" />
     <Content Include="Views\Shared\_BarChart.cshtml" />
+    <Content Include="Views\QueryBuilder\Add.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

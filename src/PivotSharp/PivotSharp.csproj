@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Aggregators\AggregatorBase.cs" />
     <Compile Include="Aggregators\AggregatorDef.cs" />
+    <Compile Include="Aggregators\AggregatorFunctions.cs" />
     <Compile Include="Aggregators\CountDistinct.cs" />
     <Compile Include="Aggregators\Count.cs" />
     <Compile Include="Aggregators\Max.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Filters\Filter.cs" />
     <Compile Include="Filters\FilterOperator.cs" />
+    <Compile Include="Filters\FilterOperators.cs" />
     <Compile Include="Filters\Filters.cs" />
     <Compile Include="Header.cs" />
     <Compile Include="IAggregator.cs" />

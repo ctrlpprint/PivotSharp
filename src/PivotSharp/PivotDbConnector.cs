@@ -155,6 +155,26 @@ namespace PivotSharp
 
 		public string DataType { get; set; }
 
+		public string HtmlInputType {
+
+			get {
+				switch (DataType) {
+					case "varchar":
+					case "nvarchar":
+						return "text";
+					case "int":
+					case "decimal":
+						return "number";
+					case "date":
+					case "datetime":
+						return "date";
+					default:
+						return "text";
+				}
+			}
+
+		}
+
 		
 	}
 }

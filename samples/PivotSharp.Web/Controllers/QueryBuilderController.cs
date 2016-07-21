@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
+using PivotSharp.Web.Models;
 using Filter = PivotSharp.Filters.Filter;
 
 namespace PivotSharp.Web.Controllers
@@ -153,6 +154,21 @@ namespace PivotSharp.Web.Controllers
 
 		}
 
+		public ActionResult Add() {
+
+			var connector = new PivotDbConnector(connectionString);
+			var structure = connector.GetTableStructure("OrderLinesRevenueNZReport");
+
+			var viewModel = new EditPivotConfigViewModel {
+				TableStructure = structure,
+				Config = new PivotConfig(),
+				FilterOperators = FilterOperators.All().ToList(),
+				Aggregators = AggregatorFunctions.Options
+
+			};
+
+			return View(viewModel);
+		}
 
 	}
 
