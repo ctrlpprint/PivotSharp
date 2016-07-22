@@ -1,74 +1,77 @@
-﻿@using Newtonsoft.Json
-@using PivotSharp.Extensions
-@model PivotSharp.PivotTable
+﻿@using PivotSharp
+@using PivotSharp.Web.Models
 
-@* aspect ratios listed at http://gionkunz.github.io/chartist-js/getting-started.html#creating-a-chart-using-aspect-ratios *@
-<div class="ct-chart ct-double-octave"></div>
+@model PivotTable
 
 @{
-	var top10 = Model.Values
-		.Rows
-		.Select(row => new {
-			FlattenedKey = row.Key, 
-			Row = row.Value.NaturalSort(c => c.Key), 
-			RowSum = Model.Rows.Single(r => r.FlattenedKey == row.Key).Value
-		})
-		.OrderByDescending(row => row.RowSum)
-		.Take(5);
+	var charts = new PivotChartsViewModel(Model, 6);
 }
 
-<script type="text/javascript">
+<style scoped>
+	.carousel .carousel-control, .carousel .carousel-caption, .carousel .carousel-indicators { visibility: hidden; }
+	.carousel:hover .carousel-control, .carousel:hover .carousel-caption, .carousel:hover .carousel-indicators { visibility: visible; }
+	.carousel:hover .carousel-caption{ background-color: rgba(100, 100, 100, 0.6); }
 
-	var labels = @(Html.Raw(JsonConvert.SerializeObject(Model.Cols.Select(r => r.FlattenedKey).NaturalSort(r => r))));
-	var legends = @(Html.Raw(JsonConvert.SerializeObject(top10.Select(r => r.FlattenedKey))));
+</style>
 
-	// Issues with gaps in data...
-	var series = @(Html.Raw(JsonConvert.SerializeObject(top10.Select(row => row.Row.Select(v => v.Value[0].Value)))));
+<div id="chart-carousel" class="carousel slide" data-ride="carousel">
+	<!-- Indicators -->
+	<ol class="carousel-indicators">
+		@foreach (var chart in charts.Charts) {
+			<li data-target="#chart-carousel" data-slide-to="@(chart.Index)" class="@(chart.Index == 0 ? "active" : "")"></li>
+		}
+	</ol>
 
+	<!-- Wrapper for slides -->
+	<div class="carousel-inner" role="listbox">
+		
+		@foreach (var chart in charts.Charts) {
+			<div class="item @(chart.Index == 0 ? "active" : "")">
 
-	var data = {
-		// A labels array that can contain any sort of values
-		labels: labels,
-		// Our series array that contains series objects or in this case series data arrays
-		series: series
-	};
-
-	// Create a new line chart object where as first parameter we pass in a selector
-	// that is resolving to our chart container element. The Second parameter
-	// is the actual data object.
-	var chart = new Chartist.Line('.ct-chart', data, {
-		plugins: [
-			Chartist.plugins.legend({
-				legendNames: legends,
-				clickable: true,
-				onClick: function(chart, e) {
+				@if (chart is LineChartViewModel) {
+					@Html.Partial("_LineChart", (LineChartViewModel)chart)
 				}
-			})
-		]
-	});
+				else if (chart is BarChartViewModel) {
+					@Html.Partial("_BarChart", (BarChartViewModel)chart)
+				}
+				else if (chart is PieChartViewModel) {
+					@Html.Partial("_PieChart", (PieChartViewModel)chart)
+				}
+				<div class="carousel-caption">
+					@chart.Title
+				</div>
+			</div>
 
-	var isFirstRun = true;
+		}
+	</div>
 
-	// Hide All. Actually hides all but the last one, because of the way the legend plugin works.
-	chart.on('created', function() {
-		if (!isFirstRun) return;
-		isFirstRun = false;
-		$('.ct-legend').append("<li class='toggle'>Hide All</li>");
-		$('.ct-legend .toggle').on('click', function() {
-			var $this = $(this);
-			if ($this.text() == "Hide All") {
-				$(".ct-legend li:not(.toggle,.inactive)").each(function(index) {
-						$(this).trigger('click');
-					});
-				$this.text("Show All");
-			} else {
-				$(".ct-legend li.inactive:not(.toggle)").each(function(index) {
-					$(this).trigger('click');
-				});
-				$this.text("Hide All");
-			}
+	<!-- Controls -->
+	<a class="left carousel-control" href="#chart-carousel" role="button" data-slide="prev" style="background:none;">
+		<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+		<span class="sr-only">Previous</span>
+	</a>
+	<a class="right carousel-control" href="#chart-carousel" role="button" data-slide="next" style="background:none;">
+		<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+		<span class="sr-only">Next</span>
+	</a>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		// In a carousel, inactive items have display none, which prevents the contained chart from sizing itself correctly.
+		// Use the slid event to get the chart to update once visible.
+		// Because this has to be done _after_ the chart has slid into view, set its visibility to hidden initially (which does
+		// not affect sizing), and display when done.
+
+		$('.carousel .item:not(.active) .chart').css('visibility', 'hidden');
+
+		$('.carousel').on('slid.bs.carousel', function (ev) {
+			$(ev.relatedTarget).find('.chart').each(function (el, tab) {
+				if ($(this).css('visibility') == 'hidden') {
+					tab.__chartist__.update();
+					$(this).css('visibility', 'visible');
+				}
+			});
 		});
-
 	});
-
 </script>
