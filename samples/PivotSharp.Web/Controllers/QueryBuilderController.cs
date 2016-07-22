@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.UI.WebControls;
+using Newtonsoft.Json;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
 using PivotSharp.Web.Models;
@@ -131,7 +132,9 @@ namespace PivotSharp.Web.Controllers
 			return View(new PivotTableViewModel(){ Id = id, Config = config, PivotTable = pivot});
 		}
 
-		public ActionResult Generate(PivotConfig config) {
+		public ActionResult Generate(string config) {
+
+			PivotConfig pivotConfig = JsonConvert.DeserializeObject<PivotConfig>(config);
 
 			// Will pass the object, but it'll call ToString() on the lists, which isn't pretty.
 			// return RedirectToAction("ViewByConfig", config);
@@ -139,7 +142,7 @@ namespace PivotSharp.Web.Controllers
 			// Comes through as nul;
 			// return RedirectToAction("ViewByConfig", new {config = config});
 
-			TempData["Config"] = config;
+			TempData["Config"] = pivotConfig;
 			return RedirectToAction("ViewByConfig");
 		}
 
