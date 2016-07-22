@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
 using PivotSharp.Web.Models;
@@ -157,10 +158,10 @@ namespace PivotSharp.Web.Controllers
 		public ActionResult Add() {
 
 			var connector = new PivotDbConnector(connectionString);
-			var structure = connector.GetTableStructure("OrderLinesRevenueNZReport");
+			var columns = connector.GetTableStructure("OrderLinesRevenueNZReport");
 
 			var viewModel = new EditPivotConfigViewModel {
-				TableStructure = structure,
+				Columns = columns,
 				Config = new PivotConfig(),
 				FilterOperators = FilterOperators.All().ToList(),
 				Aggregators = AggregatorFunctions.Options
@@ -168,6 +169,21 @@ namespace PivotSharp.Web.Controllers
 			};
 
 			return View(viewModel);
+		}
+
+		public ActionResult GetColumnValues(string columnName) {
+
+			var connector = new PivotDbConnector(connectionString);
+
+			// Protect against arbitrary input
+			var columnList = connector.GetTableStructure("OrderLinesRevenueNZReport");
+			if(!columnList.Any(l => l.Name.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
+				throw new Exception("Could not find Column name");
+
+			var columns = connector.GetColumnValues("OrderLinesRevenueNZReport", columnName, 300).Select(c => c.Key);
+
+			return Json(columns, JsonRequestBehavior.AllowGet);
+
 		}
 
 	}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Sockets;
 
 namespace PivotSharp
 {
@@ -67,6 +68,32 @@ namespace PivotSharp
 
 			}
 
+		}
+
+		public IDictionary<string, int> GetColumnValues(string tableName, string columnName, int maxListSize) {
+
+			var returnValues = new Dictionary<string, int>();
+
+			var query = string.Format(@"select top {0} {1}, count(*) Occurences from {2} where {1} is not null and len({1})>0 group by {1} order by Occurences desc", 
+				maxListSize, 
+				columnName, 
+				tableName);
+
+			using (var connection = new SqlConnection(ConnectionString)) {
+
+				var command = new SqlCommand(query, connection);
+
+				connection.Open();
+				var reader = command.ExecuteReader();
+				if (reader.HasRows) {
+					while (reader.Read()) {
+						returnValues.Add(reader.GetString(0), reader.GetInt32(1));
+					}
+				}
+				reader.Close();
+			}
+
+			return returnValues;
 		}
 
 		public string GetPivotSql(PivotConfig config, string tableName) {
@@ -148,33 +175,4 @@ namespace PivotSharp
 
 	}
 
-	public class Column
-	{
-		public int Position { get; set; }
-		public string Name { get; set; }
-
-		public string DataType { get; set; }
-
-		public string HtmlInputType {
-
-			get {
-				switch (DataType) {
-					case "varchar":
-					case "nvarchar":
-						return "text";
-					case "int":
-					case "decimal":
-						return "number";
-					case "date":
-					case "datetime":
-						return "date";
-					default:
-						return "text";
-				}
-			}
-
-		}
-
-		
-	}
 }

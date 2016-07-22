@@ -8,6 +8,6 @@ namespace PivotSharp.Web.Models
 		public PivotConfig Config { get; set; }
 		public IList<FilterOperator> FilterOperators { get; set; }
 		public IList<string> Aggregators { get; set; }
-		public IEnumerable<Column> TableStructure { get; set; }
+		public IEnumerable<Column> Columns { get; set; }
 	}
 }

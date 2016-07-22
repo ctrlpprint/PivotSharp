@@ -13,14 +13,30 @@
 	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<!-- Bootstrap Material Design -->
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/css/bootstrap-material-design.css">
+
 	<link href="~/Content/Site.css" rel="stylesheet" />
 	@Scripts.Render("~/bundles/modernizr")
 	@Scripts.Render("~/bundles/jquery")
+
 	<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
 	<script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
 	<script src="https://cdn.rawgit.com/CodeYellowBV/chartist-plugin-legend/master/chartist-plugin-legend.js"></script>
-	<!-- CDNJS :: Sortable (https://cdnjs.com/) -->
 	<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js"></script>
+	
+	<!-- http://twitter.github.io/typeahead.js/ -->
+	<link rel="stylesheet" href="~/Content/typeahead.css"/>
+	<script src="https://rawgit.com/twitter/typeahead.js/master/dist/typeahead.bundle.js"></script>
+
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/js/material.min.js"></script>
+
+
+	<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.css" />@* http://qtip2.com/ *@
+	<script src="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>@* http://qtip2.com/ *@
+	@RenderSection("scripts", required: false)
+
+
 </head>
 <body>
 	<div class="container">
@@ -50,13 +66,5 @@
 		</footer>
 	</div>
 
-	@Scripts.Render("~/bundles/jquery")
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/js/material.min.js"></script>
-	
-	@* http://qtip2.com/ *@
-	<link  rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.css"/>
-	<script src="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>
-	@RenderSection("scripts", required: false)
 </body>
 </html>

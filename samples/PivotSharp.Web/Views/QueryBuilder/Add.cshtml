@@ -3,13 +3,23 @@
 <style scoped>
 	.field-list {
 		min-height: 30px; /* Drop zone for sortable */
-	}
-	.field-list:not(.filters) .filter-input  {
-		display: none;
+		background-color: #eee;
 	}
 
-	.field-list:not(.aggregators) .aggregator-select {
-		display: none;
+		.field-list:not(.filters) .filter-input {
+			display: none;
+		}
+
+		.field-list:not(.aggregators) .aggregator-select {
+			display: none;
+		}
+
+	.glyphicon {
+		color: #337ab7;
+	}
+
+	.field-list .form-control {
+		margin-left: 10px;margin-right: 10px;
 	}
 
 </style>
@@ -24,29 +34,29 @@
 			</div>
 			<div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
 				<div style="padding-left: 0;" id="fieldList" class="source field-list">
-					@foreach (var column in Model.TableStructure) {
-						<div class="list-group-item">
+					@foreach (var column in Model.Columns.OrderBy(s => s.Name)) {
+						<div class="list-group-item form-inline">
 							<!-- Grab Handle -->
 							<span class="glyphicon glyphicon-move" aria-hidden="true"></span>
-							
+
 							<!-- Aggregation -->
-							<select class="aggregator-select">
+							<select class="aggregator-select form-control">
 								@foreach (var aggregator in Model.Aggregators) {
 									<option value="@aggregator">@aggregator</option>
 								}
 							</select>
 
 							<span>@column.Name (@column.DataType)</span>
-							
+
 							<!-- Filter Operator -->
-							<select class="operator-select filter-input">
+							<select class="operator-select filter-input form-control">
 								@foreach (var filter in Model.FilterOperators) {
 									<option value="@filter.Op">@filter.Op</option>
 								}
 							</select>
-							
+
 							<!-- Value -->
-							<input type="@column.HtmlInputType" class="parameter filter-input" />
+							<input type="@column.HtmlInputType" class="parameter filter-input form-control" data-field-name="@column.Name" placeholder="@column.Name" style="margin-top:-12px;" />
 
 						</div>
 					}
@@ -66,33 +76,35 @@
 				<table class="table table-condensed table-bordered">
 					<thead>
 						<tr>
-							<th colspan="2">
+							<td colspan="2">
 								<div class="list-group-item active">Filters</div>
 								<div id="filterList" class="field-list filters">
 								</div>
-							</th>
+							</td>
 						</tr>
 						<tr>
-							<th></th>
-							<th>
+							<td></td>
+							<td>
 								<div class="list-group-item active">Cols</div>
 								<div id="colList" class="field-list">
 								</div>
 
-							</th>
+							</td>
 						</tr>
 					</thead>
 					<tbody>
-					<th>
-						<div class="list-group-item active">Rows</div>
-						<div id="rowList" class="field-list">
-						</div>
+						<tr>
+							<td>
+								<div class="list-group-item active">Rows</div>
+								<div id="rowList" class="field-list">
+								</div>
 
-					</th>
-					<td>
-						<div class="list-group-item active">Aggregators</div>
-						<div id="aggregatorList" class="field-list aggregators"></div>
-					</td>
+							</td>
+							<td>
+								<div class="list-group-item active">Aggregators</div>
+								<div id="aggregatorList" class="field-list aggregators"></div>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 
@@ -108,40 +120,62 @@
 <script type="text/javascript">
 
 	$(document).ready(function () {
-		Sortable.create(fieldList, {
-			handle: '.glyphicon-move',
-			group: 'fields',
-			filter: '.active',
-			animation: 150
+
+		$('.field-list:not(.filters)').each(function(i, obj) {
+			Sortable.create(obj, {
+				handle: '.glyphicon-move',
+				group: 'fields',
+				filter: '.active',
+				animation: 150
+			});
 		});
 
-		Sortable.create(filterList, {
-			handle: '.glyphicon-move',
-			group: 'fields',
-			filter: '.active',
-			animation: 150
+		$('.field-list.filters').each(function (i, obj) {
+			Sortable.create(obj, {
+				handle: '.glyphicon-move',
+				group: 'fields',
+				filter: '.active',
+				animation: 150,
+				onAdd: function (evt) {
+					// May want to move the typeahead code here to limit db calls.
+					var itemEl = evt.item;  // dragged HTMLElement
+					//$(itemEl).find('.parameter:text').each(function (i, obj) {
+				}
+			});
+
 		});
 
-		Sortable.create(colList, {
-			handle: '.glyphicon-move',
-			group: 'fields',
-			filter: '.active',
-			animation: 150
+		$('.field-list.source').find('.parameter:text').each(function (i, obj) {
+
+			var fieldName = $(this).data("field-name");
+
+			var items = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.whitespace,
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				// url points to a json file that contains an array of country names, see
+				// https://github.com/twitter/typeahead.js/blob/gh-pages/data/countries.json
+				prefetch: 'GetColumnValues?columnName=' + fieldName
+			});
+
+			// Take top 5 to show as defaults when nothing types.
+			function withDefaults(q, sync) {
+				if (q === '') {
+					sync(items.all().slice(0,5));
+				} else {
+					items.search(q, sync);
+				}
+			}
+
+			$(obj).typeahead({
+				minLength: 0,
+				highlight: true
+			}, {
+				name: fieldName,
+				source: withDefaults
+			});
 		});
 
-		Sortable.create(rowList, {
-			handle: '.glyphicon-move',
-			group: 'fields',
-			filter: '.active',
-			animation: 150
-		});
 
-		Sortable.create(aggregatorList, {
-			handle: '.glyphicon-move',
-			group: 'fields',
-			filter: '.active',
-			animation: 150
-		});
 
 	});
 </script>

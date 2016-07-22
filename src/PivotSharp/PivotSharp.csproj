@@ -59,6 +59,7 @@
     <Compile Include="Aggregators\Ave.cs" />
     <Compile Include="Aggregators\SumInt.cs" />
     <Compile Include="Aggregators\Sum.cs" />
+    <Compile Include="Column.cs" />
     <Compile Include="ConfigurationErrorHandlingMode.cs" />
     <Compile Include="DataReader\DynamicProperties.cs" />
     <Compile Include="DataReader\EnumerableDataReader.cs" />
