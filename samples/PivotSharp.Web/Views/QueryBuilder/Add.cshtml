@@ -22,6 +22,10 @@
 		margin-left: 10px;margin-right: 10px;
 	}
 
+	.aggregators input[type=text] {
+		margin-top: 12px; /* Some layout bug when using typeahead */
+	}
+
 </style>
 
 
@@ -35,7 +39,7 @@
 			<div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
 				<div style="padding-left: 0;" id="fieldList" class="source field-list">
 					@foreach (var column in Model.Columns.OrderBy(s => s.Name)) {
-						<div class="list-group-item form-inline">
+						<div class="list-group-item form-inline config-item">
 							<!-- Grab Handle -->
 							<span class="glyphicon glyphicon-move" aria-hidden="true"></span>
 
@@ -46,7 +50,7 @@
 								}
 							</select>
 
-							<span>@column.Name (@column.DataType)</span>
+							<span class="column-name">@column.Name</span> <span class="column-type">(@column.DataType)</span>
 
 							<!-- Filter Operator -->
 							<select class="operator-select filter-input form-control">
@@ -56,7 +60,7 @@
 							</select>
 
 							<!-- Value -->
-							<input type="@column.HtmlInputType" class="parameter filter-input form-control" data-field-name="@column.Name" placeholder="@column.Name" style="margin-top:-12px;" />
+							<input type="@column.HtmlInputType" class="parameter filter-input form-control" data-field-name="@column.Name" placeholder="@column.Name"  />
 
 						</div>
 					}
@@ -108,7 +112,7 @@
 					</tbody>
 				</table>
 
-
+				<a href="#" class="btn btn-raised btn-primary pull-right generate">Generate</a>
 			</div>
 		</div>
 
@@ -121,8 +125,11 @@
 
 	$(document).ready(function () {
 
-		$('.field-list:not(.filters)').each(function(i, obj) {
-			Sortable.create(obj, {
+		var sortables = {};
+
+		$('.field-list').each(function(i, obj) {
+			var id = obj.id;
+			sortables[id] = Sortable.create(obj, {
 				handle: '.glyphicon-move',
 				group: 'fields',
 				filter: '.active',
@@ -130,20 +137,21 @@
 			});
 		});
 
-		$('.field-list.filters').each(function (i, obj) {
-			Sortable.create(obj, {
-				handle: '.glyphicon-move',
-				group: 'fields',
-				filter: '.active',
-				animation: 150,
-				onAdd: function (evt) {
-					// May want to move the typeahead code here to limit db calls.
-					var itemEl = evt.item;  // dragged HTMLElement
-					//$(itemEl).find('.parameter:text').each(function (i, obj) {
-				}
-			});
 
-		});
+		sortables['filterList'].options.onAdd = function(evt) {
+			// May want to move the typeahead code here to limit db calls.
+			var itemEl = evt.item; // dragged HTMLElement
+			//$(itemEl).find('.parameter:text').each(function (i, obj) {
+		};
+
+		// Clone from the field list, so we can, eg, use a field for multiple aggregators
+		sortables['fieldList'].options.group.pull = 'clone';
+
+		// Because we're cloning, if we drag an item back to the field list, it'll duplicate.
+		sortables['fieldList'].options.onAdd = function (evt) {
+			var itemEl = evt.item; // dragged HTMLElement
+			itemEl.remove(); // don't add
+		};
 
 		$('.field-list.source').find('.parameter:text').each(function (i, obj) {
 
@@ -176,6 +184,31 @@
 		});
 
 
+		$('.generate').on('click', function () {
+
+			var config = {
+				rows: $('#rowList .column-name').map(function() { return $(this).html(); }).get(),
+				cols: $('#colList .column-name').map(function () { return $(this).html(); }).get(),
+				filters: $('#filterList .config-item').map(function () {
+					var $this = $(this);
+					return {
+						columnName: $this.find('.column-name').html(),
+						op: $this.find('.operator-select').val(),
+						parameterValue: $this.find('.parameter').val()
+					};
+				}).get(),
+				aggregators: $('#aggregatorList .config-item').map(function () {
+					var $this = $(this);
+					return {
+						name: $this.find('.aggregator-select').val(),
+						columnName: $this.find('.column-name').html()
+					};
+				}).get()
+
+		};
+
+			alert (JSON.stringify(config));
+		});
 
 	});
 </script>
