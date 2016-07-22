@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.UI.WebControls;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
@@ -130,10 +131,22 @@ namespace PivotSharp.Web.Controllers
 			return View(new PivotTableViewModel(){ Id = id, Config = config, PivotTable = pivot});
 		}
 
-		// eg: /QueryBuilder/ViewByConfig/?AggregatorName=Sum&AggregatorName=RevenueNZ&Rows=Category&Rows=Product&Cols=Year&Cols=Month&FillTable=true
-		// eg: /QueryBuilder/ViewByConfig/?AggregatorName[0]=Sum&AggregatorName[1]=RevenueNZ&Rows[0]=Category&Rows[1]=Product&Cols[0]=Year&Cols[1]=Month&FillTable=true&Filters[0].ColumnName=Year&Filters[0].ParameterValue=2016&Filters[0].Op=%3C
+		public ActionResult Generate(PivotConfig config) {
+
+			// Will pass the object, but it'll call ToString() on the lists, which isn't pretty.
+			// return RedirectToAction("ViewByConfig", config);
+
+			// Comes through as nul;
+			// return RedirectToAction("ViewByConfig", new {config = config});
+
+			TempData["Config"] = config;
+			return RedirectToAction("ViewByConfig");
+		}
+
+
 		public ActionResult ViewByConfig(PivotConfig config) {
 
+			config = TempData["Config"] as PivotConfig;
 			var connector = new PivotDbConnector(connectionString);
 			var reader = connector.GetPivotData(config, "OrderLinesRevenueNZReport");
 			var pivot = PivotTable.Create(config);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
@@ -17,7 +18,7 @@ namespace PivotSharp
 		public IList<AggregatorDef> Aggregators { get; set; }
 
 		public AggregatorDef Aggregator {
-			get { return Aggregators[0]; }
+			get { return Aggregators.Any() ? Aggregators[0] : null; }
 			set { Aggregators = new List<AggregatorDef> {value}; }
 		}
 
@@ -29,6 +30,7 @@ namespace PivotSharp
 			Rows = new List<string>();
 			Cols = new List<string>();
 			Filters = new List<Filter>();
+			Aggregators = new List<AggregatorDef>();
 			ErrorMode = ConfigurationErrorHandlingMode.Ignore;
 		}
 	}

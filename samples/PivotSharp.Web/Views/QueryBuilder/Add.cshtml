@@ -23,7 +23,7 @@
 	}
 
 	.aggregators input[type=text] {
-		margin-top: 12px; /* Some layout bug when using typeahead */
+		margin-top: -12px!important; /* Some layout bug when using typeahead */
 	}
 
 </style>
@@ -194,20 +194,30 @@
 					return {
 						columnName: $this.find('.column-name').html(),
 						op: $this.find('.operator-select').val(),
-						parameterValue: $this.find('.parameter').val()
+						// typeahead doesn't actually store the value in the underlying field
+						parameterValue: $this.find('.parameter.tt-input').val() || $this.find('.parameter').val()
 					};
 				}).get(),
 				aggregators: $('#aggregatorList .config-item').map(function () {
 					var $this = $(this);
 					return {
-						name: $this.find('.aggregator-select').val(),
+						functionName: $this.find('.aggregator-select').val(),
 						columnName: $this.find('.column-name').html()
 					};
 				}).get()
+			};
 
-		};
+			console.log(config);
+			// window.location = 'View/' + $.param({ 'config': JSON.stringify(config) });
 
-			alert (JSON.stringify(config));
+			$.ajax({
+				url: 'Generate/',
+				type: "POST",
+				data: JSON.stringify(config),
+				contentType: "application/json",
+//				complete: callback
+			});
+			//alert(encodeURIComponent(JSON.stringify(config)));
 		});
 
 	});
