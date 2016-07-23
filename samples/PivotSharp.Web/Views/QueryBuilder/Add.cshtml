@@ -123,7 +123,7 @@
 
 <script type="text/javascript">
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 		var sortables = {};
 
@@ -148,12 +148,12 @@
 		sortables['fieldList'].options.group.pull = 'clone';
 
 		// Because we're cloning, if we drag an item back to the field list, it'll duplicate.
-		sortables['fieldList'].options.onAdd = function (evt) {
+		sortables['fieldList'].options.onAdd = function(evt) {
 			var itemEl = evt.item; // dragged HTMLElement
 			itemEl.remove(); // don't add
 		};
 
-		$('.field-list.source').find('.parameter:text').each(function (i, obj) {
+		$('.field-list.source').find('.parameter:text').each(function(i, obj) {
 
 			var fieldName = $(this).data("field-name");
 
@@ -168,7 +168,7 @@
 			// Take top 5 to show as defaults when nothing types.
 			function withDefaults(q, sync) {
 				if (q === '') {
-					sync(items.all().slice(0,5));
+					sync(items.all().slice(0, 5));
 				} else {
 					items.search(q, sync);
 				}
@@ -186,45 +186,64 @@
 
 		$('.generate').on('click', function() {
 
-				var config = {
-					rows: $('#rowList .column-name').map(function() { return $(this).html(); }).get(),
-					cols: $('#colList .column-name').map(function() { return $(this).html(); }).get(),
-					filters: $('#filterList .config-item').map(function() {
-						var $this = $(this);
-						return {
-							columnName: $this.find('.column-name').html(),
-							op: $this.find('.operator-select').val(),
-							// typeahead doesn't actually store the value in the underlying field
-							parameterValue: $this.find('.parameter.tt-input').val() || $this.find('.parameter').val()
-						};
-					}).get(),
-					aggregators: $('#aggregatorList .config-item').map(function() {
-						var $this = $(this);
-						return {
-							functionName: $this.find('.aggregator-select').val(),
-							columnName: $this.find('.column-name').html()
-						};
-					}).get()
-				};
+			var config = {
+				rows: $('#rowList .column-name').map(function() { return $(this).html(); }).get(),
+				cols: $('#colList .column-name').map(function() { return $(this).html(); }).get(),
+				filters: $('#filterList .config-item').map(function() {
+					var $this = $(this);
+					return {
+						columnName: $this.find('.column-name').html(),
+						op: $this.find('.operator-select').val(),
+						// typeahead doesn't actually store the value in the underlying field
+						parameterValue: $this.find('.parameter.tt-input').val() || $this.find('.parameter').val()
+					};
+				}).get(),
+				aggregators: $('#aggregatorList .config-item').map(function() {
+					var $this = $(this);
+					return {
+						functionName: $this.find('.aggregator-select').val(),
+						columnName: $this.find('.column-name').html()
+					};
+				}).get()
+			};
 
-				console.log(config);
-				// window.location = 'View/' + $.param({ 'config': JSON.stringify(config) });
+			console.log(config);
 
-//			$.ajax({
-//				url: 'Generate/',
-//				type: "POST",
-//				data: JSON.stringify(config),
-//				contentType: "application/json",
-////				complete: callback
-				//			});
+			// If we want to load the table into the page, we can post back the config as json using $.ajax(...).
+			// Really what we want to do is create a bookmarkable url.
+			// To do that, we can either:
+			// - Post to the server, and use PRG. Doing a $.post of JSON isn't natively supported, but the post function
+			// below will work. We'd then need so serialise the URL on the server.
+			// - Generate a usable URL and set the window location to that on the browser. The serialize function will do that.
 
-			post(
-				'Generate',
-				{ config: JSON.stringify(config) });
+			var preferGet = true;
+			if (preferGet) {
+				window.location = 'ViewByConfig/?' + serialize(config);
+			} else {
+				post('Generate',{ config: JSON.stringify(config) });
+			}
 		});
 
 	});
 
+	// http://stackoverflow.com/a/1714899/424788
+	serialize = function (obj, prefix) {
+		var str = [];
+		for (var p in obj) {
+			if (obj.hasOwnProperty(p)) {
+				var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+				str.push(typeof v == "object" ?
+				  serialize(v, k) :
+				  k + "=" + v);
+				//encodeURIComponent(k) + "=" + encodeURIComponent(v));
+			}
+		}
+		return str.join("&");
+	}
+
+
+	// Post json. Weirdly, it's really hard to post json back other than as an ajax request.
+	// http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit 
 	function post(path, params, method) {
 		method = method || "post"; // Set method to post by default if not specified.
 

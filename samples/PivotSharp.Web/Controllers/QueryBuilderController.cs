@@ -132,6 +132,7 @@ namespace PivotSharp.Web.Controllers
 			return View(new PivotTableViewModel(){ Id = id, Config = config, PivotTable = pivot});
 		}
 
+		// Use this to accept a JSON serialization of the config and redirect to ViewByConfig.
 		public ActionResult Generate(string config) {
 
 			PivotConfig pivotConfig = JsonConvert.DeserializeObject<PivotConfig>(config);
@@ -147,9 +148,13 @@ namespace PivotSharp.Web.Controllers
 		}
 
 
+		// Accepts:
+		// QS Format: http://localhost:52157/QueryBuilder/ViewByConfig?rows[0]=country&cols[0]=year&aggregators[0].columnname=Revenue&aggregators[0].functionname=Count&filters[0].op==&filters[0].columnname=Year&filters[0].parametervalue=2010
+		// TempData.
 		public ActionResult ViewByConfig(PivotConfig config) {
 
-			config = TempData["Config"] as PivotConfig;
+			// Post will come in as TempData
+			config = config ?? TempData["Config"] as PivotConfig;
 			var connector = new PivotDbConnector(connectionString);
 			var reader = connector.GetPivotData(config, "OrderLinesRevenueNZReport");
 			var pivot = PivotTable.Create(config);
