@@ -34,9 +34,9 @@ namespace PivotSharp.Tests
 			reader = new EnumerableDataReader(new List<ObscureShape>());
 
 			pivot.Pivot(reader);
-			Assert.AreEqual(0, pivot.GrandTotal[0].Value);
-			Assert.AreEqual(0, pivot.Rows.Count());
-			Assert.AreEqual(0, pivot.Cols.Count());
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(0));
+			Assert.That(pivot.Rows.Count(), Is.EqualTo(0));
+			Assert.That(pivot.Cols.Count(), Is.EqualTo(0));
 		}
 
 		[Test]
@@ -50,11 +50,11 @@ namespace PivotSharp.Tests
 			reader = new EnumerableDataReader(source);
 
 			pivot.Pivot(reader);
-			Assert.AreEqual(3, pivot.GrandTotal[0].Value);
-			Assert.AreEqual(0, pivot.Rows.Count());
-			Assert.AreEqual(2, pivot.Cols.Count());
-			Assert.AreEqual(2, pivot.Cols.Single(r => r.FlattenedKey == "blue").Value);
-			Assert.AreEqual(1, pivot.Cols.Single(r => r.FlattenedKey == "red").Value);
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
+			Assert.That(pivot.Rows.Count(), Is.EqualTo(0));
+			Assert.That(pivot.Cols.Count(), Is.EqualTo(2));
+			Assert.That(pivot.Cols.Single(r => r.FlattenedKey == "blue").Value, Is.EqualTo(2));
+			Assert.That(pivot.Cols.Single(r => r.FlattenedKey == "red").Value, Is.EqualTo(1));
 		}
 
 		[Test]
@@ -68,11 +68,11 @@ namespace PivotSharp.Tests
 			reader = new EnumerableDataReader(source);
 
 			pivot.Pivot(reader);
-			Assert.AreEqual(3, pivot.GrandTotal[0].Value);
-			Assert.AreEqual(2, pivot.Rows.Count());
-			Assert.AreEqual(2, pivot.Rows.Single(r => r.FlattenedKey == "blue").Value);
-			Assert.AreEqual(1, pivot.Rows.Single(r => r.FlattenedKey == "red").Value);
-			Assert.AreEqual(0, pivot.Cols.Count());
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
+			Assert.That(pivot.Rows.Count(), Is.EqualTo(2));
+			Assert.That(pivot.Rows.Single(r => r.FlattenedKey == "blue").Value, Is.EqualTo(2));
+			Assert.That(pivot.Rows.Single(r => r.FlattenedKey == "red").Value, Is.EqualTo(1));
+			Assert.That(pivot.Cols.Count(), Is.EqualTo(0));
 		}
 	}
 

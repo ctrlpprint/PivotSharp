@@ -49,59 +49,59 @@ namespace PivotSharp.Tests
 
 		[Test]
 		public void Can_Generate_Headers() {
-			Assert.AreEqual(1, pivot.Cols.Fields.Count);
-			Assert.AreEqual("Color", pivot.Cols.Fields[0]);
+			Assert.That(pivot.Cols.Fields.Count, Is.EqualTo(1));
+			Assert.That(pivot.Cols.Fields[0], Is.EqualTo("Color"));
 
-			Assert.AreEqual(2, pivot.Cols.Count);
-			Assert.AreEqual("blue", pivot.Cols[0].Headers[0].Name);
-			Assert.AreEqual("red", pivot.Cols[1].Headers[0].Name);
+			Assert.That(pivot.Cols.Count, Is.EqualTo(2));
+			Assert.That(pivot.Cols[0].Headers[0].Name, Is.EqualTo("blue"));
+			Assert.That(pivot.Cols[1].Headers[0].Name, Is.EqualTo("red"));
 
-			Assert.AreEqual("blue", pivot.Cols[0].FlattenedKey);
-			Assert.AreEqual("red", pivot.Cols[1].FlattenedKey);
+			Assert.That(pivot.Cols[0].FlattenedKey, Is.EqualTo("blue")	);
+			Assert.That(pivot.Cols[1].FlattenedKey, Is.EqualTo("red"));
 
-			Assert.AreEqual(1, pivot.Rows.Fields.Count);
-			Assert.AreEqual("Shape", pivot.Rows.Fields[0]);
+			Assert.That(pivot.Rows.Fields.Count, Is.EqualTo(1));
+			Assert.That(pivot.Rows.Fields[0], Is.EqualTo("Shape"));
 
-			Assert.AreEqual(2, pivot.Rows.Count);
-			Assert.AreEqual("circle", pivot.Rows[0].Headers[0].Name);
-			Assert.AreEqual("triangle", pivot.Rows[1].Headers[0].Name);
+			Assert.That(pivot.Rows.Count, Is.EqualTo(2));
+			Assert.That(pivot.Rows[0].Headers[0].Name, Is.EqualTo("circle"));
+			Assert.That(pivot.Rows[1].Headers[0].Name, Is.EqualTo("triangle"));
 
-			Assert.AreEqual("circle", pivot.Rows[0].FlattenedKey);
-			Assert.AreEqual("triangle", pivot.Rows[1].FlattenedKey);
+			Assert.That(pivot.Rows[0].FlattenedKey, Is.EqualTo("circle"));
+			Assert.That(pivot.Rows[1].FlattenedKey, Is.EqualTo("triangle"));
 		}
 
 		[Test]
 		public void Can_Generate_Elements() {
-			Assert.AreEqual(2, pivot.Values.Count());
+			Assert.That(pivot.Values.Count(), Is.EqualTo(2));
 			//Assert.AreEqual(2, pivot.Values.Sum(kvp => kvp.Value.Count()));
 		}
 
 		[Test]
 		public void Can_Generate_Cell_Counts() {
 			
-			Assert.AreEqual(2, pivot.Values["circle"]["blue"][0].Value);
-			Assert.AreEqual(1, pivot.Values["triangle"]["red"][0].Value);
+			Assert.That(pivot.Values["circle"]["blue"][0].Value, Is.EqualTo(2));
+			Assert.That(pivot.Values["triangle"]["red"][0].Value, Is.EqualTo(1));
 
-			Assert.AreEqual(3, pivot.GrandTotal[0].Value);
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
 		}
 
 		[Test]
 		public void Can_Generate_Row_Counts() {
-			Assert.AreEqual(2, pivot.Rows.Single(r => r.FlattenedKey == "circle").Value);
-			Assert.AreEqual(1, pivot.Rows.Single(r => r.FlattenedKey == "triangle").Value);
+			Assert.That(pivot.Rows.Single(r => r.FlattenedKey == "circle").Value, Is.EqualTo(2));
+			Assert.That(pivot.Rows.Single(r => r.FlattenedKey == "triangle").Value, Is.EqualTo(1));
 		}
 
 		[Test]
 		public void Can_Generate_Col_Counts() {
-			Assert.AreEqual(2, pivot.Cols.Single(r => r.FlattenedKey == "blue").Value);
-			Assert.AreEqual(1, pivot.Cols.Single(r => r.FlattenedKey == "red").Value);
+			Assert.That(pivot.Cols.Single(r => r.FlattenedKey == "blue").Value, Is.EqualTo(2));
+			Assert.That(pivot.Cols.Single(r => r.FlattenedKey == "red").Value, Is.EqualTo(1));
 		}
 
 
 		[Test]
 		public void Can_Write_Table() {
 			var output = PivotWriter.WriteHtmlTable(pivot);
-			Assert.NotNull(output);
+			Assert.That(output, Is.Not.Null);
 		}
 
 		[Test]
@@ -110,8 +110,8 @@ namespace PivotSharp.Tests
 			reader = new EnumerableDataReader(source);
 			var listing = pivot.DrillDown(reader, "circle", "blue");
 
-			Assert.AreEqual(2, listing.Rows.Count);
-			Assert.AreEqual(2, listing.Rows.Count);
+			Assert.That(listing.Rows.Count, Is.EqualTo(2));
+			Assert.That(listing.Rows.Count, Is.EqualTo(2));
 
 		}
 	}

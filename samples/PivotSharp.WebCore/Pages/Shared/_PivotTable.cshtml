@@ -1,0 +1,132 @@
+﻿@using PivotSharp.Extensions
+@model PivotSharp.PivotTable
+
+<style scoped>
+	/* Be good to have a way to only hover where non-empty. Css can't detect empty content. May need an attribute '*/
+	/*table {
+		width: auto !important;
+	}*/
+	.table > tbody > tr > td:hover {
+		background-color: #eee;
+	}
+
+	.table > tbody > tr > td:not(.empty):hover {
+		cursor: pointer;
+	}
+
+	thead th {
+		text-align: center;
+	}
+</style>
+
+
+<table class="table table-bordered table-responsive">
+	<thead>
+		<tr>
+			<!-- Field Names -->
+			<td colspan="@Model.Rows.Fields.Count()" rowspan="@(Model.Cols.Fields.Count() + (Model.AggregatorDefs.Count > 1 ? 2 : 1))" style="vertical-align: bottom">
+				@string.Join(" // ", Model.Rows.Fields)
+			</td>
+			<td colspan="@((Model.Cols.Count() + 1)* Model.AggregatorDefs.Count)">@string.Join(" // ", Model.Cols.Fields)</td>
+		</tr>
+		<!-- One row per column field-->
+		@if (Model.Cols.Any()) {
+			foreach (var colField in Model.Cols.Fields) {
+				<tr>
+					<!-- Col Headers -->
+					@foreach (var header in Model.Cols.GetHeaderGroupsForField(colField)) {
+						<th colspan="@(header.Count()* Model.AggregatorDefs.Count)">
+							@header.First().Headers.First(h => h.FieldName == colField).Name
+						</th>
+					}
+					<!-- Row Totals Header -->
+					@* On the top row, add a Total cell which spans the header rows *@
+					@if (Model.Cols.Fields.IndexOf(colField) == 0) {
+						foreach (var aggregation in Model.AggregatorDefs) {
+							<th rowspan="@(Model.Cols.Fields.Count()+1)">@aggregation.ToString()</th>
+						}
+					}
+				</tr>
+			}
+			if (Model.AggregatorDefs.Count > 1) {
+				var lowestColField = Model.Cols.Fields[Model.Cols.Fields.Count - 1];
+				<tr>
+					<!-- Aggregator Headers -->
+					@foreach (var header in Model.Cols.GetHeaderGroupsForField(lowestColField)) {
+						foreach (var aggregation in Model.AggregatorDefs) {
+							<th>@aggregation.ToString()</th>
+						}
+					}
+				</tr>
+			}
+		} else {
+			<tr>
+				@foreach (var aggregation in Model.AggregatorDefs) {
+					<th>@aggregation.ToString()</th>
+				}
+			</tr>
+		}
+	</thead>
+
+	<tbody>
+		<!-- One row for each row header -->
+		@foreach (var row in Model.Rows.NaturalSort(r => r.FlattenedKey)) {
+			<tr>
+				<!-- One column for each row field -->
+				@foreach (var rowField in Model.Rows.Fields) {
+					var header = row.Headers.Single(h => h.FieldName == rowField);
+					if (header.GroupPosition == 0) {
+						<th rowspan="@header.GroupCount">@header.Name</th>
+					}
+				}
+				<!--  Cells -->
+				@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
+					for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+
+						var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
+						if (cellValue != null && cellValue[aggregatorIndex].HasEntries) {
+							<td class="data-cell text-right" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey" data-cell-count="@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].Count">
+								@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].FormattedValue
+							</td>
+						} else {
+							<td class="empty"></td>
+						}
+					}
+				}
+				<!-- Row Totals -->
+				@for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+					<th class="text-right">@row.Aggregators[aggregatorIndex].FormattedValue</th>
+				}
+			</tr>
+		}
+	</tbody>
+	<tfoot>
+		<tr>
+			<th colspan="@Model.Rows.Fields.Count()" class="text-right">Grand Total</th>
+			@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
+				for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+					<th class="text-right">@col.Aggregators[aggregatorIndex].FormattedValue</th>
+				}
+			}
+			@for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+				<th class="text-right">@Model.GrandTotal[aggregatorIndex].FormattedValue</th>
+			}
+
+		</tr>
+	</tfoot>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.data-cell').qtip({
+			content: {
+				text: function (event, api) {
+					// Retrieve content from custom attribute of the $('.selector') elements.
+					return $(this).data('row-key') + ', ' + $(this).data('col-key') + ' (' + $(this).data('cell-count') + ' rows)';
+				}
+			},
+			show: { delay: 1000 },
+			style: { classes: 'qtip-youtube' }
+		});
+	});
+</script>

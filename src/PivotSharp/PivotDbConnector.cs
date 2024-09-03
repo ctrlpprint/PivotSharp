@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Net.Sockets;
 
@@ -123,7 +123,7 @@ namespace PivotSharp
 
 			// When using CommandBehavior.CloseConnection, the connection will be closed when the 
 			// IDataReader is closed.
-			// https://msdn.microsoft.com/en-us/library/system.data.sqlclient.sqlcommand(v=vs.110).aspx
+			// https://msdn.microsoft.com/en-us/library/Microsoft.Data.SqlClient.sqlcommand(v=vs.110).aspx
 			using (var command = new SqlCommand(query, connection)) {
 				foreach (var filter in config.Filters) {
 					command.Parameters.AddWithValue("param" + config.Filters.IndexOf(filter), filter.ParameterValue);

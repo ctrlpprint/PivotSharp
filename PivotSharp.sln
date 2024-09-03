@@ -1,13 +1,12 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotSharp", "src\PivotSharp\PivotSharp.csproj", "{13B128D1-FE4A-4B9F-A60A-B90A027F1A28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PivotSharp", "src\PivotSharp\PivotSharp.csproj", "{13B128D1-FE4A-4B9F-A60A-B90A027F1A28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotSharp.Tests", "tests\PivotSharp.Tests\PivotSharp.Tests.csproj", "{2469A63B-7A62-470C-A097-EC88C4E567AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PivotSharp.Tests", "tests\PivotSharp.Tests\PivotSharp.Tests.csproj", "{2469A63B-7A62-470C-A097-EC88C4E567AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotSharp.Web", "samples\PivotSharp.Web\PivotSharp.Web.csproj", "{A9016157-1914-4D3C-8210-4C5BB6ED73F9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB22AB77-5015-4F0C-B478-421729FD994B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +22,11 @@ Global
 		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9016157-1914-4D3C-8210-4C5BB6ED73F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9016157-1914-4D3C-8210-4C5BB6ED73F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9016157-1914-4D3C-8210-4C5BB6ED73F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9016157-1914-4D3C-8210-4C5BB6ED73F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0886CE87-04AD-4A93-B4E8-9D9ECDFDD189}
 	EndGlobalSection
 EndGlobal

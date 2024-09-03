@@ -19,9 +19,9 @@ namespace PivotSharp.Tests
 				RowKeys = new List<string> { "Dotted", "Line" }
 			};
 
-			Assert.AreEqual(key1, key2);
-			Assert.That(key1 == key2);
-			Assert.False(key1 != key2);
+			Assert.That(key2, Is.EqualTo(key1));
+			Assert.That(key1 == key2, Is.True);
+			Assert.That(key1, Is.Not.EqualTo(key2));
 		}
 
 		[Test]
@@ -37,9 +37,9 @@ namespace PivotSharp.Tests
 				RowKeys = new List<string> { "Dashed", "Line" }
 			};
 
-			Assert.AreNotEqual(key1, key2);
-			Assert.False(key1 == key2);
-			Assert.That(key1 != key2);
+			Assert.That(key2, Is.EqualTo(key1));
+			Assert.That(key1 == key2, Is.False);
+			Assert.That(key1 != key2, Is.True);
 		}
 
 	}

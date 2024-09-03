@@ -1,0 +1,24 @@
+﻿@page
+@using System.Data
+@model PivotSharp.WebCore.Pages.DrillDownModel
+@{
+}
+
+<table class="table">
+	<thead>
+		<tr>
+			@foreach (var col in Model.Table.Columns.Cast<DataColumn>()) {
+				<th>@col.ColumnName</th>
+			}
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var row in Model.Table.Rows.Cast<DataRow>()) {
+			<tr>
+				@foreach (DataColumn col in Model.Table.Columns.Cast<DataColumn>()) {
+					<td>@row[col.ColumnName]</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>

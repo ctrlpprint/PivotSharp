@@ -1,0 +1,34 @@
+﻿@model PivotSharp.WebCore.Models.PivotConfigViewModel
+
+@if (Model.Config.Filters.Any()) {
+	<p>@string.Join(", ", Model.Config.Filters.Select(f => f.Description))</p>
+}
+else {
+	<p>No filters</p>
+}
+<table class="table table-condensed table-bordered">
+	<thead>
+		@foreach (var col in Model.Config.Cols) {
+			<tr>
+				@if (Model.Config.Cols.IndexOf(col) == 0) {
+					<th rowspan="@Model.Config.Cols.Count"></th>
+				}
+				<th>@col</th>
+			</tr>
+		}
+	</thead>
+	<tbody>
+		@foreach (var row in Model.Config.Rows) {
+			<tr>
+				<th>@row</th>
+				@if (Model.Config.Rows.IndexOf(row) == 0) {
+					<td rowspan="@Model.Config.Rows.Count">
+						@foreach (var aggregator in Model.Config.Aggregators) {
+							<span>@aggregator.ToString()</span><br/>
+						}
+					</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>

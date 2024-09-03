@@ -46,8 +46,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 
 			var ex = Assert.Throws<PivotConfigurationException>(() => pivot.Pivot(reader));
-			Assert.AreEqual(1, ex.InvalidColumns.Count());
-			Assert.AreEqual("ThisIsntAColumnName", ex.InvalidColumns.First());
+			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
+			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 
 		}
 
@@ -67,9 +67,9 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(1, pivot.InvalidColumns.Count());
-			Assert.AreEqual("ThisIsntAColumnName", pivot.InvalidColumns.First());
-			Assert.AreEqual(275M, pivot.GrandTotal[0].Value); // Sum of all rows
+			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
+			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(275M)); // Sum of all rows
 
 		}
 
@@ -89,8 +89,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 
 			var ex = Assert.Throws<PivotConfigurationException>(() => pivot.Pivot(reader));
-			Assert.AreEqual(1, ex.InvalidColumns.Count());
-			Assert.AreEqual("ThisIsntAColumnName", ex.InvalidColumns.First());
+			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
+			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 
 		}
 
@@ -110,9 +110,9 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(1, pivot.InvalidColumns.Count());
-			Assert.AreEqual("ThisIsntAColumnName", pivot.InvalidColumns.First());
-			Assert.AreEqual(60M, pivot.GrandTotal[0].Value); // Sum of filtered rows
+			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
+			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(60M)); // Sum of filtered rows
 
 		}
 
@@ -132,8 +132,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 
 			var ex = Assert.Throws<PivotConfigurationException>(() => pivot.Pivot(reader));
-			Assert.AreEqual(1, ex.InvalidColumns.Count());
-			Assert.AreEqual("ThisIsntAColumnName", ex.InvalidColumns.First());
+			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
+			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 
 		}
 
@@ -153,9 +153,9 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(1, pivot.InvalidColumns.Count());
-			Assert.AreEqual("ThisIsntAColumnName", pivot.InvalidColumns.First());
-			Assert.AreEqual(60M, pivot.GrandTotal[0].Value); // Sum of filtered rows
+			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
+			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(60M)); // Sum of filtered rows
 
 		}
 
@@ -175,8 +175,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 
 			var ex = Assert.Throws<PivotConfigurationException>(() => pivot.Pivot(reader));
-			Assert.AreEqual(1, ex.InvalidColumns.Count());
-			Assert.AreEqual("ThisIsntAColumnName", ex.InvalidColumns.First());
+			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
+			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 
 		}
 
@@ -196,10 +196,10 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(1, pivot.InvalidColumns.Count());
-			Assert.AreEqual("ThisIsntAColumnName", pivot.InvalidColumns.First());
-			Assert.AreEqual("Count", pivot.AggregatorDefs[0].Create().SqlFunctionName);
-			Assert.AreEqual(2, pivot.GrandTotal[0].Value); // Count of filtered rows
+			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
+			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
+			Assert.That(pivot.AggregatorDefs[0].Create().SqlFunctionName, Is.EqualTo("Count"));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(2)); // Count of filtered rows
 
 		}
 

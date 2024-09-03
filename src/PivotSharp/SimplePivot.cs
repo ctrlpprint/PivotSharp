@@ -29,32 +29,5 @@ namespace System.Linq
 			}
 			).ToDictionary(e => e.X, o => o.Y);
 		}
-
-		//public static Dictionary<string, Dictionary<string, TValue>> Pivot<TSource, TValue>(
-		//		this IEnumerable<TSource> source,
-		//		string rowSelector,
-		//		string colSelector,
-		//		Func<IEnumerable<TSource>, TValue> aggregate) {
-
-		//	var dictionary = new Dictionary<string, Dictionary<string, TValue>>();
-
-	
-		//	foreach (IGrouping<string, TSource> x in source.GroupBy(rowSelector)) {
-
-		//		var dictionary1 = new Dictionary<string, TValue>();
-		//		foreach (IGrouping<string, TSource> z in x.GroupBy(colSelector)) {
-		//			var unknown = new {
-		//				Z = z.Key, V = aggregate(z)
-		//			};
-		//			dictionary1.Add(unknown.Z, unknown.V);
-		//		}
-		//		var rowGroup = new {
-		//			X = x.Key, Y = dictionary1
-		//		};
-		//		dictionary.Add(rowGroup.X, rowGroup.Y);
-		//	}
-		//	return dictionary;
-		//}
-
 	}
 }

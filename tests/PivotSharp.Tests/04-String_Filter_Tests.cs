@@ -55,10 +55,10 @@ namespace PivotSharp.Tests
 
 		[Test]
 		public void Can_Filter_On_String_Equality() {
-			Assert.AreEqual(3, pivot.Values["circle"]["blue"][0].Value);
-			Assert.AreEqual(3, pivot.Values["triangle"]["blue"][0].Value);
+			Assert.That(pivot.Values["circle"]["blue"][0].Value, Is.EqualTo(3));
+			Assert.That(pivot.Values["triangle"]["blue"][0].Value, Is.EqualTo(3));
 
-			Assert.AreEqual(6, pivot.GrandTotal[0].Value);
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(6));
 		}
 
 		[Ignore("Not implemented yet")]

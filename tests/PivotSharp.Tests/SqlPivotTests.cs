@@ -26,7 +26,7 @@ namespace PivotSharp.Tests
 			var sqlString = new PivotSqlString(config, "QueryResultStubs");
 			// It will add a Count to the select for various purposes including providing support for Overall Avg
 			const string expected = "select Shape, Color, sum(Value) as Sum_Value, min(Value) as Min_Value, count(*) as Count from QueryResultStubs group by Shape, Color";
-			Assert.AreEqual(expected, sqlString.ToString());
+			Assert.That(sqlString.ToString(), Is.EqualTo(expected));
 
 			var source = new [] {
 				new QueryResultStub {  Shape = "Square", Color = "Red", Sum_Value = 100.00M, Min_Value = 50M, Count = 10},
@@ -38,8 +38,8 @@ namespace PivotSharp.Tests
 			var pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(210M, pivot.GrandTotal[0].Value);
-			Assert.AreEqual(40M, pivot.GrandTotal[1].Value);
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(210M));
+			Assert.That(pivot.GrandTotal[1].Value, Is.EqualTo(40M));
 
 		}
 

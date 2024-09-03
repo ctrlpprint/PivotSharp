@@ -1,0 +1,77 @@
+﻿@using PivotSharp
+@using PivotSharp.WebCore.Models
+
+@model PivotTable
+
+@{
+	var charts = new PivotChartsViewModel(Model, 6);
+}
+
+<style scoped>
+	.carousel .carousel-control, .carousel .carousel-caption, .carousel .carousel-indicators { visibility: hidden; }
+	.carousel:hover .carousel-control, .carousel:hover .carousel-caption, .carousel:hover .carousel-indicators { visibility: visible; }
+	.carousel:hover .carousel-caption{ background-color: rgba(100, 100, 100, 0.6); }
+
+</style>
+
+<div id="chart-carousel" class="carousel slide" data-ride="carousel">
+	<!-- Indicators -->
+	<ol class="carousel-indicators">
+		@foreach (var chart in charts.Charts) {
+			<li data-target="#chart-carousel" data-slide-to="@(chart.Index)" class="@(chart.Index == 0 ? "active" : "")"></li>
+		}
+	</ol>
+
+	<!-- Wrapper for slides -->
+	<div class="carousel-inner" role="listbox">
+		
+		@foreach (var chart in charts.Charts) {
+			<div class="item @(chart.Index == 0 ? "active" : "")">
+
+				@if (chart is LineChartViewModel) {
+					@Html.Partial("_LineChart", (LineChartViewModel)chart)
+				}
+				else if (chart is BarChartViewModel) {
+					@Html.Partial("_BarChart", (BarChartViewModel)chart)
+				}
+				else if (chart is PieChartViewModel) {
+					@Html.Partial("_PieChart", (PieChartViewModel)chart)
+				}
+				<div class="carousel-caption">
+					@chart.Title
+				</div>
+			</div>
+
+		}
+	</div>
+
+	<!-- Controls -->
+	<a class="left carousel-control" href="#chart-carousel" role="button" data-slide="prev" style="background:none;">
+		<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+		<span class="sr-only">Previous</span>
+	</a>
+	<a class="right carousel-control" href="#chart-carousel" role="button" data-slide="next" style="background:none;">
+		<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+		<span class="sr-only">Next</span>
+	</a>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		// In a carousel, inactive items have display none, which prevents the contained chart from sizing itself correctly.
+		// Use the slid event to get the chart to update once visible.
+		// Because this has to be done _after_ the chart has slid into view, set its visibility to hidden initially (which does
+		// not affect sizing), and display when done.
+
+		$('.carousel .item:not(.active) .chart').css('visibility', 'hidden');
+
+		$('.carousel').on('slid.bs.carousel', function (ev) {
+			$(ev.relatedTarget).find('.chart').each(function (el, tab) {
+				if ($(this).css('visibility') == 'hidden') {
+					tab.__chartist__.update();
+					$(this).css('visibility', 'visible');
+				}
+			});
+		});
+	});
+</script>

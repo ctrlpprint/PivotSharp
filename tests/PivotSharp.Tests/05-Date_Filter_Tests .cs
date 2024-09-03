@@ -46,7 +46,7 @@ namespace PivotSharp.Tests
 			pivot.Pivot(reader);
 
 
-			Assert.AreEqual(60M, pivot.Values["Books"]["USA"][0].Value);
+			Assert.That(pivot.Values["Books"]["USA"][0].Value, Is.EqualTo(60M));
 		}
 
 	}

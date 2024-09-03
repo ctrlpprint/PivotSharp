@@ -1,0 +1,18 @@
+﻿@page
+@model PivotSharp.WebCore.Pages.Data.IndexModel
+@{
+}
+
+
+<div class="row" style="margin-top: 20px;">
+	<partial name="_PivotTable" model="@Model.PivotTable" />
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".data-cell").on('click', function () {
+			window.open('/Data' +
+				'/DrillDown/' + @Model.PivotTable.Id + '?rowKeys=' + $(this).data('row-key') + '&colKeys=' + $(this).data('col-key'), '_blank');
+		});
+	});
+</script>

@@ -44,32 +44,32 @@ namespace PivotSharp.Tests
 
 			var deserialized = JsonConvert.DeserializeObject<PivotConfig>(json);
 
-			Assert.NotNull(deserialized);
+			Assert.That(deserialized, Is.Not.Null);
 
-			Assert.AreEqual(2, deserialized.Rows.Count);
-			Assert.AreEqual("Region", deserialized.Rows[0]);
-			Assert.AreEqual("Country", deserialized.Rows[1]);
+			Assert.That(deserialized.Rows.Count, Is.EqualTo(2));
+			Assert.That(deserialized.Rows[0], Is.EqualTo("Region"));
+			Assert.That(deserialized.Rows[1], Is.EqualTo("Country"));
 
-			Assert.AreEqual(1, deserialized.Cols.Count);
-			Assert.AreEqual("Category", deserialized.Cols[0]);
+			Assert.That(deserialized.Cols.Count, Is.EqualTo(1));
+			Assert.That(deserialized.Cols[0], Is.EqualTo("Category"));
 	
-			Assert.AreEqual(true, deserialized.FillTable);
+			Assert.That(deserialized.FillTable, Is.EqualTo(true));
 
-			Assert.AreEqual("Sum", deserialized.Aggregators[0].Create().SqlFunctionName);
-			Assert.AreEqual("Revenue", deserialized.Aggregators[0].Create().ColumnName);
-			Assert.AreEqual(0, deserialized.Aggregators[0].Create().Value);
+			Assert.That(deserialized.Aggregators[0].Create().SqlFunctionName, Is.EqualTo("Sum"));
+			Assert.That(deserialized.Aggregators[0].Create().ColumnName, Is.EqualTo("Revenue"));
+			Assert.That(deserialized.Aggregators[0].Create().Value, Is.EqualTo(0));
 
-			Assert.AreEqual(2, deserialized.Filters.Count);
+			Assert.That(deserialized.Filters.Count, Is.EqualTo(2));
 
-			Assert.AreEqual(typeof(Filter), deserialized.Filters[0].GetType());
-			Assert.AreEqual("Year", deserialized.Filters[0].ColumnName);
-			Assert.AreEqual(">", deserialized.Filters[0].Op);
-			Assert.AreEqual(2015, deserialized.Filters[0].ParameterValue);
+			Assert.That(deserialized.Filters[0].GetType(), Is.EqualTo(typeof(Filter)));
+			Assert.That(deserialized.Filters[0].ColumnName, Is.EqualTo("Year"));
+			Assert.That(deserialized.Filters[0].Op, Is.EqualTo(">"));
+			Assert.That(deserialized.Filters[0].ParameterValue, Is.EqualTo(2015));
 
-			Assert.AreEqual(typeof(Filter), deserialized.Filters[1].GetType());
-			Assert.AreEqual("Category", deserialized.Filters[1].ColumnName);
-			Assert.AreEqual("=", deserialized.Filters[1].Op);
-			Assert.AreEqual("Web", deserialized.Filters[1].ParameterValue);
+			Assert.That(deserialized.Filters[1].GetType(), Is.EqualTo(typeof(Filter)));
+			Assert.That(deserialized.Filters[1].ColumnName, Is.EqualTo("Category"));
+			Assert.That(deserialized.Filters[1].Op, Is.EqualTo("="));
+			Assert.That(deserialized.Filters[1].ParameterValue, Is.EqualTo("Web"));
 
 
 			//Assert.NotNull();

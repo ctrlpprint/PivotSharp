@@ -28,8 +28,8 @@ namespace PivotSharp.Tests
 		[Test]
 		public void CanIndex() {
 
-			Assert.IsNotEmpty(pivotValues["Dotted,Line"]);
-			Assert.AreEqual(4, pivotValues["Dotted,Line"]["Red,Triangle"][0].Value);
+			Assert.That(pivotValues["Dotted,Line"], Is.Not.Empty);
+			Assert.That(pivotValues["Dotted,Line"]["Red,Triangle"][0].Value, Is.EqualTo(4));
 
 		}
 

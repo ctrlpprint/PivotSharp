@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using System.Web.Routing;
-using System.Web.UI.WebControls;
-using Newtonsoft.Json;
-using PivotSharp.Aggregators;
-using PivotSharp.Filters;
 using PivotSharp.Web.Models;
 using Filter = PivotSharp.Filters.Filter;
 
@@ -18,7 +9,7 @@ namespace PivotSharp.Web.Controllers
 		private readonly string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["sample-db"].ToString();
 
 
-		private readonly IDictionary<int, PivotConfig> configs = new Dictionary<int, PivotConfig> {
+		public readonly IDictionary<int, PivotConfig> Configs = new Dictionary<int, PivotConfig> {
 			{
 				1, new PivotConfig() {
 					Rows = new[] {"Region"},
@@ -117,12 +108,12 @@ namespace PivotSharp.Web.Controllers
 		};
 
 		public ActionResult Index() {
-			return View(configs);
+			return View(Configs);
 		}
 
 		public ActionResult View(int? id) {
 
-			var config = configs.Single(c => c.Key == id).Value;
+			var config = Configs.Single(c => c.Key == id).Value;
 			var connector = new PivotDbConnector(connectionString);
 			var reader = connector.GetPivotData(config, "OrderLinesRevenueNZReport");
 			var pivot = PivotTable.Create(config);
@@ -167,7 +158,7 @@ namespace PivotSharp.Web.Controllers
 	
 		public ActionResult DrillDown(int id, string rowKeys, string colKeys) {
 
-			var config = configs.Single(c => c.Key == id).Value;
+			var config = Configs.Single(c => c.Key == id).Value;
 			var connector = new PivotDbConnector(connectionString);
 			var table = connector.GetDrillDownData(config, "OrderLinesRevenueNZReport", rowKeys, colKeys);
 

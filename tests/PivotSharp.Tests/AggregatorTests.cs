@@ -44,8 +44,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(5, pivot.Values["Books"]["USA"][0].Value);
-			Assert.AreEqual(11, pivot.GrandTotal[0].Value);
+			Assert.That(pivot.Values["Books"]["USA"][0].Value, Is.EqualTo(5));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(11));
 		}
 
 		[Test]
@@ -59,8 +59,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(115M, pivot.Values["Books"]["USA"][0].Value);
-			Assert.AreEqual(295M, pivot.GrandTotal[0].Value);
+			Assert.That(pivot.Values["Books"]["USA"][0].Value, Is.EqualTo(115M));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(295M));
 		}
 
 		[Test]
@@ -74,8 +74,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(23.0M, pivot.Values["Books"]["USA"][0].Value);
-			Assert.AreEqual(26.82M, Math.Round(pivot.GrandTotal[0].Value,2));
+			Assert.That(pivot.Values["Books"]["USA"][0].Value, Is.EqualTo(23.0M));
+			Assert.That(Math.Round(pivot.GrandTotal[0].Value, 2), Is.EqualTo(26.82M));
 		}
 
 		[Test]
@@ -89,8 +89,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(10M, pivot.Values["Books"]["USA"][0].Value);
-			Assert.AreEqual(10M, pivot.GrandTotal[0].Value);
+			Assert.That(pivot.Values["Books"]["USA"][0].Value, Is.EqualTo(10M));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(10M));
 		}
 
 		[Test]
@@ -104,8 +104,8 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(30M, pivot.Values["Books"]["USA"][0].Value);
-			Assert.AreEqual(50M, pivot.GrandTotal[0].Value);
+			Assert.That(pivot.Values["Books"]["USA"][0].Value, Is.EqualTo(30M));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(50M));
 		}
 
 		[Test]
@@ -122,10 +122,10 @@ namespace PivotSharp.Tests
 			pivot = PivotTable.Create(config);
 			pivot.Pivot(reader);
 
-			Assert.AreEqual(10M, pivot.Values["Books"]["USA"][0].Value);
-			Assert.AreEqual(10M, pivot.GrandTotal[0].Value);
-			Assert.AreEqual(30M, pivot.Values["Books"]["USA"][1].Value);
-			Assert.AreEqual(50M, pivot.GrandTotal[1].Value);
+			Assert.That(pivot.Values["Books"]["USA"][0].Value, Is.EqualTo(10M));
+			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(10M));
+			Assert.That(pivot.Values["Books"]["USA"][1].Value, Is.EqualTo(30M));
+			Assert.That(pivot.GrandTotal[1].Value, Is.EqualTo(50M));
 		}
 
 
