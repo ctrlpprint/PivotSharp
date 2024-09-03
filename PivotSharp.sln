@@ -8,6 +8,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PivotSharp.Tests", "tests\P
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB22AB77-5015-4F0C-B478-421729FD994B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PivotSharp.WebCore", "samples\PivotSharp.WebCore\PivotSharp.WebCore.csproj", "{7DAACC1F-6E7D-42CB-AEF4-7FFDB57E6531}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2469A63B-7A62-470C-A097-EC88C4E567AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DAACC1F-6E7D-42CB-AEF4-7FFDB57E6531}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DAACC1F-6E7D-42CB-AEF4-7FFDB57E6531}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DAACC1F-6E7D-42CB-AEF4-7FFDB57E6531}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DAACC1F-6E7D-42CB-AEF4-7FFDB57E6531}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
