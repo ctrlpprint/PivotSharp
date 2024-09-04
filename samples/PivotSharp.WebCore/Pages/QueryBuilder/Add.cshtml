@@ -4,270 +4,270 @@
 }
 
 <style scoped>
-	.field-list {
-		min-height: 30px; /* Drop zone for sortable */
-		background-color: #eee;
-	}
+    .field-list {
+        min-height: 30px; /* Drop zone for sortable */
+        background-color: #eee;
+    }
 
-		.field-list:not(.filters) .filter-input {
-			display: none;
-		}
+        .field-list:not(.filters) .filter-input {
+            display: none;
+        }
 
-		.field-list:not(.aggregators) .aggregator-select {
-			display: none;
-		}
+        .field-list:not(.aggregators) .aggregator-select {
+            display: none;
+        }
 
-	.glyphicon {
-		color: #337ab7;
-	}
+    .glyphicon {
+        color: #337ab7;
+    }
 
-	.field-list .form-control {
-		margin-left: 10px;
-		margin-right: 10px;
-	}
+    .field-list .form-control {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
 
-	.aggregators input[type=text] {
-		margin-top: -12px !important; /* Some layout bug when using typeahead */
-	}
+    .aggregators input[type=text] {
+        margin-top: -12px !important; /* Some layout bug when using typeahead */
+    }
 </style>
 
 
 <div class="row">
 
-	<div class="col-md-4">
-		<div class="panel panel-info">
-			<div class="panel-heading">
-				<h3 class="panel-title">Field List</h3>
-			</div>
-			<div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
-				<div style="padding-left: 0;" id="fieldList" class="source field-list">
-					@foreach (var column in Model.PivotConfig.Columns.OrderBy(s => s.Name)) {
-						<div class="list-group-item form-inline config-item">
-							<!-- Grab Handle -->
-							<span class="glyphicon glyphicon-move" aria-hidden="true"></span>
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Field List</h3>
+            </div>
+            <div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
+                <div style="padding-left: 0;" id="fieldList" class="source field-list">
+                    @foreach (var column in Model.PivotConfig.Columns.OrderBy(s => s.Name)) {
+                        <div class="list-group-item form-inline config-item">
+                            <!-- Grab Handle -->
+                            <span class="glyphicon glyphicon-move" aria-hidden="true"></span>
 
-							<!-- Aggregation -->
-							<select class="aggregator-select form-control">
-								@foreach (var aggregator in Model.PivotConfig.Aggregators) {
-									<option value="@aggregator">@aggregator</option>
-								}
-							</select>
+                            <!-- Aggregation -->
+                            <select class="aggregator-select form-control">
+                                @foreach (var aggregator in Model.PivotConfig.Aggregators) {
+                                    <option value="@aggregator">@aggregator</option>
+                                }
+                            </select>
 
-							<span class="column-name">@column.Name</span> <span class="column-type">(@column.DataType)</span>
+                            <span class="column-name">@column.Name</span> <span class="column-type">(@column.DataType)</span>
 
-							<!-- Filter Operator -->
-							<select class="operator-select filter-input form-control">
-								@foreach (var filter in Model.PivotConfig.FilterOperators) {
-									<option value="@filter.Op">@filter.Op</option>
-								}
-							</select>
+                            <!-- Filter Operator -->
+                            <select class="operator-select filter-input form-control">
+                                @foreach (var filter in Model.PivotConfig.FilterOperators) {
+                                    <option value="@filter.Op">@filter.Op</option>
+                                }
+                            </select>
 
-							<!-- Value -->
-							<input type="@column.HtmlInputType" class="parameter filter-input form-control" data-field-name="@column.Name" placeholder="@column.Name" />
+                            <!-- Value -->
+                            <input type="@column.HtmlInputType" class="parameter filter-input form-control" data-field-name="@column.Name" placeholder="@column.Name" />
 
-						</div>
-					}
-				</div>
-			</div>
-		</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
 
-	</div>
+    </div>
 
-	<div class="col-md-8">
-		<div class="panel panel-info">
-			<div class="panel-heading">
-				<h3 class="panel-title">Config</h3>
-			</div>
-			<div class="panel-body">
+    <div class="col-md-8">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Config</h3>
+            </div>
+            <div class="panel-body">
 
-				<table class="table table-condensed table-bordered">
-					<thead>
-						<tr>
-							<td colspan="2">
-								<div class="list-group-item active">Filters</div>
-								<div id="filterList" class="field-list filters">
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-								<div class="list-group-item active">Cols</div>
-								<div id="colList" class="field-list">
-								</div>
+                <table class="table table-condensed table-bordered">
+                    <thead>
+                        <tr>
+                            <td colspan="2">
+                                <div class="list-group-item active">Filters</div>
+                                <div id="filterList" class="field-list filters">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="list-group-item active">Cols</div>
+                                <div id="colList" class="field-list">
+                                </div>
 
-							</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-								<div class="list-group-item active">Rows</div>
-								<div id="rowList" class="field-list">
-								</div>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="list-group-item active">Rows</div>
+                                <div id="rowList" class="field-list">
+                                </div>
 
-							</td>
-							<td>
-								<div class="list-group-item active">Aggregators</div>
-								<div id="aggregatorList" class="field-list aggregators"></div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+                            </td>
+                            <td>
+                                <div class="list-group-item active">Aggregators</div>
+                                <div id="aggregatorList" class="field-list aggregators"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
-				<a href="#" class="btn btn-raised btn-primary pull-right generate">Generate</a>
-			</div>
-		</div>
+                <a href="#" class="btn btn-raised btn-primary pull-right generate">Generate</a>
+            </div>
+        </div>
 
-	</div>
+    </div>
 
 </div>
 
 
 <script type="text/javascript">
 
-	$(document).ready(function() {
+    $(document).ready(function () {
 
-		var sortables = {};
+        var sortables = {};
 
-		$('.field-list').each(function(i, obj) {
-			var id = obj.id;
-			sortables[id] = Sortable.create(obj, {
-				handle: '.glyphicon-move',
-				group: 'fields',
-				filter: '.active',
-				animation: 150
-			});
-		});
-
-
-		sortables['filterList'].options.onAdd = function(evt) {
-			// May want to move the typeahead code here to limit db calls.
-			var itemEl = evt.item; // dragged HTMLElement
-			//$(itemEl).find('.parameter:text').each(function (i, obj) {
-		};
-
-		// Clone from the field list, so we can, eg, use a field for multiple aggregators
-		sortables['fieldList'].options.group.pull = 'clone';
-
-		// Because we're cloning, if we drag an item back to the field list, it'll duplicate.
-		sortables['fieldList'].options.onAdd = function(evt) {
-			var itemEl = evt.item; // dragged HTMLElement
-			itemEl.remove(); // don't add
-		};
-
-		$('.field-list.source').find('.parameter:text').each(function(i, obj) {
-
-			var fieldName = $(this).data("field-name");
-
-			var items = new Bloodhound({
-				datumTokenizer: Bloodhound.tokenizers.whitespace,
-				queryTokenizer: Bloodhound.tokenizers.whitespace,
-				// url points to a json file that contains an array of country names, see
-				// https://github.com/twitter/typeahead.js/blob/gh-pages/data/countries.json
-				prefetch: 'GetColumnValues?columnName=' + fieldName
-			});
-
-			// Take top 5 to show as defaults when nothing types.
-			function withDefaults(q, sync) {
-				if (q === '') {
-					sync(items.all().slice(0, 5));
-				} else {
-					items.search(q, sync);
-				}
-			}
-
-			$(obj).typeahead({
-				minLength: 0,
-				highlight: true
-			}, {
-				name: fieldName,
-				source: withDefaults
-			});
-		});
+        $('.field-list').each(function (i, obj) {
+            var id = obj.id;
+            sortables[id] = Sortable.create(obj, {
+                handle: '.glyphicon-move',
+                group: 'fields',
+                filter: '.active',
+                animation: 150
+            });
+        });
 
 
-		$('.generate').on('click', function() {
+        sortables['filterList'].options.onAdd = function (evt) {
+            // May want to move the typeahead code here to limit db calls.
+            var itemEl = evt.item; // dragged HTMLElement
+            //$(itemEl).find('.parameter:text').each(function (i, obj) {
+        };
 
-			var config = {
-				rows: $('#rowList .column-name').map(function() { return $(this).html(); }).get(),
-				cols: $('#colList .column-name').map(function() { return $(this).html(); }).get(),
-				filters: $('#filterList .config-item').map(function() {
-					var $this = $(this);
-					return {
-						columnName: $this.find('.column-name').html(),
-						op: $this.find('.operator-select').val(),
-						// typeahead doesn't actually store the value in the underlying field
-						parameterValue: $this.find('.parameter.tt-input').val() || $this.find('.parameter').val()
-					};
-				}).get(),
-				aggregators: $('#aggregatorList .config-item').map(function() {
-					var $this = $(this);
-					return {
-						functionName: $this.find('.aggregator-select').val(),
-						columnName: $this.find('.column-name').html()
-					};
-				}).get()
-			};
+        // Clone from the field list, so we can, eg, use a field for multiple aggregators
+        sortables['fieldList'].options.group.pull = 'clone';
 
-			console.log(config);
+        // Because we're cloning, if we drag an item back to the field list, it'll duplicate.
+        sortables['fieldList'].options.onAdd = function (evt) {
+            var itemEl = evt.item; // dragged HTMLElement
+            itemEl.remove(); // don't add
+        };
 
-			// If we want to load the table into the page, we can post back the config as json using $.ajax(...).
-			// Really what we want to do is create a bookmarkable url.
-			// To do that, we can either:
-			// - Post to the server, and use PRG. Doing a $.post of JSON isn't natively supported, but the post function
-			// below will work. We'd then need so serialise the URL on the server.
-			// - Generate a usable URL and set the window location to that on the browser. The serialize function will do that.
+        $('.field-list.source').find('.parameter:text').each(function (i, obj) {
 
-			var preferGet = true;
-			if (preferGet) {
-				window.location = 'ViewByConfig/?' + serialize(config);
-			} else {
-				post('Generate',{ config: JSON.stringify(config) });
-			}
-		});
+            var fieldName = $(this).data("field-name");
 
-	});
+            var items = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.whitespace,
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                // url points to a json file that contains an array of country names, see
+                // https://github.com/twitter/typeahead.js/blob/gh-pages/data/countries.json
+                prefetch: 'GetColumnValues?columnName=' + fieldName
+            });
 
-	// http://stackoverflow.com/a/1714899/424788
-	serialize = function (obj, prefix) {
-		var str = [];
-		for (var p in obj) {
-			if (obj.hasOwnProperty(p)) {
-				var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
-				str.push(typeof v == "object" ?
-				  serialize(v, k) :
-				  k + "=" + v);
-				//encodeURIComponent(k) + "=" + encodeURIComponent(v));
-			}
-		}
-		return str.join("&");
-	}
+            // Take top 5 to show as defaults when nothing types.
+            function withDefaults(q, sync) {
+                if (q === '') {
+                    sync(items.all().slice(0, 5));
+                } else {
+                    items.search(q, sync);
+                }
+            }
+
+            $(obj).typeahead({
+                minLength: 0,
+                highlight: true
+            }, {
+                name: fieldName,
+                source: withDefaults
+            });
+        });
 
 
-	// Post json. Weirdly, it's really hard to post json back other than as an ajax request.
-	// http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
-	function post(path, params, method) {
-		method = method || "post"; // Set method to post by default if not specified.
+        $('.generate').on('click', function () {
 
-		// The rest of this code assumes you are not using a library.
-		// It can be made less wordy if you use one.
-		var form = document.createElement("form");
-		form.setAttribute("method", method);
-		form.setAttribute("action", path);
+            var config = {
+                rows: $('#rowList .column-name').map(function () { return $(this).html(); }).get(),
+                cols: $('#colList .column-name').map(function () { return $(this).html(); }).get(),
+                filters: $('#filterList .config-item').map(function () {
+                    var $this = $(this);
+                    return {
+                        columnName: $this.find('.column-name').html(),
+                        op: $this.find('.operator-select').val(),
+                        // typeahead doesn't actually store the value in the underlying field
+                        parameterValue: $this.find('.parameter.tt-input').val() || $this.find('.parameter').val()
+                    };
+                }).get(),
+                aggregators: $('#aggregatorList .config-item').map(function () {
+                    var $this = $(this);
+                    return {
+                        functionName: $this.find('.aggregator-select').val(),
+                        columnName: $this.find('.column-name').html()
+                    };
+                }).get()
+            };
 
-		for (var key in params) {
-			if (params.hasOwnProperty(key)) {
-				var hiddenField = document.createElement("input");
-				hiddenField.setAttribute("type", "hidden");
-				hiddenField.setAttribute("name", key);
-				hiddenField.setAttribute("value", params[key]);
+            console.log(config);
 
-				form.appendChild(hiddenField);
-			}
-		}
+            // If we want to load the table into the page, we can post back the config as json using $.ajax(...).
+            // Really what we want to do is create a bookmarkable url.
+            // To do that, we can either:
+            // - Post to the server, and use PRG. Doing a $.post of JSON isn't natively supported, but the post function
+            // below will work. We'd then need so serialise the URL on the server.
+            // - Generate a usable URL and set the window location to that on the browser. The serialize function will do that.
 
-		document.body.appendChild(form);
-		form.submit();
-	}
+            var preferGet = true;
+            if (preferGet) {
+                window.location = 'ViewByConfig/?' + serialize(config);
+            } else {
+                post('Generate', { config: JSON.stringify(config) });
+            }
+        });
+
+    });
+
+    // http://stackoverflow.com/a/1714899/424788
+    serialize = function (obj, prefix) {
+        var str = [];
+        for (var p in obj) {
+            if (obj.hasOwnProperty(p)) {
+                var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+                str.push(typeof v == "object" ?
+                    serialize(v, k) :
+                    k + "=" + v);
+                //encodeURIComponent(k) + "=" + encodeURIComponent(v));
+            }
+        }
+        return str.join("&");
+    }
+
+
+    // Post json. Weirdly, it's really hard to post json back other than as an ajax request.
+    // http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
+    function post(path, params, method) {
+        method = method || "post"; // Set method to post by default if not specified.
+
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
 </script>

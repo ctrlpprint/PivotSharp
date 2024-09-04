@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Data.SqlClient;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
+using System.Data;
 
 namespace PivotSharp.WebCore.Pages.QueryBuilder;
 
@@ -12,8 +14,15 @@ public class QueryBuilderBasePageModel : PageModel
 		connectionString = configuration.GetConnectionString("DefaultConnection")!;
 	}
 
+    protected SqlDataReader GetReader() {
+        var conn = new SqlConnection(connectionString);
+        var cmd = new SqlCommand("select * from World_Data", conn);
+        conn.Open();
+        return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+    }
 
-	public readonly IDictionary<int, PivotConfig> Configs = new Dictionary<int, PivotConfig> {
+
+    public readonly IDictionary<int, PivotConfig> Configs = new Dictionary<int, PivotConfig> {
 		{
 			1 , new PivotConfig() {
 					Rows = ["Country_Name"],
