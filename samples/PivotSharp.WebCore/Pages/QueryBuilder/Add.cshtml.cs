@@ -8,15 +8,20 @@ namespace PivotSharp.WebCore.Pages.QueryBuilder;
 
 public class AddModel : PageModel
 {
-	private readonly string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["sample-db"].ToString();
+	private readonly string connectionString;
+
+	public AddModel(IConfiguration configuration) {
+		connectionString = configuration.GetConnectionString("DefaultConnection")!;
+	}
+
 
 	public EditPivotConfigViewModel PivotConfig { get; private set; }
 
 	public IActionResult OnGet() {
 		var connector = new PivotDbConnector(connectionString);
-		var columns = connector.GetTableStructure("OrderLinesRevenueNZReport");
+		var columns = connector.GetTableStructure("World_Data");
 
-		this.PivotConfig = new EditPivotConfigViewModel
+		PivotConfig = new EditPivotConfigViewModel
 		{
 			Columns = columns,
 			Config = new PivotConfig(),

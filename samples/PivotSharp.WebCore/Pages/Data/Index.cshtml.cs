@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using PivotSharp.WebCore.Models;
 
 namespace PivotSharp.WebCore.Pages.Data;
 
 public class IndexModel : BaseDataPageModel
 {
+	public IndexModel(IConfiguration configuration) : base(configuration) { }
+
 	public PivotTableViewModel PivotTable { get; private set; }
 
 	public IActionResult OnGet(int id = 1) {

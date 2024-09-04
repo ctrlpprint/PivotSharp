@@ -5,6 +5,8 @@ namespace PivotSharp.WebCore.Pages.Data;
 
 public class DrillDownModel : BaseDataPageModel
 {
+	public DrillDownModel(IConfiguration configuration) : base(configuration) { }
+
 	public DataTable Table { get; private set; } = new();
 	public PivotTableViewModel PivotTableModel { get; private set; } 
 

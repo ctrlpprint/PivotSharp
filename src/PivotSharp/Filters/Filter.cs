@@ -28,6 +28,7 @@ namespace PivotSharp.Filters
 		}
 
 		public bool Apply(IDataReader source) {
+			if (source[ColumnName].GetType() == typeof(System.DBNull)) return false;
 			return Compare(Op, (IComparable) source[ColumnName], (IComparable) ParameterValue);
 		}
 

@@ -15,7 +15,7 @@
 				</div>
 				<div class="panel-body">
 					<partial name="_PivotConfig" model="new PivotConfigViewModel { Id = kvp.Key, Config = kvp.Value }" />
-					<a class="btn btn-raised btn-info pull-right" style="margin-top:0; margin-bottom: 0;" href="@Url.Action("View", new { Id = kvp.Key})">View</a>
+					<a class="btn btn-raised btn-info pull-right" style="margin-top:0; margin-bottom: 0;" href=@($"/QueryBuilder/View?id={kvp.Key}")>View</a>
 				</div>
 			</div>
 		</div>

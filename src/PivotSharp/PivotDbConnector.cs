@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Linq;
-using System.Net.Sockets;
 
 namespace PivotSharp
 {
@@ -15,6 +14,11 @@ namespace PivotSharp
 			ConnectionString = connectionString;
 		}
 
+		/// <summary>
+		/// Returns the structure of the table or view
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <returns></returns>
 		public IEnumerable<Column> GetTableStructure(string tableName) {
 
 			// See question at http://stackoverflow.com/questions/1054984/how-can-i-get-column-names-from-a-table-in-sql-server 

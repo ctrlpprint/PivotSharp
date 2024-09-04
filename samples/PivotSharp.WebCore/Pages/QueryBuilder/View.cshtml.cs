@@ -5,12 +5,14 @@ namespace PivotSharp.WebCore.Pages.QueryBuilder;
 
 public class ViewModel : QueryBuilderBasePageModel
 {
+	public ViewModel(IConfiguration configuration) : base(configuration) { }
+
 	public PivotTableViewModel PivotTableViewModel { get; private set; }
 
 	public IActionResult OnGet(int? id = 1) {
 		var config = Configs.Single(c => c.Key == id).Value;
 		var connector = new PivotDbConnector(connectionString);
-		var reader = connector.GetPivotData(config, "OrderLinesRevenueNZReport");
+		var reader = connector.GetPivotData(config, "World_Data");
 		var pivot = PivotTable.Create(config);
 		pivot.Pivot(reader);
 		PivotTableViewModel = new PivotTableViewModel(id!.Value, pivot, config);
@@ -21,7 +23,7 @@ public class ViewModel : QueryBuilderBasePageModel
 	public IActionResult OnGetByGonfig(PivotConfig config) {
 
 		var connector = new PivotDbConnector(connectionString);
-		var reader = connector.GetPivotData(config, "OrderLinesRevenueNZReport");
+		var reader = connector.GetPivotData(config, "World_Data");
 		var pivot = PivotTable.Create(config);
 		pivot.Pivot(reader);
 
