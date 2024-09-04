@@ -29,13 +29,13 @@
 			<div class="item @(chart.Index == 0 ? "active" : "")">
 
 				@if (chart is LineChartViewModel) {
-					@Html.Partial("_LineChart", (LineChartViewModel)chart)
+					<partial name="_LineChart" model="@((LineChartViewModel)chart)" />
 				}
 				else if (chart is BarChartViewModel) {
-					@Html.Partial("_BarChart", (BarChartViewModel)chart)
+					<partial name="_BarChart" model="@((BarChartViewModel)chart)" />
 				}
 				else if (chart is PieChartViewModel) {
-					@Html.Partial("_PieChart", (PieChartViewModel)chart)
+					<partial name="_PieChart" model="@(PieChartViewModel)chart" />
 				}
 				<div class="carousel-caption">
 					@chart.Title
