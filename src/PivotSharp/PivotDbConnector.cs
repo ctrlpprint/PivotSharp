@@ -91,7 +91,7 @@ namespace PivotSharp
 				var reader = command.ExecuteReader();
 				if (reader.HasRows) {
 					while (reader.Read()) {
-						returnValues.Add(reader.GetString(0), reader.GetInt32(1));
+						returnValues.Add(reader.GetValue(0).ToString(), reader.GetInt32(1));
 					}
 				}
 				reader.Close();

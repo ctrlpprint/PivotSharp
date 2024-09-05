@@ -31,4 +31,20 @@ public class AddModel : PageModel
 		};
 		return Page();
 	}
+
+    public ActionResult OnGetColumnValues(string columnName) {
+
+        var connector = new PivotDbConnector(connectionString);
+
+        // Protect against arbitrary input
+        var columnList = connector.GetTableStructure("World_Data");
+        if (!columnList.Any(l => l.Name.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
+            throw new Exception("Could not find Column name");
+
+        var columns = connector.GetColumnValues("World_Data", columnName, 300).Select(c => c.Key);
+
+        return new JsonResult(columns);
+
+    }
+
 }
