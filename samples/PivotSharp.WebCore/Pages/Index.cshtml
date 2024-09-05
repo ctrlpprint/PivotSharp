@@ -1,17 +1,22 @@
 ﻿@page
 @model IndexModel
 @{
-	ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home page";
 }
 
 <div class="row">
-	<partial name="_PivotTable" model="@Model.PivotTable.PivotTable" />
+    <div class="card bg-secondary mb-3">
+        <h5 class="card-header">Simple Pivot Tables</h5>
+        <div class="card-body">
+            <partial name="_PivotTable" model="@Model.PivotTable.PivotTable" />
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		$(".data-cell").on('click', function () {
-			window.open('/Home/DrillDown/'+ @Model.PivotTable!.Id + '?rowKeys=' + $(this).data('row-key') + '&colKeys=' + $(this).data('col-key'), '_blank');
-		});
-	});
+    $(document).ready(function () {
+        $(".data-cell").on('click', function () {
+            window.open('/DrillDown/' + @Model.PivotTable!.Id + '?rowKeys=' + $(this).data('row-key') + '&colKeys=' + $(this).data('col-key'), '_blank');
+        });
+    });
 </script>

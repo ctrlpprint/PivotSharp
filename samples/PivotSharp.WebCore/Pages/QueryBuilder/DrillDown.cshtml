@@ -3,7 +3,7 @@
 @model PivotSharp.WebCore.Pages.QueryBuilder.DrillDownModel
 @{ }
 
-<table class="table">
+<table class="table table-striped table-bordered">
    <thead>
       <tr>
       @foreach (var col in Model.Table.Columns.Cast<DataColumn>()) {

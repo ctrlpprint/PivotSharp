@@ -1,40 +1,43 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - PivotSharp.WebCore</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PivotSharp.WebCore</title>
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous" />
+    @*     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous" />
+    *@
+
+    <link href="~/lib/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-	<!-- Chartist plus legend plugin -->
-	<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-	<script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
-	<script src="https://cdn.rawgit.com/CodeYellowBV/chartist-plugin-legend/master/chartist-plugin-legend.js"></script>
+    <!-- Chartist plus legend plugin -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <script src="https://cdn.rawgit.com/CodeYellowBV/chartist-plugin-legend/master/chartist-plugin-legend.js"></script>
 
-	<!-- Sortable, for list drag/drop: https://github.com/RubaXa/Sortable -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js"></script>
+    <!-- Sortable, for list drag/drop: https://github.com/RubaXa/Sortable -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js"></script>
 
     <!-- typeahead and bloodhound: http://twitter.github.io/typeahead.js/, https://github.com/twitter/typeahead.js -->
     <link rel="stylesheet" href="~/Content/typeahead.css" />
     <script src="https://rawgit.com/twitter/typeahead.js/master/dist/typeahead.bundle.js"></script>
 
-	<!-- Tooltip: http://qtip2.com/ -->
-	<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.css" />
-	<script src="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>
-	@* http://qtip2.com/ *@
+    <!-- Tooltip: http://qtip2.com/ -->
+    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.css" />
+    <script src="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>
+    @* http://qtip2.com/ *@
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PivotSharp.WebCore.styles.css" asp-append-version="true" />
@@ -42,35 +45,24 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-dark bg-primary mb-10">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">PivotSharp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/QueryBuilder">DB Samples</a>
-                        </li>
-                    </ul>
-                </div>
+               <a class="navbar-brand" asp-area="" asp-page="/Index">PivotSharp</a>
+               <a class="nav-link text-dark" href="/QueryBuilder">DB Samples</a>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <main role="main" style="margin-top:10px">
+        <div class="container pt-10">
             @RenderBody()
-        </main>
-    </div>
+        </div>
+    </main>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - PivotSharp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2024 - PivotSharp
         </div>
     </footer>
-
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

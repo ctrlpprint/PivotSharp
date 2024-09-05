@@ -5,19 +5,17 @@
 }
 
 <div class="row">
-	@foreach (var kvp in Model.Configs) {
+    @foreach (var kvp in Model.Configs) {
 
-		<div class="col-md-4">
+        <div class="col-4">
 
-			<div class="panel panel-primary" style="height:300px;">
-				<div class="panel-heading">
-					<h3 class="panel-title">@kvp.Key</h3>
-				</div>
-				<div class="panel-body">
-					<partial name="_PivotConfig" model="new PivotConfigViewModel { Id = kvp.Key, Config = kvp.Value }" />
-					<a class="btn btn-raised btn-info pull-right" style="margin-top:0; margin-bottom: 0;" href=@($"/QueryBuilder/View?id={kvp.Key}")>View</a>
-				</div>
-			</div>
-		</div>
-	}
+            <div class="card bg-secondary mb-3" style="min-height:300px;">
+                <div class="card-header">@kvp.Key</div>
+                <div class="card-body">
+                    <partial name="_PivotConfig" model="new PivotConfigViewModel { Id = kvp.Key, Config = kvp.Value }" />
+                    <a class="btn btn-raised btn-info pull-right" style="margin-top:0; margin-bottom: 0;" href=@($"/QueryBuilder/View?id={kvp.Key}")>View</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>
