@@ -1,0 +1,160 @@
+﻿@page "{id:int?}"
+@model PivotSharp.WebCore.Pages.QueryBuilder.EditModel
+@{
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions {
+    // See https://stackoverflow.com/questions/48373229/400-bad-request-when-post-ing-to-razor-page
+    public string GetAntiXsrfRequestToken() {
+        return Xsrf.GetAndStoreTokens(Model.HttpContext).RequestToken;
+    }
+}
+
+<style scoped>
+    .field-list {
+        min-height: 30px; /* Drop zone for sortable */
+        background-color: #eee;
+    }
+
+        .field-list:not(.filters) .filter-input {
+            display: none;
+        }
+
+        .field-list:not(.aggregators) .aggregator-select {
+            display: none;
+        }
+
+    .glyphicon {
+        color: #337ab7;
+    }
+
+    .field-list .form-control {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-4">
+        <input type="hidden" class="form-control" name="Id" id="reportId" value="@Model.Report.Id" />
+    </div>
+    <div class="col-8">
+        <label>Name</label>
+        <input type="text" class="form-control" name="Name" id="reportName" value="@Model.Report.Name" />
+    </div>
+</div>
+<div class="row">
+    <div class="col-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Field List</h3>
+            </div>
+            <div class="panel-body" style="max-height: 400px; overflow-y: scroll;">
+                <div style="padding-left: 0;" id="fieldList" class="source field-list">
+                    @foreach (var column in Model.Report.Fields.OrderBy(s => s.Name)) {
+                        <partial name="_PivotField" model="@(Model.FieldModelFor(column))" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Config</h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-condensed table-bordered">
+                    <thead>
+                        <tr>
+                            <td colspan="2">
+                                <div class="list-group-item active">Filters</div>
+                                <div id="filterList" class="field-list filters">
+                                    @foreach (var filter in Model.Report.Config.Filters) {
+                                        <partial name="_PivotField" model="@Model.FieldModelFor(filter.ColumnName)" />
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="list-group-item active">Cols</div>
+                                <div id="colList" class="field-list">
+                                    @foreach (var columnName in Model.Report.Config.Cols) {
+                                        <partial name="_PivotField" model="@Model.FieldModelFor(columnName)" />
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="list-group-item active">Rows</div>
+                                <div id="rowList" class="field-list">
+                                    @foreach (var columnName in Model.Report.Config.Rows) {
+                                        <partial name="_PivotField" model="@Model.FieldModelFor(columnName)" />
+                                    }
+                                </div>
+
+                            </td>
+                            <td>
+                                <div class="list-group-item active">Aggregators</div>
+                                <div id="aggregatorList" class="field-list aggregators">
+                                    @foreach (var aggregator in Model.Report.Config.Aggregators) {
+                                        <partial name="_PivotField" model="@Model.FieldModelFor(aggregator.ColumnName)" />
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                @Html.AntiForgeryToken()
+                <a href="#" id="generate" class="btn btn-raised btn-primary pull-right generate">Generate</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        let options = {
+            group: 'shared',
+            animation: 150
+        };
+        Sortable.create(fieldList, options);
+        Sortable.create(filterList, options);
+        Sortable.create(colList, options);
+        Sortable.create(rowList, options);
+        Sortable.create(aggregatorList, options);
+
+        document.getElementById('generate').addEventListener('click', function (e) {
+            var config = {
+                Id: Number(document.getElementById('reportId').value),
+                Name: document.getElementById('reportName').value,
+                PivotConfig: {
+                    Rows: Array.from(document.querySelectorAll('#rowList .column-name'))
+                        .map((x) => x.innerHTML),
+                    Cols: Array.from(document.querySelectorAll('#colList .column-name'))
+                        .map((x) => x.innerHTML),
+                    Filters: Array.from(document.querySelectorAll('#filterList .config-item'))
+                        .map(x => ({
+                            ColumnName: x.querySelector('.column-name').innerHTML,
+                            Op: x.querySelector('.operator-select').value,
+                            // typeahead doesn't actually store the value in the underlying field
+                            ParameterValue: x.querySelector('.parameter').value
+                        })),
+                    Aggregators: Array.from(document.querySelectorAll('#aggregatorList .config-item'))
+                        .map(x => ({
+                            FunctionName: x.querySelector('.aggregator-select').value,
+                            ColumnName: x.querySelector('.column-name').innerHTML
+                        }))
+                }
+            };
+            post('/QueryBuilder/Edit', JSON.stringify(config), '@GetAntiXsrfRequestToken()');
+        });
+    </script>
+}

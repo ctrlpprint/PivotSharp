@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PivotSharp.WebCore.Models;
+using PivotSharp.WebCore.Pages.Shared;
 
 namespace PivotSharp.WebCore.Pages.QueryBuilder;
 
@@ -8,6 +9,7 @@ public class ViewModel : QueryBuilderBasePageModel
 	public ViewModel(IConfiguration configuration) : base(configuration) { }
 
 	public PivotTableViewModel PivotTableViewModel { get; private set; }
+
 
 	public IActionResult OnGet(int? id = 1) {
 		var config = Configs.Single(c => c.Key == id).Value;

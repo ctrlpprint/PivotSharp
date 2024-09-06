@@ -1,6 +1,6 @@
 namespace PivotSharp
 {
-	public class Column
+	public class Field
 	{
 		public int Position { get; set; }
 		public string Name { get; set; }

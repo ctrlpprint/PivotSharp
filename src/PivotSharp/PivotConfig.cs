@@ -9,13 +9,13 @@ namespace PivotSharp
 	[JsonObject(MemberSerialization.OptOut)]
 	public class PivotConfig
 	{
-		public IList<string> Rows { get; set; }
+		public IList<string> Rows { get; set; } = [];
 
-		public IList<string> Cols { get; set; }
+		public IList<string> Cols { get; set; } = [];
 
-		public IList<Filter> Filters { get; set; }
+		public IList<Filter> Filters { get; set; } = [];
 
-		public IList<AggregatorDef> Aggregators { get; set; }
+		public IList<AggregatorDef> Aggregators { get; set; } = [];
 
 		public AggregatorDef Aggregator {
 			get { return Aggregators.Any() ? Aggregators[0] : null; }
@@ -25,13 +25,9 @@ namespace PivotSharp
 		public bool FillTable { get; set; }
 
 		public ConfigurationErrorHandlingMode ErrorMode { get; set; }
+			= ConfigurationErrorHandlingMode.Ignore;
 
 		public PivotConfig() {
-			Rows = new List<string>();
-			Cols = new List<string>();
-			Filters = new List<Filter>();
-			Aggregators = new List<AggregatorDef>();
-			ErrorMode = ConfigurationErrorHandlingMode.Ignore;
 		}
 	}
 }

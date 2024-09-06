@@ -19,12 +19,12 @@ namespace PivotSharp
 		/// </summary>
 		/// <param name="tableName"></param>
 		/// <returns></returns>
-		public IEnumerable<Column> GetTableStructure(string tableName) {
+		public IEnumerable<Field> GetTableStructure(string tableName) {
 
 			// See question at http://stackoverflow.com/questions/1054984/how-can-i-get-column-names-from-a-table-in-sql-server 
 			// for other dbs
 
-			var columns = new List<Column>();
+			var columns = new List<Field>();
 
 			using (var connection = new SqlConnection(ConnectionString)) {
 
@@ -37,7 +37,7 @@ namespace PivotSharp
 				var reader = command.ExecuteReader();
 				if (reader.HasRows) {
 					while (reader.Read()) {
-						columns.Add(new Column() {
+						columns.Add(new Field() {
 							Position = reader.GetInt32(0),
 							Name = reader.GetString(1),
 							DataType = reader.GetString(2)

@@ -1,0 +1,32 @@
+﻿@model PivotSharp.WebCore.Pages.Shared._PivotFieldModel
+@{
+}
+
+<div class="list-group-item form-inline config-item">
+    <!-- Grab Handle -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
+        <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+    </svg>
+
+    <!-- Aggregation Type -->
+    <select class="form-select mt-10 px-3 aggregator-select form-control">
+        @foreach (var aggregator in Model.Aggregators) {
+            <option value="@aggregator">@aggregator</option>
+        }
+    </select>
+
+    <span class="column-name">@Model.Column.Name</span>
+    <span class="column-type"><i>@Model.Column.DataType</i></span>
+
+    <!-- Filter Operator -->
+    <select class="form-select mt-10 px-3 operator-select filter-input form-control">
+        @foreach (var filter in Model.FilterOperators) {
+            <option value="@filter.Op">@filter.Op</option>
+        }
+    </select>
+
+    <!-- Value -->
+    <input type="@Model.Column.HtmlInputType" class="parameter filter-input form-control"
+           data-field-name="@Model.Column.Name" placeholder="@Model.Column.Name" />
+
+</div>
