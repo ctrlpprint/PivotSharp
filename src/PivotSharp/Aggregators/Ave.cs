@@ -1,29 +1,22 @@
 ﻿using System;
 using System.Data;
 
-namespace PivotSharp.Aggregators
+namespace PivotSharp.Aggregators;
+
+// Collate the Sum then divide by Count
+
+public class Ave : AggregatorBase
 {
-	public class Ave : AggregatorBase
-	{
-		public override string SqlFunction {
-			// Collate the Sum then divide by Count
-			get { return string.Format("sum({0})", ColumnName); }
-		}
+    public override string SqlFunction => $"sum({ColumnName})";
 
-		public decimal SumTotal { get; private set; }
+    public decimal SumTotal { get; private set; }
 
-		// Collate the Sum, and then divide by Count.
-		public override string SqlFunctionName { get { return "Sum"; } }
+    public override string SqlFunctionName => "Sum";
 
+    public Ave(string columnName) => ColumnName = columnName;
 
-		public Ave(string columnName) {
-			ColumnName = columnName;
-		}
+    public override void UpdateFor(IDataReader record) => 
+        SumTotal += GetValue(record).ToString().ToDecimal();
 
-		public override void UpdateFor(IDataReader record) {
-			SumTotal += GetValue(record).ToString().ToDecimal();
-		}
-
-		public override decimal Value { get { return Count > 0 ? Decimal.Divide(SumTotal, (decimal)Count) : 0; } }
-	}
+    public override decimal Value => Count > 0 ? Decimal.Divide(SumTotal, (decimal)Count) : 0;
 }

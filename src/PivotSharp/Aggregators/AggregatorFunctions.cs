@@ -1,22 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace PivotSharp.Aggregators
+namespace PivotSharp.Aggregators;
+
+public class AggregatorFunctions
 {
-	public class AggregatorFunctions
-	{
-		public static IList<string> Options {
-			get {
-				return new List<string> {
-					"Count",
-					"CountDistinct",
-					"Sum",
-					"SumInt",
-					"Ave",
-					"Max",
-					"Min"
-				};
-			}
-		}
-	}
+    public static IList<string> Options => ["Count", "CountDistinct", "Sum", "SumInt", "Ave", "Max", "Min"];
 }

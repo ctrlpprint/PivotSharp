@@ -11,8 +11,7 @@ namespace System.Data
 				yield return reader.GetName(i);
 		}
 
-		public static bool ContainsKey(this IDataReader reader, string name) {
-			return GetColumnNames(reader).Any(c => c == name);
-		}
-	}
+        public static bool ContainsKey(this IDataReader reader, string name) =>
+			GetColumnNames(reader).Any(c => c == name);
+    }
 }

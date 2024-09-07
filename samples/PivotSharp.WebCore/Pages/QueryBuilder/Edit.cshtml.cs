@@ -62,17 +62,10 @@ public class EditModel : PageModel
         // TODO: Should be able to define the parameter as a PivotConfig type
         // and rely on built-in deserialization. However deserialization is failing
         // when called this way (showing up as a ModelState error)
-        try {
-            var report = JsonSerializer.Deserialize<CustomReport>(config);
-            using var conn = new SqlConnection(connectionString);
-            long id = await conn.InsertAsync(report);
-        }
-        catch (Exception ex) {
-
-        }
-
-
-        return Page();
+        var report = JsonSerializer.Deserialize<CustomReport>(config);
+        using var conn = new SqlConnection(connectionString);
+        long id = await conn.InsertAsync(report);
+        return Redirect($"/QueryBuilder/Edit/{id}");
     }
 
     // For autosuggesting fiter values

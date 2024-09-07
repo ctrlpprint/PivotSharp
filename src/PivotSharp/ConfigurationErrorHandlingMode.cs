@@ -1,8 +1,7 @@
-﻿namespace PivotSharp
+﻿namespace PivotSharp;
+
+public enum ConfigurationErrorHandlingMode
 {
-	public enum ConfigurationErrorHandlingMode
-	{
-		Throw,
-		Ignore
-	}
+    Throw,
+    Ignore
 }

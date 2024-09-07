@@ -1,7 +1,6 @@
-﻿namespace PivotSharp.Templates
+﻿namespace PivotSharp.Templates;
+
+public class TableViewModel
 {
-	public class TableViewModel
-	{
-		//public PivotData Data { get; set; } 
-	}
+    //public PivotData Data { get; set; } 
 }

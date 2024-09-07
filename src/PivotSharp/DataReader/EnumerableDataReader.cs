@@ -18,18 +18,17 @@ namespace PivotSharp.DataReader
 	/// </summary>
 	public class EnumerableDataReader : ObjectDataReader, IEnumerable
 	{
-		/// <summary>
-		/// Helper method to create generic lists from anonymous type
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public static IList ToGenericList(Type type) {
-			return (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(new[] { type }));
-		}
+        /// <summary>
+        /// Helper method to create generic lists from anonymous type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static IList ToGenericList(Type type) =>
+			(IList)Activator.CreateInstance(typeof(List<>).MakeGenericType([type]));
 
-		private readonly IEnumerator _enumerator;
-		private readonly Type _type;
-		private object _current;
+        private readonly IEnumerator enumerator;
+		private readonly Type type;
+		private object current;
 
 		/// <summary>
 		/// Create an IDataReader over an instance of IEnumerable&lt;>.
@@ -41,15 +40,15 @@ namespace PivotSharp.DataReader
 		/// <param name="collection">IEnumerable&lt;>. For IEnumerable use other constructor and specify type.</param>
 		public EnumerableDataReader(IEnumerable collection) {
 			if (collection.GetType().IsGenericType) {
-				_type = collection.GetType().GetGenericArguments()[0];
-				SetFields(_type);
+				type = collection.GetType().GetGenericArguments()[0];
+				SetFields(type);
 			}
 			else {
 				throw new ArgumentException(
 					"collection must be IEnumerable<>. Use other constructor for IEnumerable and specify type");
 			}
 
-			_enumerator = collection.GetEnumerator();
+			enumerator = collection.GetEnumerator();
 		}
 
 		/// <summary>
@@ -58,10 +57,9 @@ namespace PivotSharp.DataReader
 		/// </summary>
 		/// <param name="collection"></param>
 		/// <param name="elementType"></param>
-		public EnumerableDataReader(IEnumerable collection, Type elementType)
-			: base(elementType) {
-			_type = elementType;
-			_enumerator = collection.GetEnumerator();
+		public EnumerableDataReader(IEnumerable collection, Type elementType) : base(elementType) {
+			type = elementType;
+			enumerator = collection.GetEnumerator();
 		}
 
 		/// <summary>
@@ -78,7 +76,7 @@ namespace PivotSharp.DataReader
 				throw new IndexOutOfRangeException();
 			}
 
-			return Fields[i].Getter(_current);
+			return Fields[i].Getter(current);
 		}
 
 		/// <summary>
@@ -89,13 +87,13 @@ namespace PivotSharp.DataReader
 		/// </returns>
 		/// <filterpriority>2</filterpriority>
 		public override bool Read() {
-			bool returnValue = _enumerator.MoveNext();
-			_current = returnValue ? _enumerator.Current : _type.IsValueType ? Activator.CreateInstance(_type) : null;
+			bool returnValue = enumerator.MoveNext();
+			current = returnValue ? enumerator.Current : type.IsValueType ? Activator.CreateInstance(type) : null;
 			return returnValue;
 		}
 
 		public IEnumerator GetEnumerator() {
-			return _enumerator;
+			return enumerator;
 		}
 	}
 }
