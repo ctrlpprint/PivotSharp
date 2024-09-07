@@ -13,13 +13,13 @@ namespace PivotSharp.Tests
 		public void Can_Deserialize() {
 
 			var config = new PivotConfig() {
-				Rows = new[] {"Region", "Country"},
-				Cols = new[] {"Source"},
-				Aggregators = new List<AggregatorDef>{new AggregatorDef{FunctionName = "Sum", ColumnName = "Value"}},
-				Filters = new Filter[] {
-					new Filter("Year", ">", 2015), 
-					new Filter("Category", "=", "Web"), 
-				},
+				Rows = ["Region", "Country"],
+				Cols = ["Source"],
+				Aggregators = [new () {FunctionName = "Sum", ColumnName = "Value"}],
+                Filters = [
+					new ("Year", ">", 2015), 
+					new ("Category", "=", "Web"), 
+				],
 				FillTable = true
 			};
 

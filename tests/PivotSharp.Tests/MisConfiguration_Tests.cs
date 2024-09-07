@@ -13,33 +13,31 @@ namespace PivotSharp.Tests
 	{
 		private PivotTable pivot;
 		private EnumerableDataReader reader;
-		private readonly IList<Sale> source = new List<Sale> {
-				new Sale(new DateTime(2016,01,30), "Books", "The Hobbit", "USA", 10M ),
-				new Sale(new DateTime(2016,01,30), "DVDs", "Star Wars", "USA", 25M ),
+		private readonly IList<Sale> source = [
+			new (new DateTime(2016,01,30), "Books", "The Hobbit", "USA", 10M ),
+			new (new DateTime(2016,01,30), "DVDs", "Star Wars", "USA", 25M ),
 
-				new Sale(new DateTime(2016,01,31), "Books", "The Hobbit", "USA", 30M ),
-				new Sale(new DateTime(2016,01,31), "DVDs", "Star Wars", "USA", 25M ),
-				new Sale(new DateTime(2016,01,31), "DVDs", "Spectre", "USA", 25M ),
-				new Sale(new DateTime(2016,01,31), "DVDs", "Star Wars", "USA", 25M ),
+			new (new DateTime(2016,01,31), "Books", "The Hobbit", "USA", 30M ),
+			new (new DateTime(2016,01,31), "DVDs", "Star Wars", "USA", 25M ),
+			new (new DateTime(2016,01,31), "DVDs", "Spectre", "USA", 25M ),
+			new (new DateTime(2016,01,31), "DVDs", "Star Wars", "USA", 25M ),
 
-				new Sale(new DateTime(2016,02,01), "Books", "The Hobbit", "USA", 30M ),
-				new Sale(new DateTime(2016,02,01), "Books", "LOTR", "USA", 30M ),
+			new (new DateTime(2016,02,01), "Books", "The Hobbit", "USA", 30M ),
+			new (new DateTime(2016,02,01), "Books", "LOTR", "USA", 30M ),
 	
-				new Sale(new DateTime(2016,02,02), "DVDs", "Spectre", "USA", 30M ),
-				new Sale(new DateTime(2016,02,02), "Books", "The Hobbit", "USA", 15M ),
-				new Sale(new DateTime(2016,02,02), "DVS", "Star Wars", "USA", 30M ),
-			};
+			new (new DateTime(2016,02,02), "DVDs", "Spectre", "USA", 30M ),
+			new (new DateTime(2016,02,02), "Books", "The Hobbit", "USA", 15M ),
+			new (new DateTime(2016,02,02), "DVS", "Star Wars", "USA", 30M ),
+		];
 
 		[Test]
 		public void Can_Throw_On_Incorrect_Filter_Column() {
 			var config = new PivotConfig() {
-				Rows = new[] { "Category" },
-				Cols = new[] { "Country" },
-				Aggregators = new List<AggregatorDef>(){ new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" }},
+				Rows = ["Category"],
+				Cols = ["Country"],
+				Aggregators = [new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" }],
 				ErrorMode = ConfigurationErrorHandlingMode.Throw,
-				Filters = new Filter[] {
-					new Filter("ThisIsntAColumnName", "=", new DateTime(2016,02,01))
-				}
+				Filters = [new ("ThisIsntAColumnName", "=", new DateTime(2016,02,01))]
 			};
 
 			reader = new EnumerableDataReader(source);
@@ -54,13 +52,11 @@ namespace PivotSharp.Tests
 		[Test]
 		public void Can_Ignore_And_Report_Incorrect_Filter_Column() {
 			var config = new PivotConfig() {
-				Rows = new[] { "Category" },
-				Cols = new[] { "Country" },
-				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
+				Rows = ["Category"],
+				Cols = ["Country"],
+				Aggregators = [new () { FunctionName = "SumInt", ColumnName = "Value" }],
 				ErrorMode = ConfigurationErrorHandlingMode.Ignore,
-				Filters = new Filter[] {
-					new Filter("ThisIsntAColumnName", "=", new DateTime(2016,02,01))
-				}
+				Filters = [new ("ThisIsntAColumnName", "=", new DateTime(2016,02,01))]
 			};
 
 			reader = new EnumerableDataReader(source);
@@ -76,13 +72,11 @@ namespace PivotSharp.Tests
 		[Test]
 		public void Can_Throw_On_Incorrect_Row_Column() {
 			var config = new PivotConfig() {
-				Rows = new[] { "Category", "ThisIsntAColumnName" },
-				Cols = new[] { "Country" },
-				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
+				Rows = ["Category", "ThisIsntAColumnName"],
+				Cols = ["Country"],
+				Aggregators = [new () { FunctionName = "SumInt", ColumnName = "Value" }],
 				ErrorMode = ConfigurationErrorHandlingMode.Throw,
-				Filters = new Filter[] {
-					new Filter("Date", "=", new DateTime(2016,02,01))
-				}
+                Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
 			reader = new EnumerableDataReader(source);
@@ -97,13 +91,11 @@ namespace PivotSharp.Tests
 		[Test]
 		public void Can_Ignore_And_Report_Incorrect_Row_Column() {
 			var config = new PivotConfig() {
-				Rows = new[] { "Category", "ThisIsntAColumnName" },
-				Cols = new[] { "Country" },
-				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
+				Rows = ["Category", "ThisIsntAColumnName"],
+				Cols = ["Country"],
+				Aggregators = [new () { FunctionName = "SumInt", ColumnName = "Value" }],
 				ErrorMode = ConfigurationErrorHandlingMode.Ignore,
-				Filters = new Filter[] {
-					new Filter("Date", "=", new DateTime(2016,02,01))
-				}
+				Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
 			reader = new EnumerableDataReader(source);
@@ -119,13 +111,11 @@ namespace PivotSharp.Tests
 		[Test]
 		public void Can_Throw_On_Incorrect_Col_Column() {
 			var config = new PivotConfig() {
-				Rows = new[] { "Category" },
-				Cols = new[] { "Country", "ThisIsntAColumnName" },
-				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
+				Rows = ["Category"],
+				Cols = ["Country", "ThisIsntAColumnName"],
+				Aggregators = [new () { FunctionName = "SumInt", ColumnName = "Value" }],
 				ErrorMode = ConfigurationErrorHandlingMode.Throw,
-				Filters = new Filter[] {
-					new Filter("Date", "=", new DateTime(2016,02,01))
-				}
+				Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
 			reader = new EnumerableDataReader(source);
@@ -140,14 +130,12 @@ namespace PivotSharp.Tests
 		[Test]
 		public void Can_Ignore_And_Report_Incorrect_Col_Column() {
 			var config = new PivotConfig() {
-				Rows = new[] { "Category" },
-				Cols = new[] { "Country", "ThisIsntAColumnName" },
-				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "Value" } },
-				ErrorMode = ConfigurationErrorHandlingMode.Ignore,
-				Filters = new Filter[] {
-					new Filter("Date", "=", new DateTime(2016,02,01))
-				}
-			};
+                Rows = ["Category"],
+                Cols = ["Country", "ThisIsntAColumnName"],
+                Aggregators = [new() { FunctionName = "SumInt", ColumnName = "Value" }],
+                ErrorMode = ConfigurationErrorHandlingMode.Ignore,
+                Filters = [new("Date", "=", new DateTime(2016, 02, 01))]
+            };
 
 			reader = new EnumerableDataReader(source);
 			pivot = PivotTable.Create(config);
@@ -162,13 +150,11 @@ namespace PivotSharp.Tests
 		[Test]
 		public void Can_Throw_On_Incorrect_Aggregator_Column() {
 			var config = new PivotConfig() {
-				Rows = new[] { "Category" },
-				Cols = new[] { "Country" },
-				Aggregators = new List<AggregatorDef>(){ new AggregatorDef() { FunctionName = "SumInt", ColumnName = "ThisIsntAColumnName" }},
+				Rows = ["Category"],
+				Cols = ["Country"],
+				Aggregators = [new () { FunctionName = "SumInt", ColumnName = "ThisIsntAColumnName" }],
 				ErrorMode = ConfigurationErrorHandlingMode.Throw,
-				Filters = new Filter[] {
-					new Filter("Date", "=", new DateTime(2016,02,01))
-				}
+				Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
 			reader = new EnumerableDataReader(source);
@@ -183,13 +169,11 @@ namespace PivotSharp.Tests
 		[Test]
 		public void Can_Ignore_And_Report_Incorrect_Aggregator_Column() {
 			var config = new PivotConfig() {
-				Rows = new[] { "Category" },
-				Cols = new[] { "Country" },
-				Aggregators = new List<AggregatorDef>() { new AggregatorDef() { FunctionName = "SumInt", ColumnName = "ThisIsntAColumnName" } },
+                Rows = ["Category"],
+				Cols = ["Country"],
+				Aggregators = [new () { FunctionName = "SumInt", ColumnName = "ThisIsntAColumnName" }],
 				ErrorMode = ConfigurationErrorHandlingMode.Ignore,
-				Filters = new Filter[] {
-					new Filter("Date", "=", new DateTime(2016,02,01))
-				}
+				Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
 			reader = new EnumerableDataReader(source);
@@ -200,8 +184,6 @@ namespace PivotSharp.Tests
 			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 			Assert.That(pivot.AggregatorDefs[0].Create().SqlFunctionName, Is.EqualTo("Count"));
 			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(2)); // Count of filtered rows
-
 		}
-
 	}
 }

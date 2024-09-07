@@ -1,5 +1,3 @@
-using PivotSharp.Extensions;
-
 namespace PivotSharp.WebCore.Models;
 
 public class LineChartViewModel : IChartViewModel
