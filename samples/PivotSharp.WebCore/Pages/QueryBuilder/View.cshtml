@@ -26,13 +26,20 @@
 
 @section Scripts{
 <script type="text/javascript">
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('.data-cell'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
     const reportId = @Model.PivotTableViewModel.Id;
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.data-cell').forEach(cell => {
             cell.addEventListener('click', (e) => {
                 window.open(`/QueryBuilder/DrillDown/${reportId}?rowKeys=${cell.dataset.rowKey}&colKeys=${cell.dataset.colKey}`, '_blank');
             });
+            cell.addEventListener
         });
     });
 </script>
 }
+

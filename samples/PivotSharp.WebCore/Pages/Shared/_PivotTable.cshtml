@@ -1,10 +1,6 @@
 ﻿@model PivotSharp.PivotTable
 
 <style scoped>
-	/* Be good to have a way to only hover where non-empty. Css can't detect empty content. May need an attribute '*/
-	/*table {
-		width: auto !important;
-	}*/
 	.table > tbody > tr > td:hover {
 		background-color: #eee;
 	}
@@ -84,7 +80,9 @@
 
 						var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
 						if (cellValue != null && cellValue[aggregatorIndex].HasEntries) {
-							<td class="data-cell text-right" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey" data-cell-count="@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].Count">
+							<td class="data-cell text-right" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey" 
+							    data-cell-count="@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].Count"
+								title="@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].Count rows">
 								@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].FormattedValue
 							</td>
 						} else {
@@ -114,18 +112,3 @@
 		</tr>
 	</tfoot>
 </table>
-
-<script type="text/javascript">
-	$(document).ready(function () {
-		$('.data-cell').qtip({
-			content: {
-				text: function (event, api) {
-					// Retrieve content from custom attribute of the $('.selector') elements.
-					return $(this).data('row-key') + ', ' + $(this).data('col-key') + ' (' + $(this).data('cell-count') + ' rows)';
-				}
-			},
-			show: { delay: 1000 },
-			style: { classes: 'qtip-youtube' }
-		});
-	});
-</script>
