@@ -61,10 +61,10 @@
 				}
 				<!--  Cells -->
 				@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
-					var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
+					var cellValue = Model.Cell(row.FlattenedKey, col.FlattenedKey);
 					if (cellValue != null && cellValue[0].HasEntries) {
 						<td class="data-cell" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey">
-							@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[0].FormattedValue
+							@Model.Cell(row.FlattenedKey, col.FlattenedKey)[0].FormattedValue
 						</td>
 					} else {
 						<td class="empty"></td>

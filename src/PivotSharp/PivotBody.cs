@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace PivotSharp;
 
-public class PivotValues : Dictionary<PivotKey, PivotCell>
+public class PivotBody : Dictionary<PivotKey, PivotCell>
 {
     public PivotCell FindOrAdd(string flattenedRowKey, string flattenedColKey, IEnumerable<IAggregator> aggregators) {
 		return this[flattenedRowKey, flattenedColKey]

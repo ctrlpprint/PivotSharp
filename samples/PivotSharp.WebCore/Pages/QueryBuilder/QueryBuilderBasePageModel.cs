@@ -25,18 +25,21 @@ public class QueryBuilderBasePageModel : PageModel
     public readonly IDictionary<int, PivotConfig> Configs = new Dictionary<int, PivotConfig> {
 		{
 			1 , new PivotConfig() {
+					TableName = "World_Data",
 					Rows = ["Country_Name"],
 					Cols = ["Year"],
 					Aggregators = [new AggregatorDef { ColumnName = "Population", FunctionName = "Sum"}] 
 				}
 		},{
 			2, new PivotConfig() {
+					TableName = "World_Data",
 					Rows = ["Region", "Country_Name"],
 					Cols = ["Year"],
 					Aggregators = [new AggregatorDef { ColumnName = "Population", FunctionName = "Sum" }]
 				}
 		},{
 			3, new PivotConfig() {
+					TableName = "World_Data",
 					Rows = ["Region", "Country_Name"],
 					Cols = ["Income_Group"],
 					Aggregators = [new AggregatorDef { ColumnName = "Population", FunctionName = "Sum" }],

@@ -6,7 +6,7 @@ namespace PivotSharp.Tests;
 [TestFixture]
 public class PivotValuesTests
 {
-    private readonly PivotValues pivotValues = [];
+    private readonly PivotBody pivotValues = [];
 
     [SetUp]
     public void SetUp() {

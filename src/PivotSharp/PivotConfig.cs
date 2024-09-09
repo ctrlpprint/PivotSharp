@@ -9,6 +9,8 @@ namespace PivotSharp;
 [JsonObject(MemberSerialization.OptOut)]
 public class PivotConfig
 {
+    public string TableName { get; set; } = "";
+
     public IList<string> Rows { get; set; } = [];
 
     public IList<string> Cols { get; set; } = [];

@@ -81,11 +81,9 @@ public class PivotTable
     // PivotCell
     public PivotCell GrandTotal { get; private set; }
 
-	// PivotCell : IList<IAggregation>
-	// PivotBody : Dictionary<PivotKey, IList<IAggregation>>
 	// AggregatorDef -> Aggregator?
 	// Cells
-	public PivotValues Cells { get; private set; }
+	public PivotBody Cells { get; private set; }
 
     public PivotConfig Config { get; private set; }
 
@@ -96,15 +94,9 @@ public class PivotTable
 		Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
 		Cells = [];
 	}
-	public static PivotTable Create(PivotConfig config) {
-		return new PivotTable(config);
-	}
+	public static PivotTable Create(PivotConfig config) => new PivotTable(config);
 
-	public PivotCell GetValue(string rowHeader, string colHeader) =>
-		Cells[rowHeader, colHeader]!;
-
-    public PivotCell Cell (string rowHeader, string colHeader) =>
-        Cells[rowHeader, colHeader]!;
+    public PivotCell Cell (string rowHeader, string colHeader) => Cells[rowHeader, colHeader]!;
 
 
     private void ValidateConfigAgainst(IDataReader source) {
@@ -118,33 +110,35 @@ public class PivotTable
             .Union(Config.Rows)
             .Union(Config.Cols)
             .Union(Config.Aggregators.Select(a => a.ColumnName))
-            .Except(new List<string> { null, "" })
+            .Except([null, ""])
             .Except(columnList)
-            .ToList();
+            .ToList()!;
 
 
         if (InvalidColumns.Any()) {
             if (Config.ErrorMode == ConfigurationErrorHandlingMode.Throw) {
                 throw new PivotConfigurationException(message: "Referenced ", invalidColumns: InvalidColumns);
             }
-            Config = new PivotConfig
+            var config = new PivotConfig
             {
+                TableName = Config.TableName,
                 Aggregators = Config.Aggregators.Where(a => columnList.Contains(a.ColumnName))
                     .Union(Config.Aggregators.Where(a => columnList.Contains(a.Create().Alias)))
                     .Distinct()
                     .ToList(),
-                Cols = Config.Cols.Intersect(columnList).ToList(),
-                Rows = Config.Rows.Intersect(columnList).ToList(),
+                Cols = Config.Cols.Intersect(columnList).ToList()!,
+                Rows = Config.Rows.Intersect(columnList).ToList()!,
                 Filters = Config.Filters.Where(f => columnList.Contains(f.ColumnName)).ToList()
             };
 
             if (!Config.Aggregators.Any())
                 Config.Aggregators.Add(new AggregatorDef { FunctionName = "Count" });
 
+            Config = config;
         }
     }
 
-    public IList<string> InvalidColumns { get; set; }
+    public IList<string> InvalidColumns { get; set; } = [];
 
     public void Pivot(IDataReader source) {
         ValidateConfigAgainst(source);
@@ -153,44 +147,32 @@ public class PivotTable
 
 		while (source.Read()) {
 
-            if (Config.Filters.Any(f => !f.Apply(source))) continue;
+			if (Config.Filters.Any(f => !f.Apply(source))) continue;
+			GrandTotal.UpdateFrom(source);
 
-            // Update the Grand Totals
-            GrandTotal.UpdateFrom(source);
+			var row = Rows.AddRow(source);
+			var col = Cols.AddRow(source);
 
-            var row = Rows.AddRow(source); //AddRecord?
-            var col = Cols.AddRow(source);
+			if (row == null || col == null) continue;
 
-            // Update the Cell Entry
-            if (row != null && col != null) {
-                var cell = Cells.FindOrAdd(
-                    flattenedRowKey: row.FlattenedKey,
-                    flattenedColKey: col.FlattenedKey,
-                    aggregators: aggregators);
+			Cells.FindOrAdd(
+				flattenedRowKey: row.FlattenedKey,
+				flattenedColKey: col.FlattenedKey,
+				aggregators: aggregators).UpdateFrom(source);
 
-                cell.UpdateFrom(source);
-            }
-
-        }
-        Rows.AssignGroups();
+		}
+		Rows.AssignGroups();
         Cols.AssignGroups();
-
-        foreach (var row in Rows) {
-            foreach (var col in Cols) {
-                Cells.FindOrAdd(
-                    flattenedRowKey: row.FlattenedKey,
-                    flattenedColKey: col.FlattenedKey,
-                    aggregators: Config.Aggregators.Select(a => a.Create()).ToList());
-            }
-        }
     }
 
+    /// <summary>
+    /// Alternative to calling the PivotDbConnector. Use for object data sources,
+    /// or when the full table has already been loaded.
+    /// </summary>
     public DataTable DrillDown(IDataReader source, string flattendedRowKeys, string flattenedColKeys) {
 
         ValidateConfigAgainst(source);
 
-        // Ideally we could simply extract an object from the IDataReader, but it doesn't support that.
-        // Best bet is to use the GetSchemaTable to build up a DataTable.
         var schemaTable = source.GetSchemaTable()!;
         var data = new DataTable();
 
@@ -205,17 +187,12 @@ public class PivotTable
             if (Config.Filters.Any(f => !f.Apply(source)))
                 continue;
 
-            // use the config to get the field names
-            // use && clauses to combine with values.
-
-            // This bit we need to extract from the pivot table building so we know how the table was built.
             var rowHeader = Config.Rows.Select(rowAttr => source[rowAttr] ?? "null").Select(x => x.ToString()).ToList();
             var flatRowKey = string.Join(",", rowHeader);
 
             var colHeader = Config.Cols.Select(colAttr => source[colAttr] ?? "null").Select(x => x.ToString()).ToList();
             var flatColKey = string.Join(",", colHeader);
 
-            // Then we can match.
             if (flatRowKey == flattendedRowKeys && flatColKey == flattenedColKeys) {
                 var newRow = data.Rows.Add();
                 foreach (DataColumn col in data.Columns) {

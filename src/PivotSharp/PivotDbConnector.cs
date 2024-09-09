@@ -46,23 +46,6 @@ public class PivotDbConnector
         return columns;
     }
 
-    private void FixConfig(PivotConfig config, string tableName) {
-
-        // If the config has been generated from strings, we may not have the correct db type on the filters.
-        // Mvc Model Binding in particular will bind a property of type object as a string[].
-
-        foreach (var filter in config.Filters.Where(f => f.DbType == DbType.Object)) {
-            var column = GetTableStructure(tableName).Single(c => c.Name == filter.ColumnName);
-            var parameterValue = filter.ParameterValue.GetType() == typeof(string[]) // Model Binding
-                ? ((string[])filter.ParameterValue)[0]
-                : filter.ParameterValue;
-            var dbType = DbTypeMap.DbTypeFor(column.DataType);
-            filter.ParameterValue = Convert.ChangeType(
-                value: parameterValue,
-                conversionType: DbTypeMap.TypeFor(dbType));
-        }
-    }
-
     public IDictionary<string, int> GetColumnValues(string tableName, string columnName, int maxListSize) {
 
         var returnValues = new Dictionary<string, int>();
@@ -116,17 +99,17 @@ public class PivotDbConnector
         return command.ExecuteReader(CommandBehavior.CloseConnection);
     }
 
-    public DataTable GetDrillDownData(PivotConfig config, string tableName, string flattendedRowKeys, string flattenedColKeys) {
+    public DataTable GetDrillDownData(PivotConfig config, string flattendedRowKeys, string flattenedColKeys) {
 
         // TODO: Drill Down should also apply filters
         var filters = config.Rows.Select(r => new { Key = r, Value = flattendedRowKeys.Split(',')[config.Rows.IndexOf(r)] })
             .Union(config.Cols.Select(c => new { Key = c, Value = flattenedColKeys.Split(',')[config.Cols.IndexOf(c)] }));
 
-        var dataTable = new DataTable(tableName);
+        var dataTable = new DataTable(config.TableName);
 
         using var connection = new SqlConnection(ConnectionString);
 
-        var sql = $"select * from {tableName} where " +
+        var sql = $"select * from {config.TableName} where " +
             $"{string.Join(" and ", filters.Select(f => string.Format("{0} = @{0}", f.Key)))}";
 
         var command = new SqlCommand(sql, connection);

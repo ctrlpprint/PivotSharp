@@ -136,6 +136,7 @@
                 Id: Number(document.getElementById('reportId').value),
                 Name: document.getElementById('reportName').value,
                 PivotConfig: {
+                   TableName: 'World_Data',
                     Rows: Array.from(document.querySelectorAll('#rowList .column-name'))
                         .map((x) => x.innerHTML),
                     Cols: Array.from(document.querySelectorAll('#colList .column-name'))
