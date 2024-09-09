@@ -42,8 +42,7 @@ public class QueryBuilderBasePageModel : PageModel
 					Aggregators = [new AggregatorDef { ColumnName = "Population", FunctionName = "Sum" }],
 					Filters = [new Filter("Region", "=", "Europe")],
 					// Filters will break validation because they don't come through in the resultset.
-					ErrorMode = ConfigurationErrorHandlingMode.Ignore, 
-					FillTable = true
+					ErrorMode = ConfigurationErrorHandlingMode.Ignore
 				}
 		}
 	};

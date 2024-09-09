@@ -6,8 +6,6 @@ using PivotSharp.Aggregators;
 
 namespace PivotSharp;
 
-// Some classes to try make it easier to build up the headings.
-
 /// <summary>
 /// Generates a representation of a Pivot Table 
 /// </summary>
@@ -21,15 +19,6 @@ namespace PivotSharp;
 /// | Totals              |   {ColTotal} |  {ColTotal} |   {GrandTotal}  | 
 /// ----------------------------------------------------------------------
 ///
-///
-/// ------------------------------------------------------------------
-/// | shape \ color   |    blue      |     red     |    Totals       |
-/// ------------------------------------------------------------------
-/// | circle          |           2  |             |              2  |
-/// | triangle        |           1  |           3 |              4  | 
-/// ------------------------------------------------------------------
-/// | Totals          |           3  |           3 |              6  | 
-/// ------------------------------------------------------------------
 /// 
 /// More complex version:
 /// ----------------------------------------------------------------------
@@ -102,8 +91,7 @@ public class PivotTable
 
         Rows = new RowOrColumns(fields: Config.Rows, aggregators: AggregatorDefs);
         Cols = new RowOrColumns(fields: Config.Cols, aggregators: AggregatorDefs);
-        Values = new PivotValues();
-
+        Values = [];
     }
 
     public IList<IAggregator> GetValue(string rowHeader, string colHeader) =>
@@ -111,7 +99,7 @@ public class PivotTable
 
 
     private void ValidateConfigAgainst(IDataReader source) {
-        var schema = source.GetSchemaTable()
+        var schema = source.GetSchemaTable()!
             .Rows.Cast<DataRow>();
 
         var columnList = schema
@@ -138,7 +126,6 @@ public class PivotTable
                     .ToList(),
                 Cols = Config.Cols.Intersect(columnList).ToList(),
                 Rows = Config.Rows.Intersect(columnList).ToList(),
-                FillTable = Config.FillTable,
                 Filters = Config.Filters.Where(f => columnList.Contains(f.ColumnName)).ToList()
             };
 
@@ -148,21 +135,21 @@ public class PivotTable
         }
 
         // Fix broken db types
-        foreach (var filter in Config.Filters.Where(f => f.DbType == DbType.Object)) {
+        //foreach (var filter in Config.Filters.Where(f => f.DbType == DbType.Object)) {
 
-            var columnType = schema
-                .Single(row => row.Field<string>("ColumnName") == filter.ColumnName)
-                .Field<Type>("DataType");
+        //    var columnType = schema
+        //        .Single(row => row.Field<string>("ColumnName") == filter.ColumnName)
+        //        .Field<Type>("DataType");
 
-            var parameterValue = filter.ParameterValue.GetType() == typeof(string[]) // Model Binding
-                ? ((string[])filter.ParameterValue)[0]
-                : filter.ParameterValue;
+        //    var parameterValue = filter.ParameterValue.GetType() == typeof(string[]) // Model Binding
+        //        ? ((string[])filter.ParameterValue)[0]
+        //        : filter.ParameterValue;
 
-            filter.ParameterValue = Convert.ChangeType(
-                value: parameterValue,
-                conversionType: columnType);
+        //    filter.ParameterValue = Convert.ChangeType(
+        //        value: parameterValue,
+        //        conversionType: columnType);
 
-        }
+        //}
 
     }
 
@@ -204,14 +191,12 @@ public class PivotTable
         Rows.AssignGroups();
         Cols.AssignGroups();
 
-        if (Config.FillTable) {
-            foreach (var row in Rows) {
-                foreach (var col in Cols) {
-                    Values.FindOrAdd(
-                        flattenedRowKey: row.FlattenedKey,
-                        flattenedColKey: col.FlattenedKey,
-                        aggregators: AggregatorDefs.Select(a => a.Create()).ToList());
-                }
+        foreach (var row in Rows) {
+            foreach (var col in Cols) {
+                Values.FindOrAdd(
+                    flattenedRowKey: row.FlattenedKey,
+                    flattenedColKey: col.FlattenedKey,
+                    aggregators: AggregatorDefs.Select(a => a.Create()).ToList());
             }
         }
     }

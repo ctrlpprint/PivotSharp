@@ -22,8 +22,6 @@ public class PivotConfig
         set { Aggregators = [value]; }
     }
 
-    public bool FillTable { get; set; }
-
     public ConfigurationErrorHandlingMode ErrorMode { get; set; }
         = ConfigurationErrorHandlingMode.Ignore;
 

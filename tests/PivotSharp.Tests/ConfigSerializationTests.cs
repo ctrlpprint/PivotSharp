@@ -19,8 +19,7 @@ namespace PivotSharp.Tests
                 Filters = [
 					new ("Year", ">", 2015), 
 					new ("Category", "=", "Web"), 
-				],
-				FillTable = true
+				]
 			};
 
 			// var json = JsonConvert.SerializeObject(config);
@@ -53,8 +52,6 @@ namespace PivotSharp.Tests
 			Assert.That(deserialized.Cols.Count, Is.EqualTo(1));
 			Assert.That(deserialized.Cols[0], Is.EqualTo("Category"));
 	
-			Assert.That(deserialized.FillTable, Is.EqualTo(true));
-
 			Assert.That(deserialized.Aggregators[0].Create().SqlFunctionName, Is.EqualTo("Sum"));
 			Assert.That(deserialized.Aggregators[0].Create().ColumnName, Is.EqualTo("Revenue"));
 			Assert.That(deserialized.Aggregators[0].Create().Value, Is.EqualTo(0));

@@ -26,14 +26,11 @@ public class PivotKey
         return $"{FlattenedRowKey}|{FlattenedColKey}";
     }
 
-    #region Comparators
+    #region Comparison operators
     public bool Equals(PivotKey other) {
-        if (RowKeys.Count != other.RowKeys.Count) return false;
-        if (ColKeys.Count != other.ColKeys.Count) return false;
-        if (RowKeys.Except(other.RowKeys).Any()) return false;
-        if (other.RowKeys.Except(RowKeys).Any()) return false;
-        if (ColKeys.Except(other.ColKeys).Any()) return false;
-        if (other.ColKeys.Except(ColKeys).Any()) return false;
+        if (RowKeys.Count != other.RowKeys.Count || ColKeys.Count != other.ColKeys.Count) return false;
+        if (RowKeys.Except(other.RowKeys).Any() || other.RowKeys.Except(RowKeys).Any()) return false;
+        if (ColKeys.Except(other.ColKeys).Any() || other.ColKeys.Except(ColKeys).Any()) return false;
         return true;
     }
 
@@ -45,13 +42,10 @@ public class PivotKey
     }
 
     public static bool operator ==(PivotKey key1, PivotKey key2) => key1 is not null && key1.Equals(key2);
-
     public static bool operator !=(PivotKey key1, PivotKey key2) => !(key1 == key2);
 
     public override int GetHashCode() {
-        unchecked {
-            return (ToString().GetHashCode() * 397);
-        }
+        unchecked { return (ToString().GetHashCode() * 397); }
     }
     #endregion
 

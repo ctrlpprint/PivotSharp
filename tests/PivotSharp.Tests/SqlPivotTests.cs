@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
-using PivotSharp.Aggregators;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
@@ -24,8 +22,9 @@ public class SqlPivotTests
         };
 
         var sqlString = new PivotSqlString(config, "QueryResultStubs");
-        // It will add a Count to the select for various purposes including providing support for Overall Avg
-        const string expected = "select Shape, Color, sum(Value) as Sum_Value, min(Value) as Min_Value, count(*) as Count from QueryResultStubs group by Shape, Color";
+        // Expect a Count to be added to the select (for various purposes, including providing support for Overall Avg)
+        const string expected = "select Shape, Color, sum(Value) as Sum_Value, min(Value) as Min_Value, count(*) as Count " +
+            "from QueryResultStubs group by Shape, Color";
         Assert.That(sqlString.ToString(), Is.EqualTo(expected));
 
         var source = new[] {
