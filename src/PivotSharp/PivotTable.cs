@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using PivotSharp.Aggregators;
+using PivotSharp.Connectors;
 
 namespace PivotSharp;
 
@@ -71,11 +72,13 @@ namespace PivotSharp;
 /// </remarks>
 public class PivotTable
 {
-    // Need to be able to group these.
-    // sort by field1 then field2, etc.
+	private readonly IPivotDataSourceConnector connector;
 
-    // PivotFieldList : List<PivotField>
-    public RowOrColumns Rows { get; private set; }
+	// Need to be able to group these.
+	// sort by field1 then field2, etc.
+
+	// PivotFieldList : List<PivotField>
+	public RowOrColumns Rows { get; private set; }
     public RowOrColumns Cols { get; private set; }
 
     // PivotCell
@@ -87,63 +90,28 @@ public class PivotTable
 
     public PivotConfig Config { get; private set; }
 
-	protected PivotTable(PivotConfig config) {
+	protected PivotTable(PivotConfig config, IPivotDataSourceConnector connector) {
 		Config = config;
+		this.connector = connector;
+
 		GrandTotal = new PivotCell(Config.Aggregators.Select(a => a.Create()));
 		Rows = new RowOrColumns(fields: Config.Rows, aggregators: Config.Aggregators);
 		Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
 		Cells = [];
 	}
-	public static PivotTable Create(PivotConfig config) => new PivotTable(config);
+	public static PivotTable Create(PivotConfig config, IPivotDataSourceConnector connector) => new PivotTable(config,connector);
 
     public PivotCell Cell (string rowHeader, string colHeader) => Cells[rowHeader, colHeader]!;
 
 
-    private void ValidateConfigAgainst(IDataReader source) {
-        var schema = source.GetSchemaTable()!
-            .Rows.Cast<DataRow>();
-
-        var columnList = schema
-            .Select(row => row.Field<string>("ColumnName")).ToList();
-
-        InvalidColumns = Config.Filters.Select(c => c.ColumnName)
-            .Union(Config.Rows)
-            .Union(Config.Cols)
-            .Union(Config.Aggregators.Select(a => a.ColumnName))
-            .Except([null, ""])
-            .Except(columnList)
-            .ToList()!;
-
-
-        if (InvalidColumns.Any()) {
-            if (Config.ErrorMode == ConfigurationErrorHandlingMode.Throw) {
-                throw new PivotConfigurationException(message: "Referenced ", invalidColumns: InvalidColumns);
-            }
-            var config = new PivotConfig
-            {
-                TableName = Config.TableName,
-                Aggregators = Config.Aggregators.Where(a => columnList.Contains(a.ColumnName))
-                    .Union(Config.Aggregators.Where(a => columnList.Contains(a.Create().Alias)))
-                    .Distinct()
-                    .ToList(),
-                Cols = Config.Cols.Intersect(columnList).ToList()!,
-                Rows = Config.Rows.Intersect(columnList).ToList()!,
-                Filters = Config.Filters.Where(f => columnList.Contains(f.ColumnName)).ToList()
-            };
-
-            if (!Config.Aggregators.Any())
-                Config.Aggregators.Add(new AggregatorDef { FunctionName = "Count" });
-
-            Config = config;
-        }
-    }
 
     public IList<string> InvalidColumns { get; set; } = [];
 
-    public void Pivot(IDataReader source) {
-        ValidateConfigAgainst(source);
+    public void Pivot() {
 
-        var aggregators = Config.Aggregators.Select(a => a.Create());
+		var source = connector.GetPivotData();
+
+		var aggregators = Config.Aggregators.Select(a => a.Create());
 
 		while (source.Read()) {
 
@@ -165,42 +133,8 @@ public class PivotTable
         Cols.AssignGroups();
     }
 
-    /// <summary>
-    /// Alternative to calling the PivotDbConnector. Use for object data sources,
-    /// or when the full table has already been loaded.
-    /// </summary>
-    public DataTable DrillDown(IDataReader source, string flattendedRowKeys, string flattenedColKeys) {
-
-        ValidateConfigAgainst(source);
-
-        var schemaTable = source.GetSchemaTable()!;
-        var data = new DataTable();
-
-        foreach (DataRow row in schemaTable.Rows) {
-            var colName = row.Field<string>("ColumnName");
-            var t = row.Field<Type>("DataType");
-            data.Columns.Add(colName, t);
-        }
-
-        while (source.Read()) {
-
-            if (Config.Filters.Any(f => !f.Apply(source)))
-                continue;
-
-            var rowHeader = Config.Rows.Select(rowAttr => source[rowAttr] ?? "null").Select(x => x.ToString()).ToList();
-            var flatRowKey = string.Join(",", rowHeader);
-
-            var colHeader = Config.Cols.Select(colAttr => source[colAttr] ?? "null").Select(x => x.ToString()).ToList();
-            var flatColKey = string.Join(",", colHeader);
-
-            if (flatRowKey == flattendedRowKeys && flatColKey == flattenedColKeys) {
-                var newRow = data.Rows.Add();
-                foreach (DataColumn col in data.Columns) {
-                    newRow[col.ColumnName] = source[col.ColumnName];
-                }
-            }
-        }
-        return data;
+    public DataTable DrillDown(string flattendedRowKeys, string flattenedColKeys) {
+        return connector.GetDrillDownData(flattendedRowKeys, flattenedColKeys);
     }
 
 }

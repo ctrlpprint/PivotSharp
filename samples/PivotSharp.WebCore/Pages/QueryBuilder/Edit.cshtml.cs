@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
 using PivotSharp.Aggregators;
+using PivotSharp.Connectors;
 using PivotSharp.Filters;
 using PivotSharp.WebCore.Models;
 using PivotSharp.WebCore.Pages.Shared;
@@ -33,8 +34,8 @@ public class EditModel : PageModel
     public CustomReportViewModel Report { get; private set; }
 
     public IActionResult OnGet(int? id) {
-        var connector = new PivotDbConnector(connectionString);
-        var columns = connector.GetTableStructure("World_Data");
+        var connector = new PivotDbConnector(new PivotConfig { TableName = "World_Data" },connectionString);
+        var columns = connector.GetTableStructure();
 
         Report = new CustomReportViewModel
         {
@@ -69,19 +70,19 @@ public class EditModel : PageModel
     }
 
     // For autosuggesting fiter values
-    public ActionResult OnGetColumnValues(string columnName) {
+    //public ActionResult OnGetColumnValues(string columnName) {
 
-        var connector = new PivotDbConnector(connectionString);
+    //    var connector = new PivotDbConnector(connectionString);
 
-        // Protect against arbitrary input
-        var columnList = connector.GetTableStructure("World_Data");
-        if (!columnList.Any(l => l.Name.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
-            throw new Exception("Could not find Column name");
+    //    // Protect against arbitrary input
+    //    var columnList = connector.GetTableStructure("World_Data");
+    //    if (!columnList.Any(l => l.Name.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
+    //        throw new Exception("Could not find Column name");
 
-        var columns = connector.GetColumnValues("World_Data", columnName, 300)
-            .Select(c => c.Key);
+    //    var columns = connector.GetColumnValues("World_Data", columnName, 300)
+    //        .Select(c => c.Key);
 
-        return new JsonResult(columns);
-    }
+    //    return new JsonResult(columns);
+    //}
 
 }

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using PivotSharp.Connectors;
 using PivotSharp.DataReader;
+using PivotSharp.WebCore.Models;
 using System.Data;
 
 namespace PivotSharp.WebCore.Pages;
@@ -12,10 +14,10 @@ public class DrillDownModel : BaseHomePageModel
 
 		var config = configs.Single(c => c.Key == id).Value;
 
-		var reader = new EnumerableDataReader(source);
+		var connector = new PivotEnumerableConnector<Thingy>(config, source);
 
-		var pivot = PivotTable.Create(config);
-		Table = pivot.DrillDown(reader, rowKeys, colKeys);
+		var pivot = PivotTable.Create(config, connector);
+		Table = pivot.DrillDown(rowKeys, colKeys);
 		return Page();
 	}
 }

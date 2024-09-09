@@ -16,9 +16,9 @@ public class PivotSqlString
 	separator: " and ",
 	values: config.Filters.Select(f => f.SqlClause("param" + config.Filters.IndexOf(f))));
 
-    public PivotSqlString(PivotConfig config, string tableName) {
+    public PivotSqlString(PivotConfig config) {
         this.config = config;
-        this.tableName = tableName;
+        this.tableName = config.TableName;
 
         groupingColumns = string.Join(", ", config.Rows.Union(config.Cols));
 

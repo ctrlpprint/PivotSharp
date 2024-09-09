@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using PivotSharp.Connectors;
 using PivotSharp.WebCore.Models;
-using PivotSharp.WebCore.Pages.Shared;
 
 namespace PivotSharp.WebCore.Pages.QueryBuilder;
 
@@ -13,10 +13,9 @@ public class ViewModel : QueryBuilderBasePageModel
 
 	public IActionResult OnGet(int? id = 1) {
 		var config = Configs.Single(c => c.Key == id).Value;
-		var connector = new PivotDbConnector(connectionString);
-		var reader = connector.GetPivotData(config, "World_Data");
-		var pivot = PivotTable.Create(config);
-		pivot.Pivot(reader);
+		var connector = new PivotDbConnector(config, connectionString);
+		var pivot = PivotTable.Create(config, connector);
+		pivot.Pivot();
 		PivotTableViewModel = new PivotTableViewModel(id!.Value, pivot, config);
 		return Page();
 	}
@@ -24,10 +23,10 @@ public class ViewModel : QueryBuilderBasePageModel
 	// QS Format: http://localhost:52157/QueryBuilder/ViewByConfig?rows[0]=country&cols[0]=year&aggregators[0].columnname=Revenue&aggregators[0].functionname=Count&filters[0].op==&filters[0].columnname=Year&filters[0].parametervalue=2010
 	public IActionResult OnGetByGonfig(PivotConfig config) {
 
-		var connector = new PivotDbConnector(connectionString);
-		var reader = connector.GetPivotData(config, "World_Data");
-		var pivot = PivotTable.Create(config);
-		pivot.Pivot(reader);
+		var connector = new PivotDbConnector(config, connectionString);
+		var reader = connector.GetPivotData();
+		var pivot = PivotTable.Create(config, connector);
+		pivot.Pivot();
 
 		return Page();
 		//TODO: return Redirect("View", new PivotTableViewModel() { Config = config, PivotTable = pivot });
