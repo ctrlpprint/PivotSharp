@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using PivotSharp.Aggregators;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests
@@ -47,10 +48,12 @@ namespace PivotSharp.Tests
 
 		[Test]
 		public void Can_Sum() {
-			var config = new PivotConfig() {
+			var config = new PivotConfig()
+			{
 				Rows = ["Category"],
 				Cols = ["Country"],
-				Aggregator = new () { FunctionName = "Sum", ColumnName = "Value" },
+				Aggregators = [new (){ FunctionName = "Sum", ColumnName = "Value" }
+			],
 			};
 
 			pivot = PivotTable.Create(config);
@@ -65,7 +68,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = ["Category"],
 				Cols = ["Country"],
-				Aggregator = new () { FunctionName = "Ave", ColumnName = "Value" },
+				Aggregators = [new () { FunctionName = "Ave", ColumnName = "Value" }],
 			};
 
 			pivot = PivotTable.Create(config);
@@ -80,7 +83,7 @@ namespace PivotSharp.Tests
 			var config = new PivotConfig() {
 				Rows = ["Category"],
 				Cols = ["Country"],
-				Aggregator = new () { FunctionName = "Min", ColumnName = "Value" },
+				Aggregators = [new () { FunctionName = "Min", ColumnName = "Value" }],
 			};
 
 			pivot = PivotTable.Create(config);

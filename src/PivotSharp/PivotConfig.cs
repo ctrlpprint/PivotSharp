@@ -17,11 +17,6 @@ public class PivotConfig
 
     public IList<AggregatorDef> Aggregators { get; set; } = [];
 
-    public AggregatorDef Aggregator {
-        get { return Aggregators.Any() ? Aggregators[0] : null; }
-        set { Aggregators = [value]; }
-    }
-
     public ConfigurationErrorHandlingMode ErrorMode { get; set; }
         = ConfigurationErrorHandlingMode.Ignore;
 

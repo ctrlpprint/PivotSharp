@@ -39,7 +39,7 @@ public class Simple_Sum_Test
         {
             Rows = ["Shape"],
             Cols = ["Color"],
-            Aggregator = new AggregatorDef { FunctionName = "SumInt", ColumnName = "Lines" }
+            Aggregators = [new () { FunctionName = "SumInt", ColumnName = "Lines" }]
         };
 
         reader = new EnumerableDataReader(source);
