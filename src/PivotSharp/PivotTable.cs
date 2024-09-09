@@ -77,7 +77,6 @@ public class PivotTable
     public RowOrColumns Cols { get; set; }
 
     public IList<IAggregator> GrandTotal { get; set; }
-    public IList<AggregatorDef> AggregatorDefs { get; set; }
 
     public PivotValues Values { get; private set; }
 
@@ -86,11 +85,10 @@ public class PivotTable
     protected PivotTable(PivotConfig config) => Config = config;
 
     private void Init() {
-        AggregatorDefs = Config.Aggregators;
-        GrandTotal = AggregatorDefs.Select(a => a.Create()).ToList();
+        GrandTotal = Config.Aggregators.Select(a => a.Create()).ToList();
 
-        Rows = new RowOrColumns(fields: Config.Rows, aggregators: AggregatorDefs);
-        Cols = new RowOrColumns(fields: Config.Cols, aggregators: AggregatorDefs);
+        Rows = new RowOrColumns(fields: Config.Rows, aggregators: Config.Aggregators);
+        Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
         Values = [];
     }
 
@@ -180,7 +178,7 @@ public class PivotTable
                 var aggregators = Values.FindOrAdd(
                     flattenedRowKey: flatRowKey,
                     flattenedColKey: flatColKey,
-                    aggregators: AggregatorDefs.Select(a => a.Create()).ToList());
+                    aggregators: Config.Aggregators.Select(a => a.Create()).ToList());
 
                 foreach (var aggregator in aggregators) {
                     aggregator.Push(source);
@@ -196,7 +194,7 @@ public class PivotTable
                 Values.FindOrAdd(
                     flattenedRowKey: row.FlattenedKey,
                     flattenedColKey: col.FlattenedKey,
-                    aggregators: AggregatorDefs.Select(a => a.Create()).ToList());
+                    aggregators: Config.Aggregators.Select(a => a.Create()).ToList());
             }
         }
     }

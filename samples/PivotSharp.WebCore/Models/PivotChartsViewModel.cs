@@ -8,7 +8,7 @@ public class PivotChartsViewModel
     {
         Charts = new List<IChartViewModel>();
 
-        for (var aggregatorIndex = 0; aggregatorIndex < table.AggregatorDefs.Count; aggregatorIndex++)
+        for (var aggregatorIndex = 0; aggregatorIndex < table.Config.Aggregators.Count; aggregatorIndex++)
         {
 
             // if 2-D

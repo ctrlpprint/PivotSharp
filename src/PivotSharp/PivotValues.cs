@@ -6,23 +6,15 @@ namespace PivotSharp;
 public class PivotValues : Dictionary<PivotKey, IList<IAggregator>>
 {
     public IList<IAggregator> FindOrAdd(string flattenedRowKey, string flattenedColKey, IList<IAggregator> aggregators) {
-
         var existing = this[flattenedRowKey, flattenedColKey];
-        if (existing != null) {
-            return existing;
-        }
-
-        return Add(flattenedRowKey, flattenedColKey, aggregators);
-    }
+		return existing != null 
+            ? existing : 
+            Add(flattenedRowKey, flattenedColKey, aggregators);
+	}
 
 
-    public IList<IAggregator> Add(string flattenedRowKey, string flattenedColKey, IList<IAggregator> aggregators) {
-
-        base.Add(
-            key: new PivotKey { FlattenedColKey = flattenedColKey, FlattenedRowKey = flattenedRowKey },
-            value: aggregators
-            );
-
+	public IList<IAggregator> Add(string flattenedRowKey, string flattenedColKey, IList<IAggregator> aggregators) {
+		Add(key: new PivotKey { FlattenedColKey = flattenedColKey, FlattenedRowKey = flattenedRowKey },value: aggregators);
         return aggregators;
     }
 

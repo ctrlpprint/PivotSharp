@@ -182,7 +182,7 @@ namespace PivotSharp.Tests
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
-			Assert.That(pivot.AggregatorDefs[0].Create().SqlFunctionName, Is.EqualTo("Count"));
+			Assert.That(pivot.Config.Aggregators[0].Create().SqlFunctionName, Is.EqualTo("Count"));
 			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(2)); // Count of filtered rows
 		}
 	}

@@ -26,10 +26,10 @@ public class RowOrColumns : List<RowOrColumn>
         var rowHeader = Fields.Select(rowAttr => source[rowAttr] ?? "null").Select(x => x.ToString()).ToList();
         var flatRowKey = string.Join(",", rowHeader);
 
-        // Update the Row Total for this Header
         if (!rowHeader.Any()) return null;
 
-        var row = this.SingleOrDefault(r => r.FlattenedKey == flatRowKey);
+		// Update the Row Total for this Header
+		var row = this.SingleOrDefault(r => r.FlattenedKey == flatRowKey);
         if (row == null) {
             row = new RowOrColumn()
             {

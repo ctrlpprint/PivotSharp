@@ -13,7 +13,7 @@ public class PieChartViewModel : IChartViewModel
     public static PieChartViewModel TopRows(PivotTable table, int segments, int aggregatorIndex)
     {
 
-        var aggregator = table.AggregatorDefs[aggregatorIndex];
+        var aggregator = table.Config.Aggregators[aggregatorIndex];
 
         var top = table.Rows.OrderByDescending(r => r.Values.Skip(aggregatorIndex).First()).Take(segments).ToList();
 
@@ -33,7 +33,7 @@ public class PieChartViewModel : IChartViewModel
     public static PieChartViewModel TopCols(PivotTable table, int segments, int aggregatorIndex)
     {
 
-        var aggregator = table.AggregatorDefs[aggregatorIndex];
+        var aggregator = table.Config.Aggregators[aggregatorIndex];
 
         var top = table.Cols.OrderByDescending(r => r.Values.Skip(aggregatorIndex).First()).Take(segments).ToList();
 

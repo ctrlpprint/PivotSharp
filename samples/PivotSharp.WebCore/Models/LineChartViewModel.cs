@@ -10,7 +10,7 @@ public class LineChartViewModel : IChartViewModel
 
     public static LineChartViewModel TopRows(PivotTable table, int lines, int aggregatorIndex)
     {
-        var aggregator = table.AggregatorDefs[aggregatorIndex];
+        var aggregator = table.Config.Aggregators[aggregatorIndex];
 
         var top = table.Values
             .Rows
@@ -37,7 +37,7 @@ public class LineChartViewModel : IChartViewModel
 
     public static LineChartViewModel TopCols(PivotTable table, int lines, int aggregatorIndex)
     {
-        var aggregator = table.AggregatorDefs[aggregatorIndex];
+        var aggregator = table.Config.Aggregators[aggregatorIndex];
 
         var top = table.Values
             .Cols

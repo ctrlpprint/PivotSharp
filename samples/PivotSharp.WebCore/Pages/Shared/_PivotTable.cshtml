@@ -19,10 +19,10 @@
 	<thead>
 		<tr>
 			<!-- Field Names -->
-			<td colspan="@Model.Rows.Fields.Count()" rowspan="@(Model.Cols.Fields.Count() + (Model.AggregatorDefs.Count > 1 ? 2 : 1))" style="vertical-align: bottom">
+			<td colspan="@Model.Rows.Fields.Count()" rowspan="@(Model.Cols.Fields.Count() + (Model.Config.Aggregators.Count > 1 ? 2 : 1))" style="vertical-align: bottom">
 				@string.Join(" // ", Model.Rows.Fields)
 			</td>
-			<td colspan="@((Model.Cols.Count() + 1)* Model.AggregatorDefs.Count)">@string.Join(" // ", Model.Cols.Fields)</td>
+			<td colspan="@((Model.Cols.Count() + 1)* Model.Config.Aggregators.Count)">@string.Join(" // ", Model.Cols.Fields)</td>
 		</tr>
 		<!-- One row per column field-->
 		@if (Model.Cols.Any()) {
@@ -30,25 +30,25 @@
 				<tr>
 					<!-- Col Headers -->
 					@foreach (var header in Model.Cols.GetHeaderGroupsForField(colField)) {
-						<th colspan="@(header.Count()* Model.AggregatorDefs.Count)">
+						<th colspan="@(header.Count()* Model.Config.Aggregators.Count)">
 							@header.First().Headers.First(h => h.FieldName == colField).Name
 						</th>
 					}
 					<!-- Row Totals Header -->
 					@* On the top row, add a Total cell which spans the header rows *@
 					@if (Model.Cols.Fields.IndexOf(colField) == 0) {
-						foreach (var aggregation in Model.AggregatorDefs) {
+						foreach (var aggregation in Model.Config.Aggregators) {
 							<th rowspan="@(Model.Cols.Fields.Count()+1)">@aggregation.ToString()</th>
 						}
 					}
 				</tr>
 			}
-			if (Model.AggregatorDefs.Count > 1) {
+			if (Model.Config.Aggregators.Count > 1) {
 				var lowestColField = Model.Cols.Fields[Model.Cols.Fields.Count - 1];
 				<tr>
 					<!-- Aggregator Headers -->
 					@foreach (var header in Model.Cols.GetHeaderGroupsForField(lowestColField)) {
-						foreach (var aggregation in Model.AggregatorDefs) {
+						foreach (var aggregation in Model.Config.Aggregators) {
 							<th>@aggregation.ToString()</th>
 						}
 					}
@@ -56,7 +56,7 @@
 			}
 		} else {
 			<tr>
-				@foreach (var aggregation in Model.AggregatorDefs) {
+				@foreach (var aggregation in Model.Config.Aggregators) {
 					<th>@aggregation.ToString()</th>
 				}
 			</tr>
@@ -76,7 +76,7 @@
 				}
 				<!--  Cells -->
 				@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
-					for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+					for (int aggregatorIndex = 0; aggregatorIndex < Model.Config.Aggregators.Count; aggregatorIndex++) {
 
 						var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
 						if (cellValue != null && cellValue[aggregatorIndex].HasEntries) {
@@ -91,7 +91,7 @@
 					}
 				}
 				<!-- Row Totals -->
-				@for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+				@for (int aggregatorIndex = 0; aggregatorIndex < Model.Config.Aggregators.Count; aggregatorIndex++) {
 					<th class="text-right">@row.Aggregators[aggregatorIndex].FormattedValue</th>
 				}
 			</tr>
@@ -101,11 +101,11 @@
 		<tr>
 			<th colspan="@Model.Rows.Fields.Count()" class="text-right">Grand Total</th>
 			@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
-				for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+				for (int aggregatorIndex = 0; aggregatorIndex < Model.Config.Aggregators.Count; aggregatorIndex++) {
 					<th class="text-right">@col.Aggregators[aggregatorIndex].FormattedValue</th>
 				}
 			}
-			@for (int aggregatorIndex = 0; aggregatorIndex < Model.AggregatorDefs.Count; aggregatorIndex++) {
+			@for (int aggregatorIndex = 0; aggregatorIndex < Model.Config.Aggregators.Count; aggregatorIndex++) {
 				<th class="text-right">@Model.GrandTotal[aggregatorIndex].FormattedValue</th>
 			}
 
