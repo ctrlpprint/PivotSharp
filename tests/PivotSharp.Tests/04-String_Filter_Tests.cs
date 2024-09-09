@@ -53,8 +53,8 @@ public class String_Filter_Tests
 
     [Test]
     public void Can_Filter_On_String_Equality() {
-        Assert.That(pivot.Values["circle"]["blue"][0].Value, Is.EqualTo(3));
-        Assert.That(pivot.Values["triangle"]["blue"][0].Value, Is.EqualTo(3));
+        Assert.That(pivot.Cells["circle"]["blue"][0].Value, Is.EqualTo(3));
+        Assert.That(pivot.Cells["triangle"]["blue"][0].Value, Is.EqualTo(3));
 
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(6));
     }

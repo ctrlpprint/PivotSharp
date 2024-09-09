@@ -78,12 +78,12 @@
 				@foreach (var col in Model.Cols.NaturalSort(c => c.FlattenedKey)) {
 					for (int aggregatorIndex = 0; aggregatorIndex < Model.Config.Aggregators.Count; aggregatorIndex++) {
 
-						var cellValue = Model.GetValue(row.FlattenedKey, col.FlattenedKey);
-						if (cellValue != null && cellValue[aggregatorIndex].HasEntries) {
+						var cell = Model.Cell(row.FlattenedKey, col.FlattenedKey);
+						if (cell != null && cell.Aggregators[aggregatorIndex].HasEntries) {
 							<td class="data-cell text-right" data-row-key="@row.FlattenedKey" data-col-key="@col.FlattenedKey" 
-							    data-cell-count="@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].Count"
-								title="@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].Count rows">
-								@Model.GetValue(row.FlattenedKey, col.FlattenedKey)[aggregatorIndex].FormattedValue
+							    data-cell-count="@cell.Aggregators[aggregatorIndex].Count"
+								title="@cell.Aggregators[aggregatorIndex].Count rows">
+								@cell.Aggregators[aggregatorIndex].FormattedValue
 							</td>
 						} else {
 							<td class="empty"></td>
@@ -106,7 +106,7 @@
 				}
 			}
 			@for (int aggregatorIndex = 0; aggregatorIndex < Model.Config.Aggregators.Count; aggregatorIndex++) {
-				<th class="text-right">@Model.GrandTotal[aggregatorIndex].FormattedValue</th>
+				<th class="text-right">@Model.GrandTotal.Aggregators[aggregatorIndex].FormattedValue</th>
 			}
 
 		</tr>

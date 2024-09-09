@@ -11,25 +11,17 @@ public class PivotValuesTests
     [SetUp]
     public void SetUp() {
 
-        pivotValues.Add(
-            key: new () { FlattenedRowKey = "Dotted,Line", FlattenedColKey = "Red,Circle" },
-            value: [new TestAggregator(1)]);
-        pivotValues.Add(
-            key: new () { FlattenedRowKey = "Dotted,Line", FlattenedColKey = "Red,Square" },
-            value: [new TestAggregator(2)]);
-        pivotValues.Add(
-            key: new () { FlattenedRowKey = "Dashed,Line", FlattenedColKey = "Red,Circle" },
-            value: [new TestAggregator(3)]);
-        pivotValues.Add(
-            key: new () { FlattenedRowKey = "Dotted,Line", FlattenedColKey = "Red,Triangle" },
-            value: [new TestAggregator(4)]);
+        pivotValues.Add(flattenedRowKey:"Dotted,Line", flattenedColKey:"Red,Circle", aggregators:[new TestAggregator(1)]);
+        pivotValues.Add(flattenedRowKey:"Dotted,Line", flattenedColKey:"Red,Square", aggregators:[new TestAggregator(2)]);
+        pivotValues.Add(flattenedRowKey:"Dashed,Line", flattenedColKey:"Red,Circle", aggregators:[new TestAggregator(3)]);
+        pivotValues.Add(flattenedRowKey:"Dotted,Line", flattenedColKey:"Red,Triangle", aggregators:[new TestAggregator(4)]);
     }
 
     [Test]
     public void CanIndex() {
 
         Assert.That(pivotValues["Dotted,Line"], Is.Not.Empty);
-        Assert.That(pivotValues["Dotted,Line"]["Red,Triangle"][0].Value, Is.EqualTo(4));
+        Assert.That(pivotValues["Dotted,Line"]["Red,Triangle"].Aggregators[0].Value, Is.EqualTo(4));
 
     }
 

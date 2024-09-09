@@ -66,15 +66,15 @@ public class Multi_Layer_Test
     [Test]
     public void Can_Generate_Elements() {
         // To iterate the collection of cells, need to go through two layers of dictionary.
-        Assert.That(pivot.Values.Count(), Is.EqualTo(3));
+        Assert.That(pivot.Cells.Count(), Is.EqualTo(3));
         //Assert.AreEqual(3, pivot.Values.Sum(kvp => kvp.Value.Count()));
     }
 
     [Test]
     public void Can_Generate_Counts() {
-        Assert.That(pivot.Values["blue,circle"]["dotted,outside"][0].Value, Is.EqualTo(2));
-        Assert.That(pivot.Values["blue,circle"]["dashed,outside"][0].Value, Is.EqualTo(1));
-        Assert.That(pivot.Values["red,triangle"]["dotted,inside"][0].Value, Is.EqualTo(1));
+        Assert.That(pivot.Cells["blue,circle"]["dotted,outside"][0].Value, Is.EqualTo(2));
+        Assert.That(pivot.Cells["blue,circle"]["dashed,outside"][0].Value, Is.EqualTo(1));
+        Assert.That(pivot.Cells["red,triangle"]["dotted,inside"][0].Value, Is.EqualTo(1));
 
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(4));
     }

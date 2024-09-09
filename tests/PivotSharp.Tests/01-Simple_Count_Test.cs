@@ -72,15 +72,15 @@ public class Simple_Count_Test
 
     [Test]
     public void Can_Generate_Elements() {
-        Assert.That(pivot.Values.Count(), Is.EqualTo(2));
+        Assert.That(pivot.Cells.Count(), Is.EqualTo(2));
         //Assert.AreEqual(2, pivot.Values.Sum(kvp => kvp.Value.Count()));
     }
 
     [Test]
     public void Can_Generate_Cell_Counts() {
 
-        Assert.That(pivot.Values["circle"]["blue"][0].Value, Is.EqualTo(2));
-        Assert.That(pivot.Values["triangle"]["red"][0].Value, Is.EqualTo(1));
+        Assert.That(pivot.Cells["circle"]["blue"][0].Value, Is.EqualTo(2));
+        Assert.That(pivot.Cells["triangle"]["red"][0].Value, Is.EqualTo(1));
 
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
     }

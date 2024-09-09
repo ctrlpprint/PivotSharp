@@ -73,27 +73,38 @@ public class PivotTable
 {
     // Need to be able to group these.
     // sort by field1 then field2, etc.
-    public RowOrColumns Rows { get; set; }
-    public RowOrColumns Cols { get; set; }
 
-    public IList<IAggregator> GrandTotal { get; set; }
+    // PivotFieldList : List<PivotField>
+    public RowOrColumns Rows { get; private set; }
+    public RowOrColumns Cols { get; private set; }
 
-    public PivotValues Values { get; private set; }
+    // PivotCell
+    public PivotCell GrandTotal { get; private set; }
+
+	// PivotCell : IList<IAggregation>
+	// PivotBody : Dictionary<PivotKey, IList<IAggregation>>
+	// AggregatorDef -> Aggregator?
+	// Cells
+	public PivotValues Cells { get; private set; }
 
     public PivotConfig Config { get; private set; }
 
-    protected PivotTable(PivotConfig config) => Config = config;
+	protected PivotTable(PivotConfig config) {
+		Config = config;
+		GrandTotal = new PivotCell(Config.Aggregators.Select(a => a.Create()));
+		Rows = new RowOrColumns(fields: Config.Rows, aggregators: Config.Aggregators);
+		Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
+		Cells = [];
+	}
+	public static PivotTable Create(PivotConfig config) {
+		return new PivotTable(config);
+	}
 
-    private void Init() {
-        GrandTotal = Config.Aggregators.Select(a => a.Create()).ToList();
+	public PivotCell GetValue(string rowHeader, string colHeader) =>
+		Cells[rowHeader, colHeader]!;
 
-        Rows = new RowOrColumns(fields: Config.Rows, aggregators: Config.Aggregators);
-        Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
-        Values = [];
-    }
-
-    public IList<IAggregator> GetValue(string rowHeader, string colHeader) =>
-        Values[rowHeader, colHeader];
+    public PivotCell Cell (string rowHeader, string colHeader) =>
+        Cells[rowHeader, colHeader]!;
 
 
     private void ValidateConfigAgainst(IDataReader source) {
@@ -131,58 +142,33 @@ public class PivotTable
                 Config.Aggregators.Add(new AggregatorDef { FunctionName = "Count" });
 
         }
-
-        // Fix broken db types
-        //foreach (var filter in Config.Filters.Where(f => f.DbType == DbType.Object)) {
-
-        //    var columnType = schema
-        //        .Single(row => row.Field<string>("ColumnName") == filter.ColumnName)
-        //        .Field<Type>("DataType");
-
-        //    var parameterValue = filter.ParameterValue.GetType() == typeof(string[]) // Model Binding
-        //        ? ((string[])filter.ParameterValue)[0]
-        //        : filter.ParameterValue;
-
-        //    filter.ParameterValue = Convert.ChangeType(
-        //        value: parameterValue,
-        //        conversionType: columnType);
-
-        //}
-
     }
 
     public IList<string> InvalidColumns { get; set; }
 
     public void Pivot(IDataReader source) {
         ValidateConfigAgainst(source);
-        Init();
 
-        while (source.Read()) {
+        var aggregators = Config.Aggregators.Select(a => a.Create());
 
-            if (Config.Filters.Any(f => !f.Apply(source)))
-                continue;
+		while (source.Read()) {
+
+            if (Config.Filters.Any(f => !f.Apply(source))) continue;
 
             // Update the Grand Totals
-            foreach (var aggregator in GrandTotal) {
-                aggregator.Push(source);
-            }
+            GrandTotal.UpdateFrom(source);
 
-            var row = Rows.AddRow(source);
+            var row = Rows.AddRow(source); //AddRecord?
             var col = Cols.AddRow(source);
 
             // Update the Cell Entry
             if (row != null && col != null) {
-                var flatRowKey = row.FlattenedKey;
-                var flatColKey = col.FlattenedKey;
+                var cell = Cells.FindOrAdd(
+                    flattenedRowKey: row.FlattenedKey,
+                    flattenedColKey: col.FlattenedKey,
+                    aggregators: aggregators);
 
-                var aggregators = Values.FindOrAdd(
-                    flattenedRowKey: flatRowKey,
-                    flattenedColKey: flatColKey,
-                    aggregators: Config.Aggregators.Select(a => a.Create()).ToList());
-
-                foreach (var aggregator in aggregators) {
-                    aggregator.Push(source);
-                }
+                cell.UpdateFrom(source);
             }
 
         }
@@ -191,7 +177,7 @@ public class PivotTable
 
         foreach (var row in Rows) {
             foreach (var col in Cols) {
-                Values.FindOrAdd(
+                Cells.FindOrAdd(
                     flattenedRowKey: row.FlattenedKey,
                     flattenedColKey: col.FlattenedKey,
                     aggregators: Config.Aggregators.Select(a => a.Create()).ToList());
@@ -199,19 +185,13 @@ public class PivotTable
         }
     }
 
-
-    public static PivotTable Create(PivotConfig config) {
-        return new PivotTable(config);
-    }
-
-
     public DataTable DrillDown(IDataReader source, string flattendedRowKeys, string flattenedColKeys) {
 
         ValidateConfigAgainst(source);
 
         // Ideally we could simply extract an object from the IDataReader, but it doesn't support that.
         // Best bet is to use the GetSchemaTable to build up a DataTable.
-        var schemaTable = source.GetSchemaTable();
+        var schemaTable = source.GetSchemaTable()!;
         var data = new DataTable();
 
         foreach (DataRow row in schemaTable.Rows) {

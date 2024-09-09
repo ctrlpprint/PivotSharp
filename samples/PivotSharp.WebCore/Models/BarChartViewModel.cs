@@ -12,7 +12,7 @@ public class BarChartViewModel : IChartViewModel
     {
         var aggregator = table.Config.Aggregators[aggregatorIndex];
 
-        var top = table.Values
+        var top = table.Cells
             .Rows
             .Select(row => new
             {
@@ -39,7 +39,7 @@ public class BarChartViewModel : IChartViewModel
     {
         var aggregator = table.Config.Aggregators[aggregatorIndex];
 
-        var top = table.Values
+        var top = table.Cells
             .Cols
             .Select(col => new
             {
