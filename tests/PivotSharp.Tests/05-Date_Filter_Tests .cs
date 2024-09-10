@@ -38,7 +38,7 @@ public class Date_Filter_Tests
         };
 
 		pivot = PivotTable.Create(config, source);
-		pivot.Pivot();
+		
 
 
 		Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(60M));

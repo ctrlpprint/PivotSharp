@@ -91,15 +91,6 @@ public class PivotTable
 	public PivotConfig Config => connector.Config;
 	public IList<string> InvalidColumns { get; set; } = [];
 
-	protected PivotTable(IPivotDataSourceConnector connector) {
-		this.connector = connector;
-		ValidateConfig();
-		GrandTotal = new PivotCell(Config.Aggregators.Select(a => a.Create()));
-		Rows = new RowOrColumns(fields: Config.Rows, aggregators: Config.Aggregators);
-		Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
-		Cells = [];
-	}
-
 
 	public static PivotTable Create(PivotConfig config, string connectionString) =>
 		new PivotTable(new PivotDbConnector(config, connectionString));
@@ -109,8 +100,17 @@ public class PivotTable
 
 	public PivotCell Cell (string rowHeader, string colHeader) => Cells[rowHeader, colHeader]!;
 
+	protected PivotTable(IPivotDataSourceConnector connector) {
+		this.connector = connector;
+		ValidateConfig();
+		GrandTotal = new PivotCell(Config.Aggregators.Select(a => a.Create()));
+		Rows = new RowOrColumns(fields: Config.Rows, aggregators: Config.Aggregators);
+		Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
+		Cells = [];
+		Pivot();
+	}
 
-    public void Pivot() {
+	private void Pivot() {
 		var source = connector.GetPivotData();
 
 		var aggregators = Config.Aggregators.Select(a => a.Create());

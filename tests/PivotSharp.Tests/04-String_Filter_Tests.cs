@@ -45,7 +45,7 @@ public class String_Filter_Tests
             Filters = [new Filter("Color", "=", "blue")]
         };
 		pivot = PivotTable.Create(config, source);
-		pivot.Pivot();
+		
 	}
 
 

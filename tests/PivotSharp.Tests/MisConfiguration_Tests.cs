@@ -54,7 +54,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
@@ -73,7 +73,7 @@ namespace PivotSharp.Tests
 			};
 
 			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, source));
-			pivot.Pivot();
+			
 			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 
@@ -90,7 +90,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
@@ -109,7 +109,7 @@ namespace PivotSharp.Tests
 			};
 
 			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, source));
-			pivot.Pivot();
+			
 			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 
@@ -126,7 +126,7 @@ namespace PivotSharp.Tests
             };
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
@@ -145,7 +145,7 @@ namespace PivotSharp.Tests
 			};
 
 			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, source));
-			pivot.Pivot();
+			
 			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 
@@ -162,7 +162,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(pivot.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));

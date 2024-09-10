@@ -31,7 +31,7 @@ public class Empty_Data_Tests
 
         };
 		pivot = PivotTable.Create(config, new List<ObscureShape>());
-        pivot.Pivot();
+        
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(0));
         Assert.That(pivot.Rows.Count(), Is.EqualTo(0));
         Assert.That(pivot.Cols.Count(), Is.EqualTo(0));
@@ -46,7 +46,7 @@ public class Empty_Data_Tests
 
         };
 		pivot = PivotTable.Create(config, source);
-		pivot.Pivot();
+		
 		
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
         Assert.That(pivot.Rows.Count(), Is.EqualTo(0));
@@ -63,7 +63,7 @@ public class Empty_Data_Tests
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
         };
 		pivot = PivotTable.Create(config, source);
-		pivot.Pivot();
+		
 		
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
         Assert.That(pivot.Rows.Count(), Is.EqualTo(2));

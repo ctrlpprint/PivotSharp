@@ -44,7 +44,7 @@ public class Simple_Sum_Test
         };
 
 		pivot = PivotTable.Create(config, source);
-		pivot.Pivot();
+		
 
 	}
 

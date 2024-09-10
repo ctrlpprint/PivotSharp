@@ -14,7 +14,7 @@ public class ViewModel : QueryBuilderBasePageModel
 	public IActionResult OnGet(int? id = 1) {
 		var config = Configs.Single(c => c.Key == id).Value;
 		var pivot = PivotTable.Create(config, connectionString);
-		pivot.Pivot();
+		
 		PivotTableViewModel = new PivotTableViewModel(id!.Value, pivot, config);
 		return Page();
 	}
@@ -23,7 +23,7 @@ public class ViewModel : QueryBuilderBasePageModel
 	public IActionResult OnGetByGonfig(PivotConfig config) {
 
 		var pivot = PivotTable.Create(config, connectionString);
-		pivot.Pivot();
+		
 
 		return Page();
 		//TODO: return Redirect("View", new PivotTableViewModel() { Config = config, PivotTable = pivot });

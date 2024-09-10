@@ -34,7 +34,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(5));
@@ -52,7 +52,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(115M));
 			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(295M));
@@ -67,7 +67,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(23.0M));
 			Assert.That(Math.Round(pivot.GrandTotal[0].Value, 2), Is.EqualTo(26.82M));
@@ -82,7 +82,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(10M));
 			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(10M));
@@ -97,7 +97,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(30M));
 			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(50M));
@@ -115,7 +115,7 @@ namespace PivotSharp.Tests
 			};
 
 			pivot = PivotTable.Create(config, source);
-			pivot.Pivot();
+			
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(10M));
 			Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(10M));

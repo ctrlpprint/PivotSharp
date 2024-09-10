@@ -46,7 +46,7 @@ public class Multi_Layer_Test
         };
 
 		pivot = PivotTable.Create(config, source);
-		pivot.Pivot();
+		
     }
 
     [Test]

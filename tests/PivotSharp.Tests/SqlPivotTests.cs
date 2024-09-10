@@ -33,7 +33,7 @@ public class SqlPivotTests
             }.ToList();
 
         var pivot = PivotTable.Create(config, source);
-        pivot.Pivot();
+        
 
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(210M));
         Assert.That(pivot.GrandTotal[1].Value, Is.EqualTo(40M));

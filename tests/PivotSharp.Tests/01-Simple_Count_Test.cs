@@ -42,7 +42,7 @@ public class Simple_Count_Test
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
         };
 		pivot = PivotTable.Create(config, source);
-		pivot.Pivot();
+		
     }
 
     [Test]

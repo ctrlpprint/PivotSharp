@@ -14,7 +14,7 @@ public class IndexModel : BaseHomePageModel
 
 		var config = configs.Single(c => c.Key == id).Value;
 		var pivot = PivotSharp.PivotTable.Create(config, source);
-		pivot.Pivot();
+		
 
 		PivotTable = new PivotTableViewModel(id, pivot, config);
 		return Page();
