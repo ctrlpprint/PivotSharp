@@ -13,13 +13,13 @@ public class PivotSqlStringTests
     public void Can_Generate_Count_Query() {
         var config = new PivotConfig()
         {
-            Rows = ["Shape"],
+			TableName = "ObscureShapes",
+			Rows = ["Shape"],
             Cols = ["Color"],
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
+		};
 
-        };
-
-        var sqlString = new PivotSqlString(config, "ObscureShapes");
+        var sqlString = new PivotSqlString(config);
         const string expected = "select Shape, Color, count(*) as Count from ObscureShapes group by Shape, Color";
         Assert.That(sqlString.ToString(), Is.EqualTo(expected));
     }
@@ -28,14 +28,15 @@ public class PivotSqlStringTests
     public void Can_Generate_Sum_Query() {
         var config = new PivotConfig()
         {
-            Rows = ["Shape"],
+			TableName = "ObscureShapes",
+			Rows = ["Shape"],
             Cols = ["Color"],
             Aggregators = [new AggregatorDef { FunctionName = "Sum", ColumnName = "Value" }]
         };
 
-        var sqlString = new PivotSqlString(config, "ObscureShapes");
+        var sqlString = new PivotSqlString(config);
         // It will add a Count to the select for various purposes including providing support for Overall Avg
-        const string expected = "select Shape, Color, sum(Value) as Sum@Value, count(*) as Count from ObscureShapes group by Shape, Color";
+        const string expected = "select Shape, Color, sum(Value) as Sum_Value, count(*) as Count from ObscureShapes group by Shape, Color";
         Assert.That(sqlString.ToString(), Is.EqualTo(expected));
 
     }
@@ -44,7 +45,8 @@ public class PivotSqlStringTests
     public void Can_Generate_Query_With_Multiple_Aggregations() {
         var config = new PivotConfig()
         {
-            Rows = ["Shape"],
+			TableName = "ObscureShapes",
+			Rows = ["Shape"],
             Cols = ["Color"],
             Aggregators = [
                 new () { FunctionName = "Sum", ColumnName = "Value" },
@@ -52,9 +54,9 @@ public class PivotSqlStringTests
             ]
         };
 
-        var sqlString = new PivotSqlString(config, "ObscureShapes");
+        var sqlString = new PivotSqlString(config);
         // It will add a Count to the select for various purposes including providing support for Overall Avg
-        const string expected = "select Shape, Color, sum(Value) as Sum@Value, min(Value) as Min@Value, count(*) as Count from ObscureShapes group by Shape, Color";
+        const string expected = "select Shape, Color, sum(Value) as Sum_Value, min(Value) as Min_Value, count(*) as Count from ObscureShapes group by Shape, Color";
         Assert.That(sqlString.ToString(), Is.EqualTo(expected));
 
     }
@@ -63,14 +65,15 @@ public class PivotSqlStringTests
     public void Can_Generate_Filtered_Query() {
         var config = new PivotConfig()
         {
-            Rows = ["Shape"],
+			TableName = "ObscureShapes",
+			Rows = ["Shape"],
             Cols = ["Color"],
             Aggregators = [new() { FunctionName = "Sum", ColumnName = "Value" }],
             Filters = [new("Border", "=", "dotted")]
         };
 
-        var sqlString = new PivotSqlString(config, "ObscureShapes");
-        const string expected = "select Shape, Color, sum(Value) as Sum@Value, count(*) as Count from ObscureShapes where Border = @param0 group by Shape, Color";
+        var sqlString = new PivotSqlString(config);
+        const string expected = "select Shape, Color, sum(Value) as Sum_Value, count(*) as Count from ObscureShapes where Border = @param0 group by Shape, Color";
         Assert.That(sqlString.ToString(), Is.EqualTo(expected));
 
     }
@@ -79,7 +82,8 @@ public class PivotSqlStringTests
     public void Can_Generate_Query_With_Multiple_Filters() {
         var config = new PivotConfig()
         {
-            Rows = ["Shape"],
+			TableName = "ObscureShapes",
+			Rows = ["Shape"],
             Cols = ["Color"],
             Aggregators = [new() { FunctionName = "Sum", ColumnName = "Value" }],
             Filters = [
@@ -88,8 +92,8 @@ public class PivotSqlStringTests
                 ]
         };
 
-        var sqlString = new PivotSqlString(config, "ObscureShapes");
-        const string expected = "select Shape, Color, sum(Value) as Sum@Value, count(*) as Count " +
+        var sqlString = new PivotSqlString(config);
+        const string expected = "select Shape, Color, sum(Value) as Sum_Value, count(*) as Count " +
         "from ObscureShapes where Border <> @param0 and Border <> @param1 group by Shape, Color";
         Assert.That(sqlString.ToString(), Is.EqualTo(expected));
     }

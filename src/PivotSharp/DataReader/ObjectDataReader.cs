@@ -54,7 +54,7 @@ namespace PivotSharp.DataReader
 					return i;
 				}
 			}
-			throw new IndexOutOfRangeException("name");
+			throw new IndexOutOfRangeException($"No field matching {name}");
 		}
 
 

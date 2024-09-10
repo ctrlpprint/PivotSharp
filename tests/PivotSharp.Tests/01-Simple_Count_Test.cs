@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
+using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
@@ -41,10 +42,10 @@ public class Simple_Count_Test
             Cols = ["Color"],
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
         };
-        pivot = PivotTable.Create(config);
-        reader = new EnumerableDataReader(source);
+		var connector = new PivotEnumerableConnector<ObscureShape>(config, source);
+		pivot = PivotTable.Create(config, connector);
 
-        pivot.Pivot(reader);
+		pivot.Pivot();
     }
 
     [Test]
@@ -107,8 +108,7 @@ public class Simple_Count_Test
     [Test]
     public void Can_Retrieve_Listing() {
 
-        reader = new EnumerableDataReader(source);
-        var listing = pivot.DrillDown(reader, "circle", "blue");
+        var listing = pivot.DrillDown("circle", "blue");
 
         Assert.That(listing.Rows.Count, Is.EqualTo(2));
         Assert.That(listing.Rows.Count, Is.EqualTo(2));

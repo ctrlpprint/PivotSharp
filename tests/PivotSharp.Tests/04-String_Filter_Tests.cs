@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
+using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 using PivotSharp.Filters;
 
@@ -25,7 +26,8 @@ namespace PivotSharp.Tests;
 [TestFixture]
 public class String_Filter_Tests
 {
-    private PivotTable pivot;
+	private IPivotDataSourceConnector connector;
+	private PivotTable pivot;
     private EnumerableDataReader reader;
     private readonly IList<ObscureShape> source = [
         new("blue", "circle", 1),
@@ -44,14 +46,13 @@ public class String_Filter_Tests
             Aggregators = [new AggregatorDef { FunctionName = "SumInt", ColumnName = "Lines" }],
             Filters = [new Filter("Color", "=", "blue")]
         };
-        reader = new EnumerableDataReader(source);
+		connector = new PivotEnumerableConnector<ObscureShape>(config, source);
+		pivot = PivotTable.Create(config, connector);
+		pivot.Pivot();
+	}
 
-        pivot = PivotTable.Create(config);
-        pivot.Pivot(reader);
-    }
 
-
-    [Test]
+	[Test]
     public void Can_Filter_On_String_Equality() {
         Assert.That(pivot.Cells["circle"]["blue"][0].Value, Is.EqualTo(3));
         Assert.That(pivot.Cells["triangle"]["blue"][0].Value, Is.EqualTo(3));

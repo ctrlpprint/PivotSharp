@@ -93,7 +93,7 @@ public class PivotTable
 	protected PivotTable(PivotConfig config, IPivotDataSourceConnector connector) {
 		Config = config;
 		this.connector = connector;
-
+		ValidateConfig();
 		GrandTotal = new PivotCell(Config.Aggregators.Select(a => a.Create()));
 		Rows = new RowOrColumns(fields: Config.Rows, aggregators: Config.Aggregators);
 		Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
@@ -103,12 +103,9 @@ public class PivotTable
 
     public PivotCell Cell (string rowHeader, string colHeader) => Cells[rowHeader, colHeader]!;
 
-
-
-    public IList<string> InvalidColumns { get; set; } = [];
+	public IList<string> InvalidColumns { get; set; }
 
     public void Pivot() {
-
 		var source = connector.GetPivotData();
 
 		var aggregators = Config.Aggregators.Select(a => a.Create());
@@ -136,5 +133,39 @@ public class PivotTable
     public DataTable DrillDown(string flattendedRowKeys, string flattenedColKeys) {
         return connector.GetDrillDownData(flattendedRowKeys, flattenedColKeys);
     }
+
+	private void ValidateConfig() {
+		var columnList = connector.GetTableStructure().Select(r => r.Name);
+
+		InvalidColumns = Config.Filters.Select(c => c.ColumnName)
+			.Union(Config.Rows)
+			.Union(Config.Cols)
+			.Union(Config.Aggregators.Select(a => a.ColumnName))
+			.Except([null, ""])
+			.Except(columnList)
+			.ToList()!;
+
+		if (InvalidColumns.Any()) {
+			if (Config.ErrorMode == ConfigurationErrorHandlingMode.Throw) {
+				throw new PivotConfigurationException(message: "Referenced ", invalidColumns: InvalidColumns);
+			}
+			Config = new PivotConfig
+			{
+				TableName = Config.TableName,
+				Aggregators = Config.Aggregators.Where(a => columnList.Contains(a.ColumnName))
+					.Union(Config.Aggregators.Where(a => columnList.Contains(a.Create().Alias)))
+					.Distinct()
+					.ToList(),
+				Cols = Config.Cols.Intersect(columnList).ToList()!,
+				Rows = Config.Rows.Intersect(columnList).ToList()!,
+				Filters = Config.Filters.Where(f => columnList.Contains(f.ColumnName)).ToList()
+			};
+
+			if (!Config.Aggregators.Any())
+				Config.Aggregators.Add(new AggregatorDef { FunctionName = "Count" });
+
+			this.connector.UpdateConfig(Config);
+		}
+	}
 
 }

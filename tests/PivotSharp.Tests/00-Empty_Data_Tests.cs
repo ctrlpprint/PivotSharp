@@ -2,11 +2,11 @@
 using System.Linq;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
+using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
 
-[TestFixture]
 public class Empty_Data_Tests
 {
     private PivotTable pivot;
@@ -31,10 +31,10 @@ public class Empty_Data_Tests
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
 
         };
-        pivot = PivotTable.Create(config);
-        reader = new EnumerableDataReader(new List<ObscureShape>());
+        var connector = new PivotEnumerableConnector<ObscureShape>(config, new List<ObscureShape>());
+		pivot = PivotTable.Create(config, connector);
 
-        pivot.Pivot(reader);
+        pivot.Pivot();
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(0));
         Assert.That(pivot.Rows.Count(), Is.EqualTo(0));
         Assert.That(pivot.Cols.Count(), Is.EqualTo(0));
@@ -48,10 +48,11 @@ public class Empty_Data_Tests
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
 
         };
-        pivot = PivotTable.Create(config);
-        reader = new EnumerableDataReader(source);
+		var connector = new PivotEnumerableConnector<ObscureShape>(config, source);
+		pivot = PivotTable.Create(config, connector);
 
-        pivot.Pivot(reader);
+		pivot.Pivot();
+		
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
         Assert.That(pivot.Rows.Count(), Is.EqualTo(0));
         Assert.That(pivot.Cols.Count(), Is.EqualTo(2));
@@ -66,10 +67,11 @@ public class Empty_Data_Tests
             Rows = ["Color"],
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
         };
-        pivot = PivotTable.Create(config);
-        reader = new EnumerableDataReader(source);
+		var connector = new PivotEnumerableConnector<ObscureShape>(config, source);
+		pivot = PivotTable.Create(config, connector);
 
-        pivot.Pivot(reader);
+		pivot.Pivot();
+		
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
         Assert.That(pivot.Rows.Count(), Is.EqualTo(2));
         Assert.That(pivot.Rows.Single(r => r.FlattenedKey == "blue").Value, Is.EqualTo(2));

@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
+using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
@@ -25,7 +26,7 @@ namespace PivotSharp.Tests;
 public class Simple_Sum_Test
 {
     private PivotTable pivot;
-    private EnumerableDataReader reader;
+    private IPivotDataSourceConnector connector;
     private readonly IList<ObscureShape> source = [
         new("blue", "circle", 1),
         new("blue", "circle", 2),
@@ -42,14 +43,13 @@ public class Simple_Sum_Test
             Aggregators = [new () { FunctionName = "SumInt", ColumnName = "Lines" }]
         };
 
-        reader = new EnumerableDataReader(source);
+		connector = new PivotEnumerableConnector<ObscureShape>(config, source);
+		pivot = PivotTable.Create(config, connector);
+		pivot.Pivot();
 
-        pivot = PivotTable.Create(config);
-        pivot.Pivot(reader);
+	}
 
-    }
-
-    [Test]
+	[Test]
     public void Can_Generate_Headers() {
         Assert.That(pivot.Cols.ToList().Count(), Is.EqualTo(2));
         Assert.That(pivot.Cols[0].FlattenedKey, Is.EqualTo("blue"));

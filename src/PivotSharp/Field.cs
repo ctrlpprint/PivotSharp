@@ -2,10 +2,10 @@ namespace PivotSharp;
 
 public class Field
 {
-    public int Position { get; set; }
-    public string Name { get; set; }
+    // public int Position { get; set; }
+    public string Name { get; set; } = "";
 
-    public string DataType { get; set; }
+    public string DataType { get; set; } = "";
 
     public string HtmlInputType => DataType switch
     {

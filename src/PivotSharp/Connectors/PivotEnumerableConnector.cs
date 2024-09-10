@@ -10,23 +10,24 @@ public class PivotEnumerableConnector<T> : IPivotDataSourceConnector
 {
 	private PivotConfig config;
 	private readonly IEnumerable<T> source;
+	private readonly IDataReader reader;
 
 	public PivotEnumerableConnector(PivotConfig config, IEnumerable<T> source) {
 		this.config = config;
 		this.source = source;
+		this.reader = new EnumerableDataReader(source);
 	}
 
 	public DataTable GetDrillDownData(string flattendedRowKeys, string flattenedColKeys) {
-		IDataReader reader = new EnumerableDataReader(source);
-		ValidateConfigAgainst(reader);
 
 		var schemaTable = reader.GetSchemaTable()!;
 		var data = new DataTable();
 
+		// Useful here to have Type rather than Typename.
 		foreach (DataRow row in schemaTable.Rows) {
 			var colName = row.Field<string>("ColumnName");
 			var t = row.Field<Type>("DataType");
-			data.Columns.Add(colName, t);
+			data.Columns.Add(colName, t!);
 		}
 
 		while (reader.Read()) {
@@ -50,53 +51,34 @@ public class PivotEnumerableConnector<T> : IPivotDataSourceConnector
 		return data;
 	}
 
-	public IList<string> InvalidColumns { get; set; } = [];
 
 
-	private void ValidateConfigAgainst(IDataReader source) {
-		var schema = source.GetSchemaTable()!
-			.Rows.Cast<DataRow>();
-
-		var columnList = schema
-			.Select(row => row.Field<string>("ColumnName")).ToList();
-
-		InvalidColumns = config.Filters.Select(c => c.ColumnName)
-			.Union(config.Rows)
-			.Union(config.Cols)
-			.Union(config.Aggregators.Select(a => a.ColumnName))
-			.Except([null, ""])
-			.Except(columnList)
-			.ToList()!;
-
-
-		if (InvalidColumns.Any()) {
-			if (config.ErrorMode == ConfigurationErrorHandlingMode.Throw) {
-				throw new PivotConfigurationException(message: "Referenced ", invalidColumns: InvalidColumns);
-			}
-			var config2 = new PivotConfig
-			{
-				TableName = config.TableName,
-				Aggregators = config.Aggregators.Where(a => columnList.Contains(a.ColumnName))
-					.Union(config.Aggregators.Where(a => columnList.Contains(a.Create().Alias)))
-					.Distinct()
-					.ToList(),
-				Cols = config.Cols.Intersect(columnList).ToList()!,
-				Rows = config.Rows.Intersect(columnList).ToList()!,
-				Filters = config.Filters.Where(f => columnList.Contains(f.ColumnName)).ToList()
-			};
-
-			if (!config2.Aggregators.Any())
-				config2.Aggregators.Add(new AggregatorDef { FunctionName = "Count" });
-
-			this.config = config2;
-		}
-	}
-
-	public IDataReader GetPivotData() {
-		return new EnumerableDataReader(source);
-	}
+	public IDataReader GetPivotData() => new EnumerableDataReader(source);
 
 	public IEnumerable<Field> GetTableStructure() {
-		throw new NotImplementedException();
+		IDataReader reader = new EnumerableDataReader(source);
+
+		var schemaTable = reader.GetSchemaTable()!;
+		var fields = new List<Field>();
+
+		foreach (DataRow row in schemaTable.Rows) {
+			fields.Add(new Field {
+				Name = row.Field<string>("ColumnName")!,
+				DataType = row.Field<Type>("DataType")!.Name,
+			}); 
+		}
+		return fields;
 	}
+
+	//public IEnumerable<Field> GetTableStructure() => typeof(T).GetProperties()
+	//	.Select(p => new Field
+	//	{
+	//		Name = p.Name,
+	//		DataType = p.PropertyType.Name
+	//	});
+
+	public void UpdateConfig(PivotConfig config) {
+		this.config = config;
+	}
+
 }

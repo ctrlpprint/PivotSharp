@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
@@ -12,7 +13,8 @@ public class SqlPivotTests
     public void Can_Generate_Query_With_Multiple_Aggregations() {
         var config = new PivotConfig()
         {
-            Rows = ["Shape"],
+            TableName = "QueryResultStubs",
+			Rows = ["Shape"],
             Cols = ["Color"],
             ErrorMode = ConfigurationErrorHandlingMode.Ignore,
             Aggregators = [
@@ -21,7 +23,7 @@ public class SqlPivotTests
             ]
         };
 
-        var sqlString = new PivotSqlString(config, "QueryResultStubs");
+        var sqlString = new PivotSqlString(config);
         // Expect a Count to be added to the select (for various purposes, including providing support for Overall Avg)
         const string expected = "select Shape, Color, sum(Value) as Sum_Value, min(Value) as Min_Value, count(*) as Count " +
             "from QueryResultStubs group by Shape, Color";
@@ -32,10 +34,10 @@ public class SqlPivotTests
                 new QueryResultStub {  Shape = "Square", Color = "Blue", Sum_Value = 110.00M, Min_Value = 40M, Count = 5},
             }.ToList();
 
-        var reader = new EnumerableDataReader(source);
+        var connector = new PivotEnumerableConnector<QueryResultStub>(config, source);
 
-        var pivot = PivotTable.Create(config);
-        pivot.Pivot(reader);
+        var pivot = PivotTable.Create(config, connector);
+        pivot.Pivot();
 
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(210M));
         Assert.That(pivot.GrandTotal[1].Value, Is.EqualTo(40M));

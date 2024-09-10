@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
+using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
@@ -45,10 +46,9 @@ public class Multi_Layer_Test
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
         };
 
-        reader = new EnumerableDataReader(source);
-
-        pivot = PivotTable.Create(config);
-        pivot.Pivot(reader);
+		var connector = new PivotEnumerableConnector<ObscureShape>(config, source);
+		pivot = PivotTable.Create(config, connector);
+		pivot.Pivot();
     }
 
     [Test]

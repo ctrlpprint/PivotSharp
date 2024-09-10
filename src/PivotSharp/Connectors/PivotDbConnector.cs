@@ -8,10 +8,12 @@ namespace PivotSharp.Connectors;
 
 public class PivotDbConnector : IPivotDataSourceConnector
 {
-    private readonly PivotConfig config;
+	private PivotConfig config;
 	private readonly string connectionString;
 
-    public PivotDbConnector(PivotConfig config, string connectionString) {
+	public IList<string> InvalidColumns { get; private set; } = [];
+
+	public PivotDbConnector(PivotConfig config, string connectionString) {
 		this.config = config;
 		this.connectionString = connectionString;
 	}
@@ -19,123 +21,113 @@ public class PivotDbConnector : IPivotDataSourceConnector
 	/// <summary>
 	/// Returns the structure of the table or view
 	/// </summary>
-	public IEnumerable<Field> GetTableStructure()
-    {
+	public IEnumerable<Field> GetTableStructure() {
 
-        // See question at http://stackoverflow.com/questions/1054984/how-can-i-get-column-names-from-a-table-in-sql-server 
-        // for other dbs
+		// See question at http://stackoverflow.com/questions/1054984/how-can-i-get-column-names-from-a-table-in-sql-server 
+		// Postgres should be similar: https://dba.stackexchange.com/questions/22362/list-all-columns-for-a-specified-table
+		// MySQL also: https://stackoverflow.com/questions/193780/how-can-i-find-all-the-tables-in-mysql-with-specific-column-names-in-them
+		// Oracle: uses a 'USER_TAB_COLUMNS' table, but column names are the same: https://stackoverflow.com/questions/452464/how-can-i-get-column-names-from-a-table-in-oracle
 
-        var columns = new List<Field>();
+		var columns = new List<Field>();
 
-        using var connection = new SqlConnection(connectionString);
+		using var connection = new SqlConnection(connectionString);
+		var query = "select Ordinal_Position, Column_Name, Data_Type from INFORMATION_SCHEMA.Columns where Table_Name = @TableName";
+		var command = new SqlCommand(query, connection);
+		command.Parameters.AddWithValue("@TableName", config.TableName);
 
-        var query = "select Ordinal_Position, Column_Name, Data_Type from INFORMATION_SCHEMA.Columns where Table_Name = @TableName";
+		connection.Open();
+		using var reader = command.ExecuteReader();
+		if (reader.HasRows) {
+			while (reader.Read()) {
+				columns.Add(new Field()
+				{
+					// Position = reader.GetInt32(0),
+					Name = reader.GetString(1),
+					DataType = reader.GetString(2)
+				});
+			}
+		}
+		return columns;
+	}
 
-        var command = new SqlCommand(query, connection);
-        command.Parameters.AddWithValue("@TableName", config.TableName);
 
-        connection.Open();
-        var reader = command.ExecuteReader();
-        if (reader.HasRows)
-        {
-            while (reader.Read())
-            {
-                columns.Add(new Field()
-                {
-                    Position = reader.GetInt32(0),
-                    Name = reader.GetString(1),
-                    DataType = reader.GetString(2)
-                });
-            }
-        }
-        // reader.Close();
 
-        return columns;
-    }
+	public IDictionary<string, int> GetColumnValues(string columnName, int maxListSize) {
 
-    public IDictionary<string, int> GetColumnValues(string columnName, int maxListSize)
-    {
+		var returnValues = new Dictionary<string, int>();
 
-        var returnValues = new Dictionary<string, int>();
+		var query = $"select top {maxListSize} {columnName}, count(*) Occurences " +
+			$"from {config.TableName} where {columnName} is not null and len({columnName})>0 " +
+			$"group by {columnName} order by Occurences desc";
 
-        var query = $"select top {maxListSize} {columnName}, count(*) Occurences " +
-            $"from {config.TableName} where {columnName} is not null and len({columnName})>0 " +
-            $"group by {columnName} order by Occurences desc";
+		using var connection = new SqlConnection(connectionString);
+		var command = new SqlCommand(query, connection);
+		connection.Open();
+		var reader = command.ExecuteReader();
+		if (reader.HasRows) {
+			while (reader.Read()) {
+				returnValues.Add(reader.GetValue(0).ToString()!, reader.GetInt32(1));
+			}
+		}
+		// reader.Close();
 
-        using var connection = new SqlConnection(connectionString);
-        var command = new SqlCommand(query, connection);
-        connection.Open();
-        var reader = command.ExecuteReader();
-        if (reader.HasRows)
-        {
-            while (reader.Read())
-            {
-                returnValues.Add(reader.GetValue(0).ToString()!, reader.GetInt32(1));
-            }
-        }
-        // reader.Close();
+		return returnValues;
+	}
 
-        return returnValues;
-    }
+	public string GetPivotSql() {
 
-    public string GetPivotSql()
-    {
+		var sqlString = new PivotSqlString(config);
+		return sqlString.ToString();
+	}
 
-        var sqlString = new PivotSqlString(config);
-        return sqlString.ToString();
-    }
+	public IDataReader GetPivotData() {
+		var connection = new SqlConnection(connectionString);
+		var query = GetPivotSql();
 
-    public IDataReader GetPivotData()
-    {
+		// HACK: If we're using sql generation, we basically need Sum rather than Count.
+		// Trouble with doing it this way is the config no longer represents the user's selection.
+		// This won't work in general: SumInt => int, SumDecimal => decimal are incompatible.
+		foreach (var aggregatorDef in config.Aggregators.Where(a => a.FunctionName == "Count")) {
+			aggregatorDef.ColumnName = "Count";
+			aggregatorDef.FunctionName = "SumInt";
+		}
 
-        var connection = new SqlConnection(connectionString);
-        var query = GetPivotSql();
+		// When using CommandBehavior.CloseConnection, the connection will be closed when the 
+		// IDataReader is closed.
+		// https://msdn.microsoft.com/en-us/library/Microsoft.Data.SqlClient.sqlcommand(v=vs.110).aspx
+		using var command = new SqlCommand(query, connection);
+		foreach (var filter in config.Filters) {
+			command.Parameters.AddWithValue("param" + config.Filters.IndexOf(filter), filter.ParameterValue);
+		}
 
-        // HACK: If we're using sql generation, we basically need Sum rather than Count.
-        // Trouble with doing it this way is the config no longer represents the user's selection.
-        // This won't work in general: SumInt => int, SumDecimal => decimal are incompatible.
-        foreach (var aggregatorDef in config.Aggregators.Where(a => a.FunctionName == "Count"))
-        {
-            aggregatorDef.ColumnName = "Count";
-            aggregatorDef.FunctionName = "SumInt";
-        }
+		connection.Open();
+		return command.ExecuteReader(CommandBehavior.CloseConnection);
+	}
 
-        // When using CommandBehavior.CloseConnection, the connection will be closed when the 
-        // IDataReader is closed.
-        // https://msdn.microsoft.com/en-us/library/Microsoft.Data.SqlClient.sqlcommand(v=vs.110).aspx
-        using var command = new SqlCommand(query, connection);
-        foreach (var filter in config.Filters)
-        {
-            command.Parameters.AddWithValue("param" + config.Filters.IndexOf(filter), filter.ParameterValue);
-        }
+	public DataTable GetDrillDownData(string flattendedRowKeys, string flattenedColKeys) {
 
-        connection.Open();
-        return command.ExecuteReader(CommandBehavior.CloseConnection);
-    }
+		// TODO: Drill Down should also apply filters
+		var filters = config.Rows.Select(r => new { Key = r, Value = flattendedRowKeys.Split(',')[config.Rows.IndexOf(r)] })
+			.Union(config.Cols.Select(c => new { Key = c, Value = flattenedColKeys.Split(',')[config.Cols.IndexOf(c)] }));
 
-    public DataTable GetDrillDownData(string flattendedRowKeys, string flattenedColKeys)
-    {
+		var dataTable = new DataTable(config.TableName);
 
-        // TODO: Drill Down should also apply filters
-        var filters = config.Rows.Select(r => new { Key = r, Value = flattendedRowKeys.Split(',')[config.Rows.IndexOf(r)] })
-            .Union(config.Cols.Select(c => new { Key = c, Value = flattenedColKeys.Split(',')[config.Cols.IndexOf(c)] }));
+		using var connection = new SqlConnection(connectionString);
 
-        var dataTable = new DataTable(config.TableName);
+		var sql = $"select * from {config.TableName} where " +
+			$"{string.Join(" and ", filters.Select(f => string.Format("{0} = @{0}", f.Key)))}";
 
-        using var connection = new SqlConnection(connectionString);
+		var command = new SqlCommand(sql, connection);
+		foreach (var filter in filters) {
+			command.Parameters.AddWithValue("@" + filter.Key, filter.Value);
+		}
 
-        var sql = $"select * from {config.TableName} where " +
-            $"{string.Join(" and ", filters.Select(f => string.Format("{0} = @{0}", f.Key)))}";
+		using var da = new SqlDataAdapter(command);
+		da.Fill(dataTable);
+		return dataTable;
+	}
 
-        var command = new SqlCommand(sql, connection);
-        foreach (var filter in filters)
-        {
-            command.Parameters.AddWithValue("@" + filter.Key, filter.Value);
-        }
-
-        using var da = new SqlDataAdapter(command);
-        da.Fill(dataTable);
-        return dataTable;
-    }
-
+	public void UpdateConfig(PivotConfig config) {
+		this.config = config;
+	}
 }
