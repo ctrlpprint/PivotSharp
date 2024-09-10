@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using PivotSharp.Aggregators;
 using PivotSharp.Connectors;
+using PivotSharp.Writers;
 
 namespace PivotSharp;
 
@@ -173,4 +174,11 @@ public class PivotTable
 		}
 	}
 
+	// Tag Helper
+
+	public string BuildHtmlTable(IHtmlTableMap? map = null) {
+		var table = PivotTableGridBuilder.BuildTable(this);
+		return (map ?? new BootstrapTableMap()).Map(table);
+	}
 }
+

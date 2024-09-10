@@ -8,10 +8,18 @@
     <div class="card bg-secondary mb-3">
         <h5 class="card-header">Simple Pivot Tables</h5>
         <div class="card-body">
-            <partial name="_PivotTable" model="@Model.PivotTable.PivotTable" />
+             <partial name="_PivotTable" model="@Model.PivotTable.PivotTable" />
+         </div>
+    </div>
+    <div class="card bg-secondary mb-3">
+        <h5 class="card-header">Simple Pivot Tables</h5>
+        <div class="card-body">
+            @Html.Raw(Model.PivotHtml)
         </div>
     </div>
 </div>
+
+@section Scripts {
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -20,3 +28,4 @@
         });
     });
 </script>
+}
