@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using PivotSharp.Aggregators;
-using PivotSharp.Connectors;
-using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests
 {
-    [TestFixture]
+	[TestFixture]
 	public class AggregatorTests
 	{
 		private PivotTable pivot;
-		private IPivotDataSourceConnector connector;
 		private readonly IList<Sale> source = [
 			new (new DateTime(2016,01,30), "Books", "The Hobbit", "USA", 10M ),
 			new (new DateTime(2016,01,30), "DVDs", "Star Wars", "USA", 25M ),
@@ -37,8 +33,7 @@ namespace PivotSharp.Tests
 				Aggregators = [new () { FunctionName = "Count"}],
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 
@@ -56,8 +51,7 @@ namespace PivotSharp.Tests
 			],
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(115M));
@@ -72,8 +66,7 @@ namespace PivotSharp.Tests
 				Aggregators = [new () { FunctionName = "Ave", ColumnName = "Value" }],
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(23.0M));
@@ -88,8 +81,7 @@ namespace PivotSharp.Tests
 				Aggregators = [new () { FunctionName = "Min", ColumnName = "Value" }],
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(10M));
@@ -104,8 +96,7 @@ namespace PivotSharp.Tests
 				Aggregators = [new () { FunctionName = "Max", ColumnName = "Value" }],
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(30M));
@@ -123,8 +114,7 @@ namespace PivotSharp.Tests
 				],
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.Cells["Books"]["USA"][0].Value, Is.EqualTo(10M));

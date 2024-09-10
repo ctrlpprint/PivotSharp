@@ -8,13 +8,14 @@ namespace PivotSharp.Connectors;
 
 public class PivotDbConnector : IPivotDataSourceConnector
 {
-	private PivotConfig config;
 	private readonly string connectionString;
 
 	public IList<string> InvalidColumns { get; private set; } = [];
 
+	public PivotConfig Config { get; private set; }
+
 	public PivotDbConnector(PivotConfig config, string connectionString) {
-		this.config = config;
+		this.Config = config;
 		this.connectionString = connectionString;
 	}
 
@@ -33,7 +34,7 @@ public class PivotDbConnector : IPivotDataSourceConnector
 		using var connection = new SqlConnection(connectionString);
 		var query = "select Ordinal_Position, Column_Name, Data_Type from INFORMATION_SCHEMA.Columns where Table_Name = @TableName";
 		var command = new SqlCommand(query, connection);
-		command.Parameters.AddWithValue("@TableName", config.TableName);
+		command.Parameters.AddWithValue("@TableName", Config.TableName);
 
 		connection.Open();
 		using var reader = command.ExecuteReader();
@@ -57,7 +58,7 @@ public class PivotDbConnector : IPivotDataSourceConnector
 		var returnValues = new Dictionary<string, int>();
 
 		var query = $"select top {maxListSize} {columnName}, count(*) Occurences " +
-			$"from {config.TableName} where {columnName} is not null and len({columnName})>0 " +
+			$"from {Config.TableName} where {columnName} is not null and len({columnName})>0 " +
 			$"group by {columnName} order by Occurences desc";
 
 		using var connection = new SqlConnection(connectionString);
@@ -76,7 +77,7 @@ public class PivotDbConnector : IPivotDataSourceConnector
 
 	public string GetPivotSql() {
 
-		var sqlString = new PivotSqlString(config);
+		var sqlString = new PivotSqlString(Config);
 		return sqlString.ToString();
 	}
 
@@ -87,7 +88,7 @@ public class PivotDbConnector : IPivotDataSourceConnector
 		// HACK: If we're using sql generation, we basically need Sum rather than Count.
 		// Trouble with doing it this way is the config no longer represents the user's selection.
 		// This won't work in general: SumInt => int, SumDecimal => decimal are incompatible.
-		foreach (var aggregatorDef in config.Aggregators.Where(a => a.FunctionName == "Count")) {
+		foreach (var aggregatorDef in Config.Aggregators.Where(a => a.FunctionName == "Count")) {
 			aggregatorDef.ColumnName = "Count";
 			aggregatorDef.FunctionName = "SumInt";
 		}
@@ -96,8 +97,8 @@ public class PivotDbConnector : IPivotDataSourceConnector
 		// IDataReader is closed.
 		// https://msdn.microsoft.com/en-us/library/Microsoft.Data.SqlClient.sqlcommand(v=vs.110).aspx
 		using var command = new SqlCommand(query, connection);
-		foreach (var filter in config.Filters) {
-			command.Parameters.AddWithValue("param" + config.Filters.IndexOf(filter), filter.ParameterValue);
+		foreach (var filter in Config.Filters) {
+			command.Parameters.AddWithValue("param" + Config.Filters.IndexOf(filter), filter.ParameterValue);
 		}
 
 		connection.Open();
@@ -107,14 +108,14 @@ public class PivotDbConnector : IPivotDataSourceConnector
 	public DataTable GetDrillDownData(string flattendedRowKeys, string flattenedColKeys) {
 
 		// TODO: Drill Down should also apply filters
-		var filters = config.Rows.Select(r => new { Key = r, Value = flattendedRowKeys.Split(',')[config.Rows.IndexOf(r)] })
-			.Union(config.Cols.Select(c => new { Key = c, Value = flattenedColKeys.Split(',')[config.Cols.IndexOf(c)] }));
+		var filters = Config.Rows.Select(r => new { Key = r, Value = flattendedRowKeys.Split(',')[Config.Rows.IndexOf(r)] })
+			.Union(Config.Cols.Select(c => new { Key = c, Value = flattenedColKeys.Split(',')[Config.Cols.IndexOf(c)] }));
 
-		var dataTable = new DataTable(config.TableName);
+		var dataTable = new DataTable(Config.TableName);
 
 		using var connection = new SqlConnection(connectionString);
 
-		var sql = $"select * from {config.TableName} where " +
+		var sql = $"select * from {Config.TableName} where " +
 			$"{string.Join(" and ", filters.Select(f => string.Format("{0} = @{0}", f.Key)))}";
 
 		var command = new SqlCommand(sql, connection);
@@ -128,6 +129,6 @@ public class PivotDbConnector : IPivotDataSourceConnector
 	}
 
 	public void UpdateConfig(PivotConfig config) {
-		this.config = config;
+		this.Config = config;
 	}
 }

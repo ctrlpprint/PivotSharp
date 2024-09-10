@@ -8,12 +8,13 @@ using System.Linq;
 namespace PivotSharp.Connectors;
 public class PivotEnumerableConnector<T> : IPivotDataSourceConnector
 {
-	private PivotConfig config;
 	private readonly IEnumerable<T> source;
 	private readonly IDataReader reader;
 
+	public PivotConfig Config { get; private set; }
+
 	public PivotEnumerableConnector(PivotConfig config, IEnumerable<T> source) {
-		this.config = config;
+		this.Config = config;
 		this.source = source;
 		this.reader = new EnumerableDataReader(source);
 	}
@@ -32,13 +33,13 @@ public class PivotEnumerableConnector<T> : IPivotDataSourceConnector
 
 		while (reader.Read()) {
 
-			if (config.Filters.Any(f => !f.Apply(reader)))
+			if (Config.Filters.Any(f => !f.Apply(reader)))
 				continue;
 
-			var rowHeader = config.Rows.Select(rowAttr => reader[rowAttr] ?? "null").Select(x => x.ToString()).ToList();
+			var rowHeader = Config.Rows.Select(rowAttr => reader[rowAttr] ?? "null").Select(x => x.ToString()).ToList();
 			var flatRowKey = string.Join(",", rowHeader);
 
-			var colHeader = config.Cols.Select(colAttr => reader[colAttr] ?? "null").Select(x => x.ToString()).ToList();
+			var colHeader = Config.Cols.Select(colAttr => reader[colAttr] ?? "null").Select(x => x.ToString()).ToList();
 			var flatColKey = string.Join(",", colHeader);
 
 			if (flatRowKey == flattendedRowKeys && flatColKey == flattenedColKeys) {
@@ -78,7 +79,7 @@ public class PivotEnumerableConnector<T> : IPivotDataSourceConnector
 	//	});
 
 	public void UpdateConfig(PivotConfig config) {
-		this.config = config;
+		Config = config;
 	}
 
 }

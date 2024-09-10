@@ -88,10 +88,10 @@ public class PivotTable
 	// Cells
 	public PivotBody Cells { get; private set; }
 
-    public PivotConfig Config { get; private set; }
+	public PivotConfig Config => connector.Config;
+	public IList<string> InvalidColumns { get; set; } = [];
 
-	protected PivotTable(PivotConfig config, IPivotDataSourceConnector connector) {
-		Config = config;
+	protected PivotTable(IPivotDataSourceConnector connector) {
 		this.connector = connector;
 		ValidateConfig();
 		GrandTotal = new PivotCell(Config.Aggregators.Select(a => a.Create()));
@@ -99,11 +99,16 @@ public class PivotTable
 		Cols = new RowOrColumns(fields: Config.Cols, aggregators: Config.Aggregators);
 		Cells = [];
 	}
-	public static PivotTable Create(PivotConfig config, IPivotDataSourceConnector connector) => new PivotTable(config,connector);
 
-    public PivotCell Cell (string rowHeader, string colHeader) => Cells[rowHeader, colHeader]!;
 
-	public IList<string> InvalidColumns { get; set; }
+	public static PivotTable Create(PivotConfig config, string connectionString) =>
+		new PivotTable(new PivotDbConnector(config, connectionString));
+
+	public static PivotTable Create<T>(PivotConfig config, IEnumerable<T> source) => 
+		new PivotTable(new PivotEnumerableConnector<T>(config, source));
+
+	public PivotCell Cell (string rowHeader, string colHeader) => Cells[rowHeader, colHeader]!;
+
 
     public void Pivot() {
 		var source = connector.GetPivotData();
@@ -149,7 +154,7 @@ public class PivotTable
 			if (Config.ErrorMode == ConfigurationErrorHandlingMode.Throw) {
 				throw new PivotConfigurationException(message: "Referenced ", invalidColumns: InvalidColumns);
 			}
-			Config = new PivotConfig
+			var config = new PivotConfig
 			{
 				TableName = Config.TableName,
 				Aggregators = Config.Aggregators.Where(a => columnList.Contains(a.ColumnName))
@@ -161,10 +166,10 @@ public class PivotTable
 				Filters = Config.Filters.Where(f => columnList.Contains(f.ColumnName)).ToList()
 			};
 
-			if (!Config.Aggregators.Any())
-				Config.Aggregators.Add(new AggregatorDef { FunctionName = "Count" });
+			if (!config.Aggregators.Any())
+				config.Aggregators.Add(new AggregatorDef { FunctionName = "Count" });
 
-			this.connector.UpdateConfig(Config);
+			this.connector.UpdateConfig(config);
 		}
 	}
 

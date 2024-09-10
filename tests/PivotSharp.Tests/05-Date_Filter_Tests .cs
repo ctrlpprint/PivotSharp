@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
-using PivotSharp.Connectors;
 using PivotSharp.Filters;
 
 namespace PivotSharp.Tests;
@@ -11,7 +10,6 @@ namespace PivotSharp.Tests;
 public class Date_Filter_Tests
 {
     private PivotTable pivot;
-    private IPivotDataSourceConnector connector;
     private readonly IList<Sale> source = [
         new (new DateTime(2016,01,30), "Books", "The Hobbit", "USA", 10M ),
         new (new DateTime(2016,01,30), "DVDs", "Star Wars", "USA", 25M ),
@@ -39,8 +37,7 @@ public class Date_Filter_Tests
             Filters = [new Filter("Date", "=", new DateTime(2016,02,01))]
         };
 
-		connector = new PivotEnumerableConnector<Sale>(config, source);
-		pivot = PivotTable.Create(config, connector);
+		pivot = PivotTable.Create(config, source);
 		pivot.Pivot();
 
 

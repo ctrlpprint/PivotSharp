@@ -2,7 +2,6 @@
 using System.Linq;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
-using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
@@ -31,9 +30,7 @@ public class Empty_Data_Tests
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
 
         };
-        var connector = new PivotEnumerableConnector<ObscureShape>(config, new List<ObscureShape>());
-		pivot = PivotTable.Create(config, connector);
-
+		pivot = PivotTable.Create(config, new List<ObscureShape>());
         pivot.Pivot();
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(0));
         Assert.That(pivot.Rows.Count(), Is.EqualTo(0));
@@ -48,9 +45,7 @@ public class Empty_Data_Tests
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
 
         };
-		var connector = new PivotEnumerableConnector<ObscureShape>(config, source);
-		pivot = PivotTable.Create(config, connector);
-
+		pivot = PivotTable.Create(config, source);
 		pivot.Pivot();
 		
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));
@@ -67,9 +62,7 @@ public class Empty_Data_Tests
             Rows = ["Color"],
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
         };
-		var connector = new PivotEnumerableConnector<ObscureShape>(config, source);
-		pivot = PivotTable.Create(config, connector);
-
+		pivot = PivotTable.Create(config, source);
 		pivot.Pivot();
 		
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(3));

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
-using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 using PivotSharp.Filters;
 
@@ -26,7 +25,6 @@ namespace PivotSharp.Tests;
 [TestFixture]
 public class String_Filter_Tests
 {
-	private IPivotDataSourceConnector connector;
 	private PivotTable pivot;
     private EnumerableDataReader reader;
     private readonly IList<ObscureShape> source = [
@@ -46,8 +44,7 @@ public class String_Filter_Tests
             Aggregators = [new AggregatorDef { FunctionName = "SumInt", ColumnName = "Lines" }],
             Filters = [new Filter("Color", "=", "blue")]
         };
-		connector = new PivotEnumerableConnector<ObscureShape>(config, source);
-		pivot = PivotTable.Create(config, connector);
+		pivot = PivotTable.Create(config, source);
 		pivot.Pivot();
 	}
 

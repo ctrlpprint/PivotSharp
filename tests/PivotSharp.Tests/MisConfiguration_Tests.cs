@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
-using PivotSharp.Connectors;
+
 namespace PivotSharp.Tests
 {
 	[TestFixture]
 	public class MisConfiguration_Tests
 	{
 		private PivotTable pivot;
-		private IPivotDataSourceConnector connector;
 		private readonly IList<Sale> source = [
 			new (new DateTime(2016,01,30), "Books", "The Hobbit", "USA", 10M ),
 			new (new DateTime(2016,01,30), "DVDs", "Star Wars", "USA", 25M ),
@@ -38,8 +37,7 @@ namespace PivotSharp.Tests
 				Filters = [new ("ThisIsntAColumnName", "=", new DateTime(2016,02,01))]
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, connector));
+			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, source));
 			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
 
@@ -55,8 +53,7 @@ namespace PivotSharp.Tests
 				Filters = [new ("ThisIsntAColumnName", "=", new DateTime(2016,02,01))]
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
@@ -75,8 +72,7 @@ namespace PivotSharp.Tests
                 Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, connector));
+			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, source));
 			pivot.Pivot();
 			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
@@ -93,8 +89,7 @@ namespace PivotSharp.Tests
 				Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
@@ -113,8 +108,7 @@ namespace PivotSharp.Tests
 				Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, connector));
+			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, source));
 			pivot.Pivot();
 			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
@@ -131,8 +125,7 @@ namespace PivotSharp.Tests
                 Filters = [new("Date", "=", new DateTime(2016, 02, 01))]
             };
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));
@@ -151,8 +144,7 @@ namespace PivotSharp.Tests
 				Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, connector));			
+			var ex = Assert.Throws<PivotConfigurationException>(() => pivot = PivotTable.Create(config, source));
 			pivot.Pivot();
 			Assert.That(ex.InvalidColumns.Count(), Is.EqualTo(1));
 			Assert.That(ex.InvalidColumns.First(), Is.EqualTo("ThisIsntAColumnName"));
@@ -169,8 +161,7 @@ namespace PivotSharp.Tests
 				Filters = [new ("Date", "=", new DateTime(2016,02,01))]
 			};
 
-			connector = new PivotEnumerableConnector<Sale>(config, source);
-			pivot = PivotTable.Create(config, connector);
+			pivot = PivotTable.Create(config, source);
 			pivot.Pivot();
 
 			Assert.That(pivot.InvalidColumns.Count(), Is.EqualTo(1));

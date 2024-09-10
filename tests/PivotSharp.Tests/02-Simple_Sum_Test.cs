@@ -43,8 +43,7 @@ public class Simple_Sum_Test
             Aggregators = [new () { FunctionName = "SumInt", ColumnName = "Lines" }]
         };
 
-		connector = new PivotEnumerableConnector<ObscureShape>(config, source);
-		pivot = PivotTable.Create(config, connector);
+		pivot = PivotTable.Create(config, source);
 		pivot.Pivot();
 
 	}

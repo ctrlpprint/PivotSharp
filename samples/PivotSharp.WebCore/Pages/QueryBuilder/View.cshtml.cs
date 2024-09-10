@@ -13,8 +13,7 @@ public class ViewModel : QueryBuilderBasePageModel
 
 	public IActionResult OnGet(int? id = 1) {
 		var config = Configs.Single(c => c.Key == id).Value;
-		var connector = new PivotDbConnector(config, connectionString);
-		var pivot = PivotTable.Create(config, connector);
+		var pivot = PivotTable.Create(config, connectionString);
 		pivot.Pivot();
 		PivotTableViewModel = new PivotTableViewModel(id!.Value, pivot, config);
 		return Page();
@@ -23,9 +22,7 @@ public class ViewModel : QueryBuilderBasePageModel
 	// QS Format: http://localhost:52157/QueryBuilder/ViewByConfig?rows[0]=country&cols[0]=year&aggregators[0].columnname=Revenue&aggregators[0].functionname=Count&filters[0].op==&filters[0].columnname=Year&filters[0].parametervalue=2010
 	public IActionResult OnGetByGonfig(PivotConfig config) {
 
-		var connector = new PivotDbConnector(config, connectionString);
-		var reader = connector.GetPivotData();
-		var pivot = PivotTable.Create(config, connector);
+		var pivot = PivotTable.Create(config, connectionString);
 		pivot.Pivot();
 
 		return Page();

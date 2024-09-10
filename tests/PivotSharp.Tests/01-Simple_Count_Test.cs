@@ -2,7 +2,6 @@
 using System.Linq;
 using NUnit.Framework;
 using PivotSharp.Aggregators;
-using PivotSharp.Connectors;
 using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
@@ -42,9 +41,7 @@ public class Simple_Count_Test
             Cols = ["Color"],
             Aggregators = [new AggregatorDef { FunctionName = "Count" }]
         };
-		var connector = new PivotEnumerableConnector<ObscureShape>(config, source);
-		pivot = PivotTable.Create(config, connector);
-
+		pivot = PivotTable.Create(config, source);
 		pivot.Pivot();
     }
 

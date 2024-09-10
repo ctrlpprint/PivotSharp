@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using PivotSharp.Connectors;
-using PivotSharp.DataReader;
 
 namespace PivotSharp.Tests;
 
@@ -34,9 +32,7 @@ public class SqlPivotTests
                 new QueryResultStub {  Shape = "Square", Color = "Blue", Sum_Value = 110.00M, Min_Value = 40M, Count = 5},
             }.ToList();
 
-        var connector = new PivotEnumerableConnector<QueryResultStub>(config, source);
-
-        var pivot = PivotTable.Create(config, connector);
+        var pivot = PivotTable.Create(config, source);
         pivot.Pivot();
 
         Assert.That(pivot.GrandTotal[0].Value, Is.EqualTo(210M));
