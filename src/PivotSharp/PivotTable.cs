@@ -117,8 +117,9 @@ public class PivotTable
 		var aggregators = Config.Aggregators.Select(a => a.Create());
 
 		while (source.Read()) {
-
-			if (Config.Filters.Any(f => !f.Apply(source))) continue;
+			// Bit of a hack, but if we're using the DB Connector, the filters have already been applied,
+			// and the source will not necessarily include the filter field.
+			if (connector is not PivotDbConnector && Config.Filters.Any(f => !f.Apply(source))) continue;
 			GrandTotal.UpdateFrom(source);
 
 			var row = Rows.AddRow(source);

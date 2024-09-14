@@ -3,17 +3,19 @@
 @model IndexModel
 @{
 }
-
 <div class="row">
-    @foreach (var kvp in Model.Configs) {
+   <h1>Query Builder <small><a href="/QueryBuilder/Edit/">Add</a></small></h1>
+</div>
+<div class="row">
+    @foreach (var report in Model.CustomReports) {
 
         <div class="col-4">
 
             <div class="card bg-secondary mb-3" style="min-height:300px;">
-                <div class="card-header">@kvp.Key</div>
+                <div class="card-header">@report.Id @report.Name</div>
                 <div class="card-body">
-                    <partial name="_PivotConfig" model="new PivotConfigViewModel { Id = kvp.Key, Config = kvp.Value }" />
-                    <a class="btn btn-raised btn-info pull-right" style="margin-top:0; margin-bottom: 0;" href=@($"/QueryBuilder/View?id={kvp.Key}")>View</a>
+                    <partial name="_PivotConfig" model="new PivotConfigViewModel { Id = report.Id, Config = report.PivotConfig }" />
+                    <a class="btn btn-raised btn-info pull-right" style="margin-top:0; margin-bottom: 0;" href=@($"/QueryBuilder/View?id={report.Id}")>View</a>
                 </div>
             </div>
         </div>

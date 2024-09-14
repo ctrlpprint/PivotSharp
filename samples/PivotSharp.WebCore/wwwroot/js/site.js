@@ -4,8 +4,11 @@ window.post = function (url, data, requestVerificationToken) {
       method: "POST",
       headers: {
          'Content-Type': 'application/json',
-         'RequestVerificationToken': requestVerificationToken
+         'RequestVerificationToken': requestVerificationToken,
+         'X-Requested-With': 'XMLHttpRequest'
       },
       body: JSON.stringify(data)
-   });
+   })
+      .then(response => response.blob())
+      .then(data => { return data.text(); });
 }

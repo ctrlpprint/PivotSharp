@@ -10,9 +10,10 @@ public class DrillDownModel : DataBasePageModel
 
 	public DataTable Table { get; private set; } = new();
 
-	public IActionResult OnGet(int id, string rowKeys, string colKeys) {
-		var config = Configs.Single(c => c.Key == id).Value;
-		var connector = new PivotDbConnector(config, connectionString);
+	public async Task<IActionResult> OnGet(int id, string rowKeys, string colKeys) {
+        var report = await GetCustomReport(id);
+        if (report == null) return new NotFoundResult();
+        var connector = new PivotDbConnector(report.PivotConfig, connectionString);
 		Table = connector.GetDrillDownData(rowKeys, colKeys);
 		return Page();
 	}

@@ -66,7 +66,17 @@ public class EditModel : PageModel
         var report = JsonSerializer.Deserialize<CustomReport>(config);
         using var conn = new SqlConnection(connectionString);
         long id = await conn.InsertAsync(report);
-        return Redirect($"/QueryBuilder/Edit/{id}");
+        var redirectUrl = $"/QueryBuilder/View/{id}";
+
+        // Detecting Ajax Requests is no longer straightforward. The JavaScript fetch method no longer
+        // natively sends the XMLHttpRequest header that ASP.NET previously relied on. Our implementation
+        // relies on our custom script (see site.js) manually including it.
+        // https://github.com/dotnet/aspnetcore/issues/2729
+        // https://github.com/JakeChampion/fetch/issues/17
+        // https://gist.github.com/dgraham/92e4c45da3707a3fe789
+        if (Request.IsAjaxRequest())
+            return Content(redirectUrl);
+        return Redirect(redirectUrl);
     }
 
     // For autosuggesting fiter values

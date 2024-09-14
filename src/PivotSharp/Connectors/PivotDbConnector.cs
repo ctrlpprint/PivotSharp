@@ -98,7 +98,9 @@ public class PivotDbConnector : IPivotDataSourceConnector
 		// https://msdn.microsoft.com/en-us/library/Microsoft.Data.SqlClient.sqlcommand(v=vs.110).aspx
 		using var command = new SqlCommand(query, connection);
 		foreach (var filter in Config.Filters) {
-			command.Parameters.AddWithValue("param" + Config.Filters.IndexOf(filter), filter.ParameterValue);
+            // Call ToString to avoid JsonDocument mapping error
+            // https://stackoverflow.com/questions/57176239/system-argumentexception-no-mapping-exists-from-object-type-newtonsoft-json-l
+            command.Parameters.AddWithValue("param" + Config.Filters.IndexOf(filter), filter.ParameterValue.ToString());
 		}
 
 		connection.Open();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 
 namespace PivotSharp;
 
@@ -9,7 +10,11 @@ public static class DbTypeMap
 {
     private static readonly IList<DbTypeMapping> typeMap;
 
-    public static DbType DbTypeFor(Type t) => typeMap.Single(map => map.Type == t).DbType;
+    public static DbType DbTypeFor(Type t) {
+        var map = typeMap.SingleOrDefault(map => map.Type == t);
+        if (map == null) throw new NotImplementedException($"No type map created for {t} ");
+        return map.DbType;
+    }
 
     public static Type TypeFor(DbType t) =>
         typeMap.Any(map => map.DbType == t && map.IsRequired)
@@ -69,5 +74,7 @@ public static class DbTypeMap
                 Map(typeof (Guid?), DbType.Guid, "uniqueidentifier", false),
                 Map(typeof (DateTime?), DbType.DateTime, "datetime", false),
                 Map(typeof (DateTimeOffset?), DbType.DateTimeOffset, "datetimeoffset", false),
+
+                Map(typeof (JsonElement), DbType.String, "nvarchar", true)
             };
 }

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
+using PivotSharp.WebCore.Models;
 using System.Data;
 
 namespace PivotSharp.WebCore.Pages.QueryBuilder;
@@ -21,31 +23,13 @@ public class DataBasePageModel : PageModel
         return cmd.ExecuteReader(CommandBehavior.CloseConnection);
     }
 
-    public readonly IDictionary<int, PivotConfig> Configs = new Dictionary<int, PivotConfig> {
-		{
-			1 , new PivotConfig() {
-					TableName = "World_Data",
-					Rows = ["Country_Name"],
-					Cols = ["Year"],
-					Aggregators = [new AggregatorDef { ColumnName = "Population", FunctionName = "Sum"}] 
-				}
-		},{
-			2, new PivotConfig() {
-					TableName = "World_Data",
-					Rows = ["Region", "Country_Name"],
-					Cols = ["Year"],
-					Aggregators = [new AggregatorDef { ColumnName = "Population", FunctionName = "Sum" }]
-				}
-		},{
-			3, new PivotConfig() {
-					TableName = "World_Data",
-					Rows = ["Region", "Country_Name"],
-					Cols = ["Income_Group"],
-					Aggregators = [new AggregatorDef { ColumnName = "Population", FunctionName = "Sum" }],
-					Filters = [new Filter("Region", "=", "Europe")],
-					// Filters will break validation because they don't come through in the resultset.
-					ErrorMode = ConfigurationErrorHandlingMode.Ignore
-				}
-		}
-	};
+    protected async Task<IEnumerable<CustomReport>> GetCustomReports() {
+        using var conn = new SqlConnection(connectionString);
+        return await conn.QueryAsync<CustomReport>("select * from Custom_Reports");
+    }
+    protected async Task<CustomReport?> GetCustomReport(int id) {
+        using var conn = new SqlConnection(connectionString);
+        return await conn.QueryFirstOrDefaultAsync<CustomReport>("select * from Custom_Reports where ID = @id", new { id });
+    }
+
 }

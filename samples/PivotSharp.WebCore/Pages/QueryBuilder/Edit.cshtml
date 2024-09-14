@@ -131,7 +131,7 @@
         Sortable.create(rowList, options);
         Sortable.create(aggregatorList, options);
 
-        document.getElementById('generate').addEventListener('click', function (e) {
+        document.getElementById('generate').addEventListener('click', async function (e) {
             var config = {
                 Id: Number(document.getElementById('reportId').value),
                 Name: document.getElementById('reportName').value,
@@ -155,7 +155,8 @@
                         }))
                 }
             };
-            post('/QueryBuilder/Edit', JSON.stringify(config), '@GetAntiXsrfRequestToken()');
+            var returnValue = await post('/QueryBuilder/Edit', JSON.stringify(config), '@GetAntiXsrfRequestToken()');
+            window.location = returnValue;
         });
     </script>
 }
