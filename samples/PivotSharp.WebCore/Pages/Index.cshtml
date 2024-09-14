@@ -6,17 +6,24 @@
 
 <div class="row">
     <div class="card bg-secondary mb-3">
-        <h5 class="card-header">Simple Pivot Tables</h5>
+        <h5 class="card-header">Using Partial</h5>
         <div class="card-body">
              <partial name="_PivotTable" model="@Model.PivotTable.PivotTable" />
          </div>
     </div>
     <div class="card bg-secondary mb-3">
-        <h5 class="card-header">Simple Pivot Tables</h5>
+        <h5 class="card-header">Rendering Directly</h5>
         <div class="card-body">
             @Html.Raw(Model.PivotHtml)
         </div>
     </div>
+    <div class="card bg-secondary mb-3">
+        <h5 class="card-header">Using Tag Helper</h5>
+        <div class="card-body">
+           <pivot-table model="@Model.PivotTable.PivotTable" />
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {
