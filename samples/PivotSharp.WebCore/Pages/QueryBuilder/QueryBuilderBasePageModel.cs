@@ -6,11 +6,11 @@ using System.Data;
 
 namespace PivotSharp.WebCore.Pages.QueryBuilder;
 
-public class QueryBuilderBasePageModel : PageModel
+public class DataBasePageModel : PageModel
 {
 	protected readonly string connectionString;
 
-	public QueryBuilderBasePageModel(IConfiguration configuration) {
+	public DataBasePageModel(IConfiguration configuration) {
 		connectionString = configuration.GetConnectionString("DefaultConnection")!;
 	}
 
@@ -20,7 +20,6 @@ public class QueryBuilderBasePageModel : PageModel
         conn.Open();
         return cmd.ExecuteReader(CommandBehavior.CloseConnection);
     }
-
 
     public readonly IDictionary<int, PivotConfig> Configs = new Dictionary<int, PivotConfig> {
 		{

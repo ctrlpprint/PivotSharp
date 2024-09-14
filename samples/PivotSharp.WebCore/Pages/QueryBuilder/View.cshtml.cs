@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using PivotSharp.Connectors;
 using PivotSharp.WebCore.Models;
 
 namespace PivotSharp.WebCore.Pages.QueryBuilder;
 
-public class ViewModel : QueryBuilderBasePageModel
+public class ViewModel : DataBasePageModel
 {
 	public ViewModel(IConfiguration configuration) : base(configuration) { }
 

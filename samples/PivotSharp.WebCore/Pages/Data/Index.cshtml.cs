@@ -1,4 +1,4 @@
-namespace PivotSharp.WebCore.Pages.QueryBuilder;
+namespace PivotSharp.WebCore.Pages.Data;
 
 public class IndexModel : DataBasePageModel
 {

@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PivotSharp.WebCore.Pages.QueryBuilder;
 
-public class DrillDownModel : QueryBuilderBasePageModel
+public class DrillDownModel : DataBasePageModel
 {
 	public DrillDownModel(IConfiguration configuration) : base(configuration) { }
 

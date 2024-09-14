@@ -3,10 +3,6 @@
 @{
 }
 
-@* <div class="row" style="margin-top: 20px;">
-	<partial name="_Chart" model="Model.PivotTableViewModel.PivotTable" />
-</div> *@
-
 <div class="row" style="margin-top: 20px;">
     <div class="col-12">
         <div class="card bg-secondary mb-3">
@@ -35,7 +31,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.data-cell').forEach(cell => {
             cell.addEventListener('click', (e) => {
-                window.open(`/QueryBuilder/DrillDown/${reportId}?rowKeys=${cell.dataset.rowKey}&colKeys=${cell.dataset.colKey}`, '_blank');
+                window.open(`/Data/DrillDown/${reportId}?rowKeys=${cell.dataset.rowKey}&colKeys=${cell.dataset.colKey}`, '_blank');
             });
             cell.addEventListener
         });
