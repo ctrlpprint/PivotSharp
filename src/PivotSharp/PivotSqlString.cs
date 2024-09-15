@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using PivotSharp.Aggregators;
 
 namespace PivotSharp;
@@ -7,36 +9,44 @@ public class PivotSqlString
 {
     private readonly PivotConfig config;
     private readonly string tableName;
-    private readonly string groupingColumns;
-    private readonly string aggregations;
+	private List<AggregatorDef> aggregationFunctions;
 
-    public string SelectList => $"{groupingColumns}, {aggregations}";
+	public IEnumerable<string> GroupingColumns => config.Rows.Union(config.Cols);
 
-	public string WhereClause => string.Join(
-	separator: " and ",
-	values: config.Filters.Select(f => f.SqlClause("param" + config.Filters.IndexOf(f))));
+	private string AggregateFunction(IAggregator aggregator) => $"{aggregator.SqlFunction} as {aggregator.Alias}";
+
+	public IEnumerable<string>  Aggregations => aggregationFunctions.Select(a => AggregateFunction(a.Create()));
+
+	public string SelectList => string.Join(", ", GroupingColumns.Any() ? GroupingColumns.Union(Aggregations) : Aggregations);
+
+    public string WhereClause => config.Filters.Any()
+        ? $"where {string.Join(" and ", values: config.Filters.Select(f => f.SqlClause("param" + config.Filters.IndexOf(f))))}"
+        : "";
+
+    public string GroupByClause => GroupingColumns.Any() 
+        ? $"group by {string.Join(", ", GroupingColumns)}" 
+        : "";
 
     public PivotSqlString(PivotConfig config) {
         this.config = config;
         this.tableName = config.TableName;
 
-        groupingColumns = string.Join(", ", config.Rows.Union(config.Cols));
 
-        var aggregationFunctions = config.Aggregators.ToList();
+        aggregationFunctions = config.Aggregators.ToList();
 
         // Make sure we always have a Count(*). We'll use this for identifing length of drilldowns, as well as support for Avg.
+        // Also, guarantee that we have at least one aggregation.
         if (!aggregationFunctions.Any(a => a.FunctionName == "Count" && string.IsNullOrEmpty(a.ColumnName)))
             aggregationFunctions.Add(new AggregatorDef { FunctionName = "Count" });
 
-        aggregations = string.Join(", ", aggregationFunctions.Select(a => AggregateFunction(a.Create())));
     }
-	private string AggregateFunction(IAggregator aggregator) =>
-	$"{aggregator.SqlFunction} as {aggregator.Alias}";
 
-	// select {groupingColumns},{aggregateColumns} from {tableName} where {whereClause} group by {groupingColumns}
+	/// <summary>
+	/// select {groupingColumns},{Aggregations} from {tableName} where {FilterColumns} group by {GroupingColumns}
+	/// </summary>
 	public override string ToString() =>
-			$"select {SelectList} from {tableName}"
-			+ (config.Filters.Any() ? $" where {WhereClause}" : "")
-			+ $" group by {groupingColumns}";
+			$"select {SelectList} from {tableName} "
+			+ $" {WhereClause}"
+            + $" {GroupByClause}";
 
 }

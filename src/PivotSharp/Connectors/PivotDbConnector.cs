@@ -37,17 +37,23 @@ public class PivotDbConnector : IPivotDataSourceConnector
 		command.Parameters.AddWithValue("@TableName", Config.TableName);
 
 		connection.Open();
-		using var reader = command.ExecuteReader();
-		if (reader.HasRows) {
-			while (reader.Read()) {
-				columns.Add(new Field()
-				{
-					// Position = reader.GetInt32(0),
-					Name = reader.GetString(1),
-					DataType = reader.GetString(2)
-				});
+		try {
+			using var reader = command.ExecuteReader();
+			if (reader.HasRows) {
+				while (reader.Read()) {
+					columns.Add(new Field()
+					{
+						// Position = reader.GetInt32(0),
+						Name = reader.GetString(1),
+						DataType = reader.GetString(2)
+					});
+				}
 			}
 		}
+		catch (Exception ex) {
+			throw new ApplicationException($"Error running query: {query}.", ex);
+		}
+
 		return columns;
 	}
 
@@ -64,11 +70,16 @@ public class PivotDbConnector : IPivotDataSourceConnector
 		using var connection = new SqlConnection(connectionString);
 		var command = new SqlCommand(query, connection);
 		connection.Open();
-		var reader = command.ExecuteReader();
-		if (reader.HasRows) {
-			while (reader.Read()) {
-				returnValues.Add(reader.GetValue(0).ToString()!, reader.GetInt32(1));
+		try {
+			var reader = command.ExecuteReader();
+			if (reader.HasRows) {
+				while (reader.Read()) {
+					returnValues.Add(reader.GetValue(0).ToString()!, reader.GetInt32(1));
+				}
 			}
+		}
+		catch (Exception ex) {
+			throw new ApplicationException($"Error running query: {query}.", ex);
 		}
 		// reader.Close();
 
@@ -104,7 +115,14 @@ public class PivotDbConnector : IPivotDataSourceConnector
 		}
 
 		connection.Open();
-		return command.ExecuteReader(CommandBehavior.CloseConnection);
+
+		try {
+			var reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+			return reader;
+		}
+		catch (Exception ex) {
+			throw new ApplicationException($"Error running query: {query}.", ex);
+		}
 	}
 
 	public DataTable GetDrillDownData(string flattendedRowKeys, string flattenedColKeys) {
