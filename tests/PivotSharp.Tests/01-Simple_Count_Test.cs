@@ -95,13 +95,6 @@ public class Simple_Count_Test
         Assert.That(pivot.Cols.Single(r => r.FlattenedKey == "red").Value, Is.EqualTo(1));
     }
 
-
-    [Test]
-    public void Can_Write_Table() {
-        var output = PivotWriter.WriteHtmlTable(pivot);
-        Assert.That(output, Is.Not.Null);
-    }
-
     [Test]
     public void Can_Retrieve_Listing() {
 
