@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Data;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace PivotSharp.Filters;
 
-[JsonObject(MemberSerialization.OptIn)]
 public class Filter
 {
-    [JsonProperty]
-    public string Op { get; set; }
+    public string Op { get; set; } = "";
 
-    [JsonProperty]
-    public string ColumnName { get; set; }
+    public string ColumnName { get; set; } = "";
 
-    // The problem with a property of type object (or dynamic) is the asp.net mvc model binder will always bind a value 
-    // as a string[].
-    // See eg http://stackoverflow.com/questions/15886757/mvc-model-binding-subclass-object-property-filled-with-a-string-array 
-    [JsonProperty]
-    public object ParameterValue { get; set; }
+    public object ParameterValue { get; set; } = "";
 
-    // For Model Binding
     public Filter() { }
 
     public Filter(string columnName, string op, object parameterValue) {
@@ -29,6 +21,10 @@ public class Filter
     }
 
     public bool Apply(IDataReader source) {
+        // Ignore rather than throw. If we're using the DB Connector, the filters have already been applied,
+        // and the source will not necessarily include the filter field.
+        if (!source.ContainsKey(ColumnName)) return true;
+
         if (source[ColumnName].GetType() == typeof(System.DBNull)) return false;
         return Compare(Op, (IComparable)source[ColumnName], (IComparable)ParameterValue);
     }
@@ -43,9 +39,11 @@ public class Filter
 
     public string SqlClause(string paramName) =>  $"{ColumnName} {Op} @{paramName.Replace("@", "")}";
 
-    public DbType DbType => ParameterValue == null || ParameterValue.GetType() == typeof(string[])
-        ? DbType.Object // MVC Model Binding will fill ParameterValue with a string[] and then try to read this property so we need to return something.
+    [JsonIgnore]
+    public DbType DbType => ParameterValue == null// || ParameterValue.GetType() == typeof(string[])
+        ? DbType.Object
         : DbTypeMap.DbTypeFor(ParameterValue.GetType());
 
+    [JsonIgnore]
     public string Description => $"{ColumnName} {Op} {ParameterValue}";
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 
 namespace PivotSharp.Aggregators;
 
@@ -17,13 +16,10 @@ namespace PivotSharp.Aggregators;
 /// Avg(Column)			
 /// 
 /// </remarks>
-[JsonObject(MemberSerialization.OptIn)]
 public class AggregatorDef
 {
-    [JsonProperty]
-    public string FunctionName { get; set; }
-    [JsonProperty]
-    public string ColumnName { get; set; }
+    public string FunctionName { get; set; } = "";
+    public string ColumnName { get; set; } = "";
 
     public IAggregator Create() {
         return FromString(FunctionName, ColumnName)();

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using PivotSharp.WebCore.Models;
 
 namespace PivotSharp.WebCore.Pages.QueryBuilder;
@@ -8,7 +9,8 @@ public class IndexModel : DataBasePageModel
 
 	public IndexModel(IConfiguration configuration) : base(configuration) { }
 
-	public async void OnGet() {
+	public async Task<IActionResult> OnGet() {
 		CustomReports = await GetCustomReports();
+		return Page();
 	}
 }

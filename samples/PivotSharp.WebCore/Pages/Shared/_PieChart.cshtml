@@ -1,4 +1,4 @@
-﻿@using Newtonsoft.Json
+﻿@using System.Text.Json;
 @model PivotSharp.WebCore.Models.PieChartViewModel
 
 @* aspect ratios listed at http://gionkunz.github.io/chartist-js/getting-started.html#creating-a-chart-using-aspect-ratios *@
@@ -7,8 +7,8 @@
 
 <script type="text/javascript">
 	(function(){
-		var labels = @(Html.Raw(JsonConvert.SerializeObject(Model.Labels)));
-		var series = @(Html.Raw(JsonConvert.SerializeObject(Model.Series)));
+		var labels = @(Html.Raw(JsonSerializer.Serialize(Model.Labels)));
+		var series = @(Html.Raw(JsonSerializer.Serialize(Model.Series)));
 
 		var data = {
 			// A labels array that can contain any sort of values

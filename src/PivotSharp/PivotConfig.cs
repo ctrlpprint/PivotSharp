@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
 using PivotSharp.Aggregators;
 using PivotSharp.Filters;
 
 namespace PivotSharp;
 
-[JsonObject(MemberSerialization.OptOut)]
 public class PivotConfig
 {
     public string TableName { get; set; } = "";
