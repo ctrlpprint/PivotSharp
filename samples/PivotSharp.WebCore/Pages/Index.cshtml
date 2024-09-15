@@ -5,34 +5,38 @@
 }
 
 <div class="row">
-    <div class="card bg-secondary mb-3">
-        <h5 class="card-header">Using Partial</h5>
-        <div class="card-body">
-             <partial name="_PivotTable" model="@Model.PivotTable.PivotTable" />
-         </div>
-    </div>
-    <div class="card bg-secondary mb-3">
-        <h5 class="card-header">Rendering Directly</h5>
-        <div class="card-body">
-            @Html.Raw(Model.PivotHtml)
+    <div class="col-4">
+        <div class="card bg-secondary mb-3">
+            <h5 class="card-header">Using Partial</h5>
+            <div class="card-body">
+                <partial name="_PivotTable" model="@Model.PivotTable.PivotTable" />
+            </div>
         </div>
     </div>
+    <div class="col-4">
+        <div class="card bg-secondary mb-3">
+            <h5 class="card-header">Rendering Directly</h5>
+            <div class="card-body">
+                @Html.Raw(Model.PivotHtml)
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
     <div class="card bg-secondary mb-3">
         <h5 class="card-header">Using Tag Helper</h5>
         <div class="card-body">
-           <pivot-table model="@Model.PivotTable.PivotTable" />
+            <pivot-table model="@Model.PivotTable.PivotTable" />
         </div>
     </div>
-
 </div>
 
 @section Scripts {
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(".data-cell").on('click', function () {
-            window.open('/DrillDown/' + @Model.PivotTable!.Id + '?rowKeys=' + $(this).data('row-key') + '&colKeys=' + $(this).data('col-key'), '_blank');
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".data-cell").on('click', function () {
+                window.open('/DrillDown/' + @Model.PivotTable!.Id + '?rowKeys=' + $(this).data('row-key') + '&colKeys=' + $(this).data('col-key'), '_blank');
+            });
         });
-    });
-</script>
+    </script>
 }
