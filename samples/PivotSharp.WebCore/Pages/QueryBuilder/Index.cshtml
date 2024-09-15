@@ -4,7 +4,12 @@
 @{
 }
 <div class="row">
-   <h1>Query Builder <small><a href="/QueryBuilder/Edit/">Add</a></small></h1>
+    <div class="col-8">
+        <h1>Query Builder</h1>
+    </div>
+    <div class="col-4 text-right">
+        <a class="btn btn-raised btn-primary float-right" href="/QueryBuilder/Edit/">Add</a>
+    </div>
 </div>
 <div class="row">
     @foreach (var report in Model.CustomReports) {
@@ -15,7 +20,8 @@
                 <div class="card-header">@report.Id @report.Name</div>
                 <div class="card-body">
                     <partial name="_PivotConfig" model="new PivotConfigViewModel { Id = report.Id, Config = report.PivotConfig }" />
-                    <a class="btn btn-raised btn-info pull-right" style="margin-top:0; margin-bottom: 0;" href=@($"/QueryBuilder/View/{report.Id}")>View</a>
+                    <a class="btn btn-raised btn-link float-right" style="margin-top:0; margin-bottom: 0;" href=@($"/QueryBuilder/Edit/{report.Id}")>Edit</a>
+                    <a class="btn btn-raised btn-primary float-right" style="margin-top:0; margin-bottom: 0;" href=@($"/QueryBuilder/View/{report.Id}")>View</a>
                 </div>
             </div>
         </div>
