@@ -9,17 +9,17 @@ namespace PivotSharp;
 /// </summary>
 public class PivotKey
 {
-    public IList<string> RowKeys { get; set; }
-    public IList<string> ColKeys { get; set; }
+    public IList<string> RowKeys { get; set; } = [];
+    public IList<string> ColKeys { get; set; } = [];
 
     public string FlattenedRowKey {
-        get { return string.Join(",", RowKeys); }
-        set { RowKeys = [.. value.Split([','], StringSplitOptions.RemoveEmptyEntries)]; }
+        get { return string.Join(PivotTable.KeyDelimiter, RowKeys); }
+        set { RowKeys = [.. value.Split([PivotTable.KeyDelimiter], StringSplitOptions.RemoveEmptyEntries)]; }
     }
 
     public string FlattenedColKey {
-        get { return string.Join(",", ColKeys); }
-        set { ColKeys = [.. value.Split([','], StringSplitOptions.RemoveEmptyEntries)]; }
+        get { return string.Join(PivotTable.KeyDelimiter, ColKeys); }
+        set { ColKeys = [.. value.Split([PivotTable.KeyDelimiter], StringSplitOptions.RemoveEmptyEntries)]; }
     }
 
     public override string ToString() {

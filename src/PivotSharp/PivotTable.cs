@@ -73,7 +73,9 @@ namespace PivotSharp;
 /// </remarks>
 public class PivotTable
 {
-	private readonly IPivotDataSourceConnector connector;
+    public static string KeyDelimiter { get; set; } = "/~/";
+
+    private readonly IPivotDataSourceConnector connector;
 
 	// Need to be able to group these.
 	// sort by field1 then field2, etc.

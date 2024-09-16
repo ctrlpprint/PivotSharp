@@ -24,7 +24,7 @@ public class RowOrColumns : List<RowOrColumn>
 
     public RowOrColumn AddRow(IDataReader source) {
         var rowHeader = Fields.Select(rowAttr => source[rowAttr] ?? "null").Select(x => x.ToString()).ToList();
-        var flatRowKey = string.Join(",", rowHeader);
+        var flatRowKey = string.Join(PivotTable.KeyDelimiter, rowHeader);
 
         if (!rowHeader.Any()) return null;
 
@@ -70,7 +70,9 @@ public class RowOrColumns : List<RowOrColumn>
 
     public IEnumerable<IGrouping<string, RowOrColumn>> GetHeaderGroupsForField(int fieldIndex) => this
         .OrderBy(c => c.FlattenedKey).NaturalSort(c => c.FlattenedKey)
-        .GroupBy(c => string.Join(",", c.FlattenedKey.Split(',').Take(fieldIndex + 1)));
+        .GroupBy(c => string.Join(
+            PivotTable.KeyDelimiter, 
+            c.FlattenedKey.Split(PivotTable.KeyDelimiter).Take(fieldIndex + 1)));
 
     public IEnumerable<RowOrColumn> GetItemsForGroup(int fieldIndex, string groupName) => 
         GetHeaderGroupsForField(fieldIndex).Single(g => g.Key == groupName).Select(g => g);

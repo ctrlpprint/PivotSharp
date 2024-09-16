@@ -14,6 +14,9 @@
                 @string.Join(",", Model.PivotTableViewModel.Config.Cols)
             </h5>
             <div class="card-body">
+               <div class="text-right mb-3">
+                    <a class="btn btn-info" href="@($"/QueryBuilder/Edit/{Model.PivotTableViewModel.Id}")">Edit</a>
+               </div>
                 <partial name="_PivotTable" model="Model.PivotTableViewModel.PivotTable" />
             </div>
         </div>

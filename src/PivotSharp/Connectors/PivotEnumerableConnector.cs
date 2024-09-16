@@ -37,10 +37,10 @@ public class PivotEnumerableConnector<T> : IPivotDataSourceConnector
 				continue;
 
 			var rowHeader = Config.Rows.Select(rowAttr => reader[rowAttr] ?? "null").Select(x => x.ToString()).ToList();
-			var flatRowKey = string.Join(",", rowHeader);
+			var flatRowKey = string.Join(PivotTable.KeyDelimiter, rowHeader);
 
 			var colHeader = Config.Cols.Select(colAttr => reader[colAttr] ?? "null").Select(x => x.ToString()).ToList();
-			var flatColKey = string.Join(",", colHeader);
+			var flatColKey = string.Join(PivotTable.KeyDelimiter, colHeader);
 
 			if (flatRowKey == flattendedRowKeys && flatColKey == flattenedColKeys) {
 				var newRow = data.Rows.Add();
