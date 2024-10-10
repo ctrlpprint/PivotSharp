@@ -73,12 +73,13 @@ namespace PivotSharp;
 /// </remarks>
 public class PivotTable
 {
+	/// <summary>
+	/// Used to produce flattened row and column keys. The Delimeter needs to be something
+	/// that won't appear in any of the header values.
+	/// </summary>
     public static string KeyDelimiter { get; set; } = "/~/";
 
     private readonly IPivotDataSourceConnector connector;
-
-	// Need to be able to group these.
-	// sort by field1 then field2, etc.
 
 	// PivotFieldList : List<PivotField>
 	public RowOrColumns Rows { get; private set; }
@@ -87,8 +88,6 @@ public class PivotTable
     // PivotCell
     public PivotCell GrandTotal { get; private set; }
 
-	// AggregatorDef -> Aggregator?
-	// Cells
 	public PivotBody Cells { get; private set; }
 
 	public PivotConfig Config => connector.Config;

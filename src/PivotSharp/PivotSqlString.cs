@@ -45,8 +45,6 @@ public class PivotSqlString
 	/// select {groupingColumns},{Aggregations} from {tableName} where {FilterColumns} group by {GroupingColumns}
 	/// </summary>
 	public override string ToString() =>
-			$"select {SelectList} from {tableName} "
-			+ $" {WhereClause}"
-            + $" {GroupByClause}";
+        string.Join(" ", [$"select {SelectList} from {tableName}", $"{WhereClause}", $"{GroupByClause}"]).Replace("  ", " ");
 
 }

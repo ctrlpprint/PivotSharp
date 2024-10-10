@@ -16,6 +16,8 @@ public class PivotConfig
 
     public IList<AggregatorDef> Aggregators { get; set; } = [];
 
+    public bool IncludeZeroValues { get; set; } = false;
+
     public ConfigurationErrorHandlingMode ErrorMode { get; set; }
         = ConfigurationErrorHandlingMode.Ignore;
 
